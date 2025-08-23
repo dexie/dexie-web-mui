@@ -1,6 +1,6 @@
-import Image from "next/image";
-import { Button, Typography, Container } from "@mui/material";
-import styles from "./page.module.css";
+import Image from "next/image"
+import { Button, Typography, Container } from "@mui/material"
+import styles from "./page.module.css"
 
 export default function Home() {
   return (
@@ -22,7 +22,7 @@ export default function Home() {
         </ol>
 
         {/* MUI Test Components */}
-        <Container sx={{ my: 4, textAlign: 'center' }}>
+        <Container sx={{ my: 4, textAlign: "center" }}>
           <Typography variant="h4" component="h2" gutterBottom>
             MUI is working! 🎉
           </Typography>
@@ -102,5 +102,5 @@ export default function Home() {
         </a>
       </footer>
     </div>
-  );
+  )
 }
