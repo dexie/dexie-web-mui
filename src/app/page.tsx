@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Button, Typography, Container } from "@mui/material";
 import styles from "./page.module.css";
 
 export default function Home() {
@@ -19,6 +20,16 @@ export default function Home() {
           </li>
           <li>Save and see your changes instantly.</li>
         </ol>
+
+        {/* MUI Test Components */}
+        <Container sx={{ my: 4, textAlign: 'center' }}>
+          <Typography variant="h4" component="h2" gutterBottom>
+            MUI is working! 🎉
+          </Typography>
+          <Button variant="contained" color="primary" size="large">
+            Material-UI Button
+          </Button>
+        </Container>
 
         <div className={styles.ctas}>
           <a
