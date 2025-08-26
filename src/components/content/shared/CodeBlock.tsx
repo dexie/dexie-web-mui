@@ -8,7 +8,9 @@ import "prismjs/components/prism-jsx"
 import "prismjs/components/prism-tsx"
 import "prismjs/components/prism-bash"
 import "prismjs/plugins/command-line/prism-command-line"
-
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import ContentCopyIcon from "@mui/icons-material/ContentCopy"
 interface CodeBlockProps {
   code: string
   language?: string
@@ -177,26 +179,51 @@ export default function CodeBlock({
     .join(" ")
 
   return (
-    <div className="codeblock-container" style={{ position: "relative" }}>
-      <button
+    <Box className="codeblock-container" style={{ position: "relative" }}>
+      <Button
         onClick={copyToClipboard}
-        className="copy-button"
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = "rgba(255, 255, 255, 0.2)"
+        size="small"
+        sx={{
+          position: "absolute",
+          top: "10px",
+          right: "0px",
+          background: "rgba(255, 255, 255, 0.1)",
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+          borderRadius: "4px",
+          padding: "4px 10px !important",
+          cursor: "pointer",
+          color: "#fff",
+          fontSize: "12px !important",
+          fontFamily: "inherit",
+          display: "flex",
+          alignItems: "center",
+          zIndex: 10,
+          transition: "all 0.2s ease",
+          backdropFilter: "blur(4px)",
+          WebkitBackdropFilter: "blur(4px)",
+          opacity: 0.5,
+          zoom: 0.9,
+          minWidth: "auto",
+          textTransform: "none",
+          "&:hover": {
+            background: "rgba(255, 255, 255, 0.2)",
+            borderColor: "rgba(255, 255, 255, 0.3)",
+            transform: "translateY(-1px)",
+            opacity: 1,
+          },
+          "&:active": {
+            transform: "translateY(0)",
+          },
         }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)"
-        }}
-        title={copied ? "Copied!" : "Copy code"}
+        startIcon={<ContentCopyIcon sx={{ fontSize: "14px !important" }} />}
       >
-        <i className="mi-copy" style={{ fontSize: "14px" }}></i>
-        {copied ? "Copied!" : "Copy"}
-      </button>
+        <>{copied ? "Copied!" : "Copy"}</>
+      </Button>
       <pre className={preClasses} {...commandLineProps}>
         <code ref={codeRef} className={codeClasses}>
           {code}
         </code>
       </pre>
-    </div>
+    </Box>
   )
 }

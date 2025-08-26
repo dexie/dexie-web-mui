@@ -7,6 +7,7 @@ interface HeroWidgetProps {
   heading: string | React.ReactNode
   text: string
   background: string
+  content?: React.ReactNode
   buttons: ButtonWidgetProps[]
   settings?: {
     textColor?: string
@@ -30,6 +31,7 @@ export default function HeroWidget({
   heading,
   text,
   background,
+  content,
   buttons,
   settings: {
     textColor = "#000000",
@@ -134,15 +136,16 @@ export default function HeroWidget({
           width: "100%",
           padding: 4,
           display: "flex",
-          justifyContent: getJustifyContent(),
+          justifyContent: content ? "space-between" : getJustifyContent(),
           alignItems: getAlignItems(),
           position: "relative",
           zIndex: 2,
+          gap: content ? 4 : 0, // Add gap between text and content when content exists
         }}
       >
         <Box
           sx={{
-            width: textWidth,
+            width: content ? "50%" : textWidth,
             color: textColor,
             textAlign:
               textAlignment === "left" ||
@@ -152,18 +155,26 @@ export default function HeroWidget({
                 : "left", // For space-* values, use left alignment within the text box
           }}
         >
-          <Typography
-            variant="overline"
-            sx={{ color: "inherit", fontSize: "14px", fontWeight: 500 }}
-          >
-            {preHeading}
-          </Typography>
+          {preHeading && (
+            <Typography
+              variant="overline"
+              component="div"
+              sx={{
+                color: "inherit",
+                fontSize: "14px",
+                fontWeight: 500,
+                mb: 2,
+              }}
+            >
+              {preHeading}
+            </Typography>
+          )}
           <Typography variant="h1" sx={{ color: "inherit", fontSize: "60px" }}>
             {heading}
           </Typography>
           <Typography
             variant="body1"
-            sx={{ color: "inherit", fontSize: "23px", mt: 2, mb: 4 }}
+            sx={{ color: "inherit", fontSize: "23px", mt: 4, mb: 6 }}
           >
             {text}
           </Typography>
@@ -179,6 +190,18 @@ export default function HeroWidget({
             ))}
           </Box>
         </Box>
+        {content && (
+          <Box
+            sx={{
+              width: "50%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {content}
+          </Box>
+        )}
       </Box>
     </Box>
   )

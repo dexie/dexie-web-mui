@@ -6,6 +6,7 @@ import { CssBaseline } from "@mui/material"
 import theme from "../theme"
 import Navbar from "../components/Navbar"
 import "./globals.css"
+import "../../public/assets/css/prism.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
