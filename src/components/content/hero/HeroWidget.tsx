@@ -1,13 +1,15 @@
 import { Box, Typography } from "@mui/material"
-import ButtonWidget, { ButtonWidgetProps } from "./shared/Button"
-import TypeWriter from "./shared/TypeWriter"
+import ButtonWidget, { ButtonWidgetProps } from "../shared/Button"
+import TypeWriter from "../shared/TypeWriter"
 
 interface HeroWidgetProps {
   preHeading: string
   heading: string | React.ReactNode
   text: string
   background: string
-  content?: React.ReactNode
+  contentRight?: React.ReactNode
+  contentRightWidthPercentage?: number
+  contentBottom?: React.ReactNode
   buttons: ButtonWidgetProps[]
   settings?: {
     textColor?: string
@@ -31,7 +33,9 @@ export default function HeroWidget({
   heading,
   text,
   background,
-  content,
+  contentRight,
+  contentRightWidthPercentage = 50,
+  contentBottom,
   buttons,
   settings: {
     textColor = "#000000",
@@ -136,16 +140,18 @@ export default function HeroWidget({
           width: "100%",
           padding: 4,
           display: "flex",
-          justifyContent: content ? "space-between" : getJustifyContent(),
+          justifyContent: contentRight ? "space-between" : getJustifyContent(),
           alignItems: getAlignItems(),
           position: "relative",
           zIndex: 2,
-          gap: content ? 4 : 0, // Add gap between text and content when content exists
+          gap: contentRight ? 4 : 0, // Add gap between text and content when content exists
         }}
       >
         <Box
           sx={{
-            width: content ? "50%" : textWidth,
+            width: contentRight
+              ? `${100 - contentRightWidthPercentage}%`
+              : textWidth,
             color: textColor,
             textAlign:
               textAlignment === "left" ||
@@ -190,19 +196,37 @@ export default function HeroWidget({
             ))}
           </Box>
         </Box>
-        {content && (
+        {contentRight && (
           <Box
             sx={{
-              width: "50%",
+              width: `${contentRightWidthPercentage}%`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            {content}
+            {contentRight}
           </Box>
         )}
       </Box>
+      {contentBottom && (
+        <Box
+          sx={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 4,
+            zIndex: 2,
+          }}
+        >
+          {contentBottom}
+        </Box>
+      )}
     </Box>
   )
 }
