@@ -12,6 +12,7 @@ import {
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { menuItems } from "../config/navigation"
+import LockIcon from "@mui/icons-material/Lock"
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -77,12 +78,12 @@ export default function Navbar() {
                 sx={{
                   opacity: isActive ? 1 : 0.78,
                   color: theme.palette.text.primary,
-                  fontSize: "16px",
+                  fontSize: "17px !important",
                   textTransform: "none",
                   fontWeight: isActive ? 600 : 400,
                   transition: "all 0.3s ease-in-out",
                   position: "relative",
-                  padding: "8px 16px",
+                  padding: "0px 18px !important",
 
                   "&:hover": {
                     backgroundColor: alpha(theme.palette.primary.main, 0.08),
@@ -99,12 +100,43 @@ export default function Navbar() {
         <Box sx={{ flex: "0 0 auto" }}>
           <Button
             variant="outlined"
+            color="secondary"
             sx={{
-              textTransform: "none",
-              fontWeight: 500,
-              padding: "8px 20px",
-              transition: "all 0.3s ease-in-out",
+              textTransform: "uppercase",
+              fontWeight: 400,
+              fontSize: "13px",
+              letterSpacing: "0.65px",
+              padding: "6px 15px !important",
+              height: "33.5px",
+              minWidth: "104.922px",
+              borderRadius: "30px",
+              border: `1px solid ${theme.palette.secondary.main}`,
+              color: theme.palette.secondary.main,
+              backgroundColor: "transparent",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              display: "flex",
+              textAlign: "center",
+              verticalAlign: "middle",
+              userSelect: "none",
+              lineHeight: "19.5px",
+              transition:
+                "color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
+
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.main,
+                color: theme.palette.background.default,
+                borderColor: theme.palette.secondary.main,
+              },
             }}
+            startIcon={
+              <LockIcon
+                sx={{
+                  height: "16px",
+                  mt: "2px",
+                }}
+              />
+            }
           >
             Sign In
           </Button>

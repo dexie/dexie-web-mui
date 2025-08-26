@@ -28,14 +28,14 @@ const theme = createTheme({
       paper: "#343a40", // Secondary dark background
     },
     primary: {
+      main: "#000000", // Bootstrap dark primary blue
+      light: "#000000",
+      dark: "#000000",
+    },
+    secondary: {
       main: "#c77dff", // Bootstrap dark primary blue
       light: "#e0b3ff",
       dark: "#9b59b6",
-    },
-    secondary: {
-      main: "#dee2e6", // Light text color
-      light: "#f8f9fa",
-      dark: "#a7acb1",
     },
     text: {
       primary: "#dee2e6", // Main text color
@@ -148,10 +148,17 @@ const theme = createTheme({
       color: "#dee2e680",
     },
     button: {
-      fontSize: "0.875rem",
-      fontWeight: 500,
       lineHeight: 1.75,
-      textTransform: "uppercase",
+      color: "#dee2e6",
+      // MUI Button styles
+      paddingLeft: "32px !important",
+      paddingRight: "32px !important",
+      paddingTop: "16px !important",
+      paddingBottom: "15px !important",
+      borderRadius: "4px !important",
+      fontSize: "13px !important",
+      fontWeight: 700,
+      textTransform: "uppercase" as const,
     },
   },
   components: {
@@ -219,9 +226,22 @@ const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          textTransform: "none",
+          textTransform: "uppercase",
           borderRadius: "0.375rem", // Bootstrap border radius
+          fontWeight: 700,
+          letterSpacing: "1.105px",
+          fontSize: "13px !important",
+          color: "rgba(255, 255, 255, 0.8)",
+        },
+        text: {
+          textTransform: "none",
+          color: "#dee2e6", // White text for text variant buttons
+          fontSize: "17px !important",
           fontWeight: 500,
+          letterSpacing: "0.5px",
+          "&:hover": {
+            color: "#dee2e6",
+          },
         },
       },
     },
