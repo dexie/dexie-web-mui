@@ -13,9 +13,12 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { menuItems } from "../config/navigation"
 import LockIcon from "@mui/icons-material/Lock"
+import GitHubIcon from "@mui/icons-material/GitHub"
+import { formatNumber } from "../utils/formatNumber"
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [stars, setStars] = useState(13000)
   const theme = useTheme()
   const pathname = usePathname()
 
@@ -27,6 +30,21 @@ export default function Navbar() {
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const fetchStars = async () => {
+      try {
+        const response = await fetch(
+          "https://api.github.com/repos/dexie/Dexie.js"
+        )
+        const data = await response.json()
+        setStars(data.stargazers_count)
+      } catch (error) {
+        console.error("Error fetching stars:", error)
+      }
+    }
+    fetchStars()
   }, [])
 
   return (
@@ -94,6 +112,33 @@ export default function Navbar() {
               </Button>
             )
           })}
+        </Box>
+
+        {/* GitHub Stars Counter */}
+        <Box sx={{ flex: "0 0 auto", marginRight: 2, zoom: 0.8 }}>
+          <Button
+            component="a"
+            href="https://github.com/dexie/Dexie.js"
+            target="_blank"
+            sx={{
+              fontSize: "14px !important",
+              textTransform: "none",
+              color: theme.palette.text.primary,
+              display: "flex",
+              alignItems: "center",
+              padding: "0px !important",
+              minWidth: "auto",
+              opacity: 1,
+              transition: "opacity 0.3s ease-in-out",
+
+              "&:hover": {
+                opacity: 1,
+              },
+            }}
+            startIcon={<GitHubIcon sx={{ fontSize: "18px" }} />}
+          >
+            {formatNumber(stars)}
+          </Button>
         </Box>
 
         {/* Sign In Button - Right */}
