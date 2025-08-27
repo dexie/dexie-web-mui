@@ -1,9 +1,15 @@
 import HeroWidget from "@/components/content/hero/HeroWidget"
 import HeroContent from "@/components/content/hero/HeroContent"
 import Brands from "@/components/content/hero/Brands"
-import Benefits, { BenefitItem } from "@/components/content/hero/Benefits"
+import Benefits, {
+  BenefitItem,
+} from "@/components/content/Benefits/BenefitsWidget"
+import BlogPostsWidget, {
+  BlogPostItem,
+} from "@/components/content/BlogPostsWidget"
 import TypeWriter from "@/components/content/shared/TypeWriter"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
+import { Divider } from "@mui/material"
 
 const dexieBenefitsData: BenefitItem[] = [
   {
@@ -84,6 +90,60 @@ const dexieBenefitsData: BenefitItem[] = [
     keyPoints: ["React", "Vue", "Angular", "Svelte"],
     svgPath:
       "M22 9.74l-2 1.02v7.24c-1.007 2.041-5.606 3-8.5 3-3.175 0-7.389-.994-8.5-3v-7.796l-3-1.896 12-5.308 11 6.231v8.769l1 3h-3l1-3v-8.26zm-18 1.095v6.873c.958 1.28 4.217 2.292 7.5 2.292 2.894 0 6.589-.959 7.5-2.269v-6.462l-7.923 4.039-7.077-4.473zm-1.881-2.371l9.011 5.694 9.759-4.974-8.944-5.066-9.826 4.346z",
+  },
+]
+
+const blogPostsData: BlogPostItem[] = [
+  {
+    id: 1,
+    delay: "0.1s",
+    imgSrc: "/assets/images/blog/post-prev-1.jpg",
+    title: "Dexie Cloud Vanilla",
+    text: "The simplest possible Dexie Cloud application, built with vanilla JavaScript. It is a great starting point for building your own Dexie Cloud application.",
+    authorImg: "/assets/images/blog/author/author-1.jpg",
+    authorName: "Adam Smith",
+    date: "August 3",
+    link: "https://stackblitz.com/edit/dexie-todo-list?file=components%2FTodoListView.tsx",
+    keyPoints: [
+      "Any JavaScript framework",
+      "Lightweight and simple",
+      "Perfect for chrome extensions",
+      "Works with fake-indexeddb",
+      "Build-in authentication",
+    ],
+  },
+  {
+    id: 2,
+    delay: "0.1s",
+    imgSrc: "/assets/images/blog/post-prev-1.jpg",
+    title: "Dexie Cloud Starter",
+    text: "Dexie Cloud Starter is a fully functional showcase application. Inspired by the popular MyMind app, it demonstrates how to build a collaborative note-taking application using Dexie Cloud.",
+    authorImg: "/assets/images/blog/author/author-1.jpg",
+    authorName: "Adam Smith",
+    date: "August 3",
+    link: "https://github.com/dexie/dexie-cloud-starter",
+    keyPoints: [
+      "NextJS and TypeScript",
+      "Offline storage and sync",
+      "Conflict-free rich text editing",
+      "Tiptap and Y.js",
+      "Image upload and storage",
+      "Collaborative editing and awareness",
+      "Full text search in notes",
+      "Full sharing support",
+    ],
+  },
+  {
+    id: 3,
+    delay: "0.1s",
+    imgSrc: "/assets/images/blog/post-prev-1.jpg",
+    title: "Sveltekit Dexie-boilerplate",
+    text: "An example of a Dexie Cloud application built with Svelte. It is a great starting point for building your own Dexie Cloud application using Svelte.",
+    authorImg: "/assets/images/blog/author/author-1.jpg",
+    authorName: "Adam Smith",
+    date: "August 3",
+    link: "https://github.com/albarin/sveltekit-dexie-boilerplate",
+    keyPoints: ["Svelte framework", "Build-in authentication"],
   },
 ]
 
@@ -168,6 +228,16 @@ export default function Home() {
           sectionSubtitle: "Why use Dexie?",
         }}
       />
+      <Divider />
+      <BlogPostsWidget
+        items={blogPostsData}
+        sectionTitle="Get started in seconds"
+        sectionSubtitle="Accelerate your development with templates built by us and our community."
+        textColor="#dee2e6"
+        backgroundColor="#000000"
+        containerWidth="big"
+      />
+      <Divider />
     </>
   )
 }

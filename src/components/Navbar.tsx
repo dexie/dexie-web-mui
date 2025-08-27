@@ -56,7 +56,6 @@ export default function Navbar() {
           ? theme.palette.background.default
           : "transparent",
         transition: "all 0.3s ease-in-out",
-        backdropFilter: "blur(10px)",
       }}
     >
       <Toolbar
