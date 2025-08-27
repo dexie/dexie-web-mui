@@ -174,7 +174,7 @@ export default function Benefits({
       sx={{
         backgroundColor,
         color: textColor,
-        py: 8,
+        py: 16,
         minHeight: "auto",
       }}
     >
