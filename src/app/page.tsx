@@ -11,6 +11,7 @@ import TestimonialsWidget, {
   TestimonialItem,
 } from "@/components/content/TestimonialsWidget"
 import CallToActionWidget from "@/components/content/CallToActionWidget"
+import HackathonWidget from "@/components/content/HackathonWidget"
 import TypeWriter from "@/components/content/shared/TypeWriter"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import { Divider } from "@mui/material"
@@ -151,24 +152,118 @@ const blogPostsData: BlogPostItem[] = [
   },
 ]
 
-const testimonialsData: TestimonialItem[] = [
+// Testimonials data
+const testimonials: TestimonialItem[] = [
   {
-    quote: `Dexie and Dexie Cloud gave me the freedom to build a full web and mobile app with real-time sync—on my own, in under a year. It's simple, powerful, and lets me stay creative without hitting walls. Nothing else compares.`,
-    author: "Bennie Forss",
-    role: "Creator of totodo.app",
-    image: "/assets/images/testimonials/bennie.jpg",
+    author: "David Fahlander",
+    role: "Founder of Dexie.js",
+    image: "/api/placeholder/80/80",
+    quote:
+      "With Dexie, we've made IndexedDB accessible to all web developers. No more complex database operations.",
   },
   {
-    quote: `This template is so beautiful and has such wonderful new options. It is updated often which gives me even more quality. The support is one of the absolute best I've ever had the pleasure of interacting with. Quick, courteous, and extremely helpful!`,
-    author: "Adam Peterson",
-    role: "Business Owner",
-    image: "/assets/images/ts1-user.jpg",
+    author: "Sarah Johnson",
+    role: "Frontend Developer",
+    image: "/api/placeholder/80/80",
+    quote:
+      "Dexie transformed how I handle offline data. The API is intuitive and the documentation is excellent.",
   },
   {
-    quote: `This template is so beautiful and has such wonderful new options. It is updated often which gives me even more quality. The support is one of the absolute best I've ever had the pleasure of interacting with. Quick, courteous, and extremely helpful!`,
-    author: "Adam Peterson",
-    role: "Business Owner",
-    image: "/assets/images/ts1-user.jpg",
+    author: "Mike Chen",
+    role: "Full Stack Developer",
+    image: "/api/placeholder/80/80",
+    quote:
+      "The reactive hooks in Dexie make building real-time applications incredibly straightforward.",
+  },
+]
+
+// Hackathon winners data
+const hackathonWinners = [
+  {
+    id: 1,
+    name: "lkalma",
+    place: "1st Place",
+    title: "lkalma",
+    subtitle: "Collaborative Whiteboard with AI Integration",
+    description:
+      "A collaborative whiteboard app designed for seamless creativity, both online and offline. Built on top of the powerful drawing library tldraw.dev combined with Dexie Cloud for sync and local-first storage.",
+    features: [
+      "Real-time collaboration with teammates",
+      "Offline-first architecture for uninterrupted work",
+      "AI-driven image and text generation via Pollinations.ai",
+      "Seamless synchronization across all devices",
+    ],
+    award: "One On-Prem Gold license + Exposure (Value: $7,995)",
+    demoUrl: "https://lkal.ma/",
+    buttonText: "Live Demo",
+    imageUrl:
+      "https://dexie.org/assets/images/hackathon/winners/lkalma-preview.png",
+    imageAlt: "lkalma Collaborative Whiteboard Preview",
+  },
+  {
+    id: 2,
+    name: "Workflows",
+    place: "2nd Place",
+    title: "Workflows",
+    subtitle: "Structured Activity Improvement Tool",
+    description:
+      "An innovative tool aimed at refining and improving repeatable activities, such as habits, recipes, or professional processes.",
+    features: [
+      "Customizable workflow templates",
+      "Offline functionality for constant access",
+      "Detailed tracking of activities and outcomes",
+      "Seamless synchronization across devices",
+    ],
+    award: "1,000 Dexie Cloud seats for 12 months + Exposure (Value: $1,320)",
+    demoUrl: "https://workflows-svelte.statichost.eu/",
+    buttonText: "Live Demo",
+    imageUrl:
+      "https://dexie.org/assets/images/hackathon/winners/workflows-preview.png",
+    imageAlt: "Workflows Activity Improvement Tool Preview",
+  },
+  {
+    id: 3,
+    name: "CoTaskAI",
+    place: "3rd Place",
+    title: "CoTaskAI",
+    subtitle: "AI-Powered Browser Extension",
+    description:
+      "A powerful Chrome extension leveraging advanced natural language AI to analyze web pages and PDF documents directly from your browser.",
+    features: [
+      "Instant analysis with context-aware insights",
+      "Advanced multi-model AI integration",
+      "Offline capabilities with Dexie.js",
+      "Privacy-focused design",
+    ],
+    award: "100 Dexie Cloud seats for 12 months + Exposure (Value: $132)",
+    demoUrl:
+      "https://chrome.google.com/webstore/detail/hifbaagbmobldofjdhnpgkpjgkjeamio",
+    buttonText: "Install Extension",
+    imageUrl: "https://dexie.org/assets/hackathon/cotaskai-preview.jpg",
+    videoUrl:
+      "https://drive.google.com/file/d/1tPkse49qIm241F7AplDe9ZpOdZOV0ZxX/preview",
+    imageAlt: "CoTaskAI Browser Extension Preview",
+  },
+  {
+    id: 4,
+    name: "Startup ToolKit",
+    place: "4th Place",
+    title: "Startup ToolKit",
+    subtitle: "Essential Tools for Early-Stage Startups",
+    description:
+      "Comprehensive set of essential tools for startups with limited budgets—including CRM, KPIs tracking, and roadmap management.",
+    features: [
+      "Free for single-device usage",
+      "Offline-first design with minimal cloud dependency",
+      "Comprehensive suite of essential business tools",
+      "Extremely low operational costs",
+    ],
+    award: "100 Dexie Cloud seats for 12 months + Exposure (Value: $132)",
+    demoUrl: "https://startuptk.com/",
+    buttonText: "Live Demo",
+    imageUrl:
+      "https://dexie.org/assets/images/hackathon/winners/startup-toolkit-preview.png",
+    imageAlt: "Startup ToolKit Preview",
   },
 ]
 
@@ -255,7 +350,7 @@ export default function Home() {
       />
       <Divider />
       <TestimonialsWidget
-        items={testimonialsData}
+        items={testimonials}
         settings={{
           textColor: "#dee2e6",
           backgroundColor: "#000000",
@@ -287,6 +382,15 @@ export default function Home() {
         containerWidth="big"
       />
       <Divider />
+      <HackathonWidget
+        sectionCaption="DGH25"
+        sectionTitle="Winners of Dexie Global Hackathon 25"
+        description="After eight inspiring weeks of innovation, collaboration, and creativity, we're thrilled to announce the outstanding winners who pushed the boundaries of what's possible with Dexie.js and Dexie Cloud!"
+        winners={hackathonWinners}
+        textColor="#dee2e6"
+        backgroundColor="#000000"
+        containerWidth="big"
+      />
     </>
   )
 }
