@@ -10,6 +10,7 @@ import BlogPostsWidget, {
 import TestimonialsWidget, {
   TestimonialItem,
 } from "@/components/content/TestimonialsWidget"
+import CallToActionWidget from "@/components/content/CallToActionWidget"
 import TypeWriter from "@/components/content/shared/TypeWriter"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import { Divider } from "@mui/material"
@@ -272,6 +273,20 @@ export default function Home() {
         backgroundColor="#000000"
         containerWidth="big"
       />
+      <CallToActionWidget
+        text="The power of Dexie lies in turning complex data problems into simple scalable solutions. Reduce time to market and deliver offline-first, real-time apps faster than ever."
+        buttonText="CONTACT US"
+        buttonLink={{
+          url: "/contact",
+          querystring: "",
+          title: "Contact us",
+          target: "_self",
+        }}
+        textColor="#dee2e6"
+        backgroundColor="#000000"
+        containerWidth="big"
+      />
+      <Divider />
     </>
   )
 }
