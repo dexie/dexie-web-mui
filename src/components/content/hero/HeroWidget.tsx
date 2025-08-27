@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import ButtonWidget, { ButtonWidgetProps } from "../shared/Button"
 import TypeWriter from "../shared/TypeWriter"
+import { HeroWidgetSettings } from "@/types/widgets"
 
 interface HeroWidgetProps {
   preHeading: string
@@ -11,21 +12,7 @@ interface HeroWidgetProps {
   contentRightWidthPercentage?: number
   contentBottom?: React.ReactNode
   buttons: ButtonWidgetProps[]
-  settings?: {
-    textColor?: string
-    containerWidth?: "small" | "default" | "big"
-    textWidth?: string // percentage as string, e.g. "30%"
-    height?: string // percentage as string, e.g. "100%"
-    overlayStrength?: string // percentage as string, e.g. "20%"
-    textAlignment?:
-      | "left"
-      | "center"
-      | "right"
-      | "space-around"
-      | "space-between"
-      | "space-evenly"
-    verticalTextAlignment?: "top" | "center" | "bottom"
-  }
+  settings?: HeroWidgetSettings
 }
 
 export default function HeroWidget({
