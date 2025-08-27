@@ -23,3 +23,8 @@ export interface BenefitsSettings extends WidgetSettings {
   sectionTitle?: string
   sectionSubtitle?: string
 }
+
+export interface TestimonialsSettings extends WidgetSettings {
+  sectionTitle?: string
+  sectionSubtitle?: string
+}

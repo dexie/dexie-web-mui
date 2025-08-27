@@ -7,6 +7,9 @@ import Benefits, {
 import BlogPostsWidget, {
   BlogPostItem,
 } from "@/components/content/BlogPostsWidget"
+import TestimonialsWidget, {
+  TestimonialItem,
+} from "@/components/content/TestimonialsWidget"
 import TypeWriter from "@/components/content/shared/TypeWriter"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import { Divider } from "@mui/material"
@@ -147,6 +150,27 @@ const blogPostsData: BlogPostItem[] = [
   },
 ]
 
+const testimonialsData: TestimonialItem[] = [
+  {
+    quote: `Dexie and Dexie Cloud gave me the freedom to build a full web and mobile app with real-time sync—on my own, in under a year. It's simple, powerful, and lets me stay creative without hitting walls. Nothing else compares.`,
+    author: "Bennie Forss",
+    role: "Creator of totodo.app",
+    image: "/assets/images/testimonials/bennie.jpg",
+  },
+  {
+    quote: `This template is so beautiful and has such wonderful new options. It is updated often which gives me even more quality. The support is one of the absolute best I've ever had the pleasure of interacting with. Quick, courteous, and extremely helpful!`,
+    author: "Adam Peterson",
+    role: "Business Owner",
+    image: "/assets/images/ts1-user.jpg",
+  },
+  {
+    quote: `This template is so beautiful and has such wonderful new options. It is updated often which gives me even more quality. The support is one of the absolute best I've ever had the pleasure of interacting with. Quick, courteous, and extremely helpful!`,
+    author: "Adam Peterson",
+    role: "Business Owner",
+    image: "/assets/images/ts1-user.jpg",
+  },
+]
+
 export default function Home() {
   return (
     <>
@@ -229,6 +253,17 @@ export default function Home() {
         }}
       />
       <Divider />
+      <TestimonialsWidget
+        items={testimonialsData}
+        settings={{
+          textColor: "#dee2e6",
+          backgroundColor: "#000000",
+          containerWidth: "big",
+          sectionTitle: "Dexie is trusted by",
+          sectionSubtitle: "1,000,000+ developers.",
+        }}
+      />
+      <Divider />
       <BlogPostsWidget
         items={blogPostsData}
         sectionTitle="Get started in seconds"
@@ -237,7 +272,6 @@ export default function Home() {
         backgroundColor="#000000"
         containerWidth="big"
       />
-      <Divider />
     </>
   )
 }
