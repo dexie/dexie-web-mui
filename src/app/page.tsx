@@ -272,7 +272,7 @@ const hackathonWinners = [
 const featureScreenshotSlides = [
   {
     id: 1,
-    title: "Custom optimized onboarding and Dexie Auth",
+    title: "Custom optimized onboarding with Dexie Auth",
     description:
       "Complete user authentication with passwordless login and OAuth providers. What typically requires complex backend setup and multiple services is handled entirely by Dexie Auth and with no backend.",
     imageUrl: "/assets/images/feature-screenshots/login.png",
@@ -306,41 +306,75 @@ const featureScreenshotSlides = [
   },
   {
     id: 2,
-    title: "Dexie built in sharing",
+    title: "Dexie´s built in sharing & collaboration",
     description:
-      "To To-Do users can attach unlimited files to their tasks without storage worries. All files are securely stored with granular sharing controls for team projects.",
+      "To To-Do leverages Dexie's built-in sharing system with realms for seamless collaboration. No complex permission systems to build - just simple JavaScript objects control who can access what.",
     imageUrl: "/assets/images/feature-screenshots/share.png",
-    imageAlt: "To To-Do file storage interface",
+    imageAlt: "To To-Do sharing interface",
     features: [
       {
         id: 6,
         number: "1",
-        title: "File Attachments",
+        title: "Per-Object Access Control",
         description:
-          "To To-Do users attach files directly to tasks from any device. No complex upload processes or backend management needed.",
-        position: { x: 20, y: 30 },
+          "To To-Do uses Dexie's realm system where each task can be private, shared with teams, or public - all controlled by simple JavaScript objects.",
+        position: { x: 28, y: 11.5 },
       },
       {
         id: 7,
         number: "2",
-        title: "Secure Sharing",
+        title: "Instant Collaboration",
         description:
-          "To To-Do implements detailed access control for shared projects, ensuring team members see only what they should.",
-        position: { x: 60, y: 50 },
+          "When To To-Do users share projects, team members receive built-in invitation emails and in-app notifications for new invites. Real-time updates follow automatically with no complex APIs to manage.",
+        position: { x: 36, y: 64 },
       },
       {
         id: 8,
         number: "3",
-        title: "No Storage Limits",
+        title: "Zero Setup Sharing",
         description:
-          "To To-Do provides unlimited storage for all user data and files, scaling automatically without infrastructure concerns.",
-        position: { x: 40, y: 75 },
+          "To To-Do's sharing works out of the box with Dexie Cloud. No servers, no permission databases, no backend complexity - just built-in collaborative features.",
+        position: { x: 64, y: 83 },
       },
     ],
   },
   {
     id: 3,
-    title: "Analytics Dashboard",
+    title: "Dexie liveQuery and Redux",
+    description:
+      "To To-Do built a comprehensive analytics dashboard using Dexie's API to monitor user growth, app performance, and production metrics. Essential insights without complex analytics infrastructure.",
+    imageUrl: "/assets/images/feature-screenshots/today.png",
+    imageAlt: "To To-Do analytics dashboard",
+    features: [
+      {
+        id: 3,
+        number: "1",
+        title: "User Growth Tracking",
+        description:
+          "They monitors new user registrations, active users, and retention metrics directly through Dexie's built-in analytics API.",
+        position: { x: 17, y: 10 },
+      },
+      {
+        id: 4,
+        number: "2",
+        title: "Production Monitoring",
+        description:
+          "To To-Do tracks app performance, sync success rates, and error monitoring across all their production environments in real-time.",
+        position: { x: 72, y: 45 },
+      },
+      {
+        id: 5,
+        number: "3",
+        title: "Business Intelligence",
+        description:
+          "They gain valuable insights into user behavior and app usage patterns to drive product decisions, all built into Dexie Cloud.",
+        position: { x: 40, y: 85 },
+      },
+    ],
+  },
+  {
+    id: 4,
+    title: "Dashboard using Dexie's API",
     description:
       "To To-Do built a comprehensive analytics dashboard using Dexie's API to monitor user growth, app performance, and production metrics. Essential insights without complex analytics infrastructure.",
     imageUrl: "/assets/images/feature-screenshots/dashboard.png",
@@ -351,16 +385,16 @@ const featureScreenshotSlides = [
         number: "1",
         title: "User Growth Tracking",
         description:
-          "To To-Do monitors new user registrations, active users, and retention metrics directly through Dexie's built-in analytics API.",
-        position: { x: 30, y: 35 },
+          "They monitors new user registrations, active users, and retention metrics directly through Dexie's built-in analytics API.",
+        position: { x: 20, y: 30 },
       },
       {
         id: 4,
         number: "2",
         title: "Production Monitoring",
         description:
-          "They tracks app performance, sync success rates, and error monitoring across all their production environments in real-time.",
-        position: { x: 70, y: 60 },
+          "To To-Do tracks app performance, sync success rates, and error monitoring across all their production environments in real-time.",
+        position: { x: 72, y: 45 },
       },
       {
         id: 5,
@@ -368,7 +402,7 @@ const featureScreenshotSlides = [
         title: "Business Intelligence",
         description:
           "They gain valuable insights into user behavior and app usage patterns to drive product decisions, all built into Dexie Cloud.",
-        position: { x: 45, y: 80 },
+        position: { x: 40, y: 85 },
       },
     ],
   },
@@ -501,7 +535,7 @@ export default function Home() {
       <Divider />
       <FeatureScreenshotWidget
         sectionCaption="Features"
-        sectionTitle="To To-Do uses all of Dexie"
+        sectionTitle="Built totally on Dexie"
         description="In To To-Do Dexie handles everything - authentication, real-time sync, file storage, and offline support. No backend setup, no separate services, no complexity."
         slides={featureScreenshotSlides}
         textColor="#dee2e6"
