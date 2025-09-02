@@ -184,13 +184,16 @@ const theme = createTheme({
           marginBottom: "1rem",
         },
         a: {
-          color: "#ffffff !important", // White links as default
+          color: "#ffffff", // White links as default
+          opacity: 0.8, // Default opacity
           textDecoration: "underline",
           "&:hover": {
-            color: "#dee2e6 !important", // Slightly dimmed white on hover
+            opacity: 1, // Full opacity on hover
+            textDecoration: "none", // No underline on hover
           },
           "&:visited": {
-            color: "#ffffff !important",
+            color: "#ffffff",
+            opacity: 0.8,
           },
         },
         "b, strong": {
@@ -304,12 +307,14 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           "&.MuiLink-root": {
-            color: "#ffffff !important", // White links as default
+            color: "#ffffff", // White links as default
+            opacity: 0.8, // Default opacity
             "&:hover": {
-              color: "#dee2e6 !important", // Slightly dimmed white on hover
+              opacity: 1, // Full opacity on hover
             },
             "&:visited": {
-              color: "#ffffff !important",
+              color: "#ffffff",
+              opacity: 0.8,
             },
           },
         },
@@ -318,14 +323,16 @@ const theme = createTheme({
     MuiLink: {
       styleOverrides: {
         root: {
-          color: "#ffffff !important", // White links as default
+          color: "#ffffff", // White links as default
+          opacity: 0.8, // Default opacity
           textDecoration: "underline",
           "&:hover": {
-            color: "#dee2e6 !important", // Slightly dimmed white on hover
-            textDecoration: "underline",
+            opacity: 1, // Full opacity on hover
+            textDecoration: "none", // No underline on hover
           },
           "&:visited": {
-            color: "#ffffff !important",
+            color: "#ffffff",
+            opacity: 0.8,
           },
         },
       },
