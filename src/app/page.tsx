@@ -182,7 +182,7 @@ const hackathonWinners = [
   {
     id: 1,
     name: "lkalma",
-    place: "1st Place",
+    place: "🏆 1st Place",
     title: "lkalma",
     subtitle: "Collaborative Whiteboard with AI Integration",
     description:
@@ -203,7 +203,7 @@ const hackathonWinners = [
   {
     id: 2,
     name: "Workflows",
-    place: "2nd Place",
+    place: "🥈 2nd Place",
     title: "Workflows",
     subtitle: "Structured Activity Improvement Tool",
     description:
@@ -224,7 +224,7 @@ const hackathonWinners = [
   {
     id: 3,
     name: "CoTaskAI",
-    place: "3rd Place",
+    place: "🥉 3rd Place",
     title: "CoTaskAI",
     subtitle: "AI-Powered Browser Extension",
     description:
@@ -247,7 +247,7 @@ const hackathonWinners = [
   {
     id: 4,
     name: "Startup ToolKit",
-    place: "4th Place",
+    place: "🏅 4th Place",
     title: "Startup ToolKit",
     subtitle: "Essential Tools for Early-Stage Startups",
     description:
