@@ -5,6 +5,7 @@ import { ThemeProvider } from "@mui/material/styles"
 import { CssBaseline } from "@mui/material"
 import theme from "../theme"
 import Navbar from "../components/Navbar"
+import Footer from "../components/Footer"
 import "./globals.css"
 import "../../public/assets/css/prism.css"
 
@@ -43,6 +44,7 @@ export default function RootLayout({
             <CssBaseline />
             <Navbar />
             {children}
+            <Footer />
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>

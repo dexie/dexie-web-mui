@@ -184,10 +184,13 @@ const theme = createTheme({
           marginBottom: "1rem",
         },
         a: {
-          color: "#6ea8fe",
+          color: "#ffffff !important", // White links as default
           textDecoration: "underline",
           "&:hover": {
-            color: "#8bb9fe",
+            color: "#dee2e6 !important", // Slightly dimmed white on hover
+          },
+          "&:visited": {
+            color: "#ffffff !important",
           },
         },
         "b, strong": {
@@ -293,6 +296,36 @@ const theme = createTheme({
           color: "#dee2e6",
           "&:hover": {
             backgroundColor: "#2b3035",
+          },
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          "&.MuiLink-root": {
+            color: "#ffffff !important", // White links as default
+            "&:hover": {
+              color: "#dee2e6 !important", // Slightly dimmed white on hover
+            },
+            "&:visited": {
+              color: "#ffffff !important",
+            },
+          },
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: "#ffffff !important", // White links as default
+          textDecoration: "underline",
+          "&:hover": {
+            color: "#dee2e6 !important", // Slightly dimmed white on hover
+            textDecoration: "underline",
+          },
+          "&:visited": {
+            color: "#ffffff !important",
           },
         },
       },
