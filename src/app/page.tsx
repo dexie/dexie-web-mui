@@ -272,103 +272,103 @@ const hackathonWinners = [
 const featureScreenshotSlides = [
   {
     id: 1,
-    title: "Simple Login with Dexie Auth",
+    title: "Custom optimized onboarding and Dexie Auth",
     description:
-      "Show how users can log in quickly and securely with Dexie's built-in authentication and external providers.",
+      "Complete user authentication with passwordless login and OAuth providers. What typically requires complex backend setup and multiple services is handled entirely by Dexie Auth and with no backend.",
     imageUrl: "/assets/images/feature-screenshots/login.png",
     imageAlt: "Dexie login page",
     features: [
       {
         id: 1,
         number: "1",
-        title: "Custom login screen",
+        title: "Branded Login Experience",
         description:
-          "Design your own login screen to match your brand and user experience.",
+          "Their login screen adapts to their brand while maintaining security standards. Built-in components handle validation and error states automatically.",
         position: { x: 5, y: 8 },
       },
       {
         id: 2,
         number: "2",
-        title: "Dexie OTP Login",
+        title: "Magic Link Authentication",
         description:
-          "Use Dexie's built-in OTP (One-Time Password) login for secure passwordless authentication.",
+          "They implemented passwordless login with custom email templates. Users receive branded magic links with no password management needed.",
         position: { x: 50, y: 44.5 },
       },
       {
         id: 3,
         number: "3",
-        title: "Multi-provider Authentication",
+        title: "Social Login Integration",
         description:
-          "Enable multi-factor authentication with Dexie Auth provider. Supports Google, Microsoft, Apple, and GitHub.",
+          "They also added Google, Microsoft, and GitHub login options that work seamlessly across all their platforms with automatic token management.",
         position: { x: 50, y: 58 },
       },
     ],
   },
   {
     id: 2,
-    title: "Real-time Data and Sync",
+    title: "Dexie built in sharing",
     description:
-      "Demonstrate how data synchronizes in real-time between devices and users.",
-    imageUrl: "/assets/images/feature-screenshots/dashboard.png",
-    imageAlt: "Dexie sync dashboard",
-    features: [
-      {
-        id: 3,
-        number: "1",
-        title: "Instant Sync",
-        description:
-          "Data synchronizes automatically between all devices and users in real-time.",
-        position: { x: 30, y: 35 },
-      },
-      {
-        id: 4,
-        number: "2",
-        title: "Offline Support",
-        description:
-          "The application works completely offline and syncs automatically when connection is restored.",
-        position: { x: 70, y: 60 },
-      },
-      {
-        id: 5,
-        number: "3",
-        title: "Conflict Resolution",
-        description:
-          "Automatic conflict resolution for simultaneous edits from multiple users.",
-        position: { x: 45, y: 80 },
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: "Cloud Storage and Files",
-    description:
-      "Show how files and data are stored securely in Dexie Cloud with unlimited capacity.",
+      "To To-Do users can attach unlimited files to their tasks without storage worries. All files are securely stored with granular sharing controls for team projects.",
     imageUrl: "/assets/images/feature-screenshots/share.png",
-    imageAlt: "Dexie cloud storage interface",
+    imageAlt: "To To-Do file storage interface",
     features: [
       {
         id: 6,
         number: "1",
-        title: "File Upload",
+        title: "File Attachments",
         description:
-          "Upload files directly from frontend without needing to handle backend infrastructure.",
+          "To To-Do users attach files directly to tasks from any device. No complex upload processes or backend management needed.",
         position: { x: 20, y: 30 },
       },
       {
         id: 7,
         number: "2",
-        title: "Access Control",
+        title: "Secure Sharing",
         description:
-          "Detailed access control per object for secure sharing of data and files.",
+          "To To-Do implements detailed access control for shared projects, ensuring team members see only what they should.",
         position: { x: 60, y: 50 },
       },
       {
         id: 8,
         number: "3",
-        title: "Unlimited Storage",
+        title: "No Storage Limits",
         description:
-          "Unlimited storage for both structured data and files in Dexie Cloud.",
+          "To To-Do provides unlimited storage for all user data and files, scaling automatically without infrastructure concerns.",
         position: { x: 40, y: 75 },
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Analytics Dashboard",
+    description:
+      "To To-Do built a comprehensive analytics dashboard using Dexie's API to monitor user growth, app performance, and production metrics. Essential insights without complex analytics infrastructure.",
+    imageUrl: "/assets/images/feature-screenshots/dashboard.png",
+    imageAlt: "To To-Do analytics dashboard",
+    features: [
+      {
+        id: 3,
+        number: "1",
+        title: "User Growth Tracking",
+        description:
+          "To To-Do monitors new user registrations, active users, and retention metrics directly through Dexie's built-in analytics API.",
+        position: { x: 30, y: 35 },
+      },
+      {
+        id: 4,
+        number: "2",
+        title: "Production Monitoring",
+        description:
+          "They tracks app performance, sync success rates, and error monitoring across all their production environments in real-time.",
+        position: { x: 70, y: 60 },
+      },
+      {
+        id: 5,
+        number: "3",
+        title: "Business Intelligence",
+        description:
+          "They gain valuable insights into user behavior and app usage patterns to drive product decisions, all built into Dexie Cloud.",
+        position: { x: 45, y: 80 },
       },
     ],
   },
@@ -502,7 +502,7 @@ export default function Home() {
       <FeatureScreenshotWidget
         sectionCaption="Features"
         sectionTitle="To To-Do uses all of Dexie"
-        description="A simple To-Do app showcasing how to use Dexie.js and Dexie Cloud for building offline-first, real-time applications with authentication, cloud storage, and sync."
+        description="In To To-Do Dexie handles everything - authentication, real-time sync, file storage, and offline support. No backend setup, no separate services, no complexity."
         slides={featureScreenshotSlides}
         textColor="#dee2e6"
         backgroundColor="#000000"
