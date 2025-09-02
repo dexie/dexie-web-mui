@@ -308,7 +308,7 @@ const featureScreenshotSlides = [
     id: 2,
     title: "Dexie´s built in sharing & collaboration",
     description:
-      "To To-Do leverages Dexie's built-in sharing system with realms for seamless collaboration. No complex permission systems to build - just simple JavaScript objects control who can access what.",
+      "Leverages Dexie's built-in sharing system with realms for seamless collaboration. No complex permission systems to build - just simple JavaScript objects control who can access what.",
     imageUrl: "/assets/images/feature-screenshots/share.png",
     imageAlt: "To To-Do sharing interface",
     features: [
@@ -342,32 +342,32 @@ const featureScreenshotSlides = [
     id: 3,
     title: "Dexie liveQuery and Redux",
     description:
-      "To To-Do built a comprehensive analytics dashboard using Dexie's API to monitor user growth, app performance, and production metrics. Essential insights without complex analytics infrastructure.",
+      "Combines Dexie's reactive queries with Redux for optimal performance. Using useLiveQuery for real-time UI updates, RxJS liveQuery for complex data flows, and optimistic state management for instant user feedback.",
     imageUrl: "/assets/images/feature-screenshots/today.png",
-    imageAlt: "To To-Do analytics dashboard",
+    imageAlt: "To To-Do reactive interface",
     features: [
       {
         id: 3,
         number: "1",
-        title: "User Growth Tracking",
+        title: "Reactive Live Queries",
         description:
-          "They monitors new user registrations, active users, and retention metrics directly through Dexie's built-in analytics API.",
+          "They uses useLiveQuery hooks for automatic UI updates when data changes, combined with RxJS liveQuery for complex reactive data flows and subscriptions.",
         position: { x: 17, y: 10 },
       },
       {
         id: 4,
         number: "2",
-        title: "Production Monitoring",
+        title: "Optimistic Updates",
         description:
-          "To To-Do tracks app performance, sync success rates, and error monitoring across all their production environments in real-time.",
+          "To To-Do implements optimistic state with Redux for instant UI feedback. Changes appear immediately while syncing with Dexie Cloud in the background.",
         position: { x: 72, y: 45 },
       },
       {
         id: 5,
         number: "3",
-        title: "Business Intelligence",
+        title: "Offline-First Architecture",
         description:
-          "They gain valuable insights into user behavior and app usage patterns to drive product decisions, all built into Dexie Cloud.",
+          "They leverages Dexie's offline-first approach with smart state management. All operations work locally first, then sync seamlessly when online.",
         position: { x: 40, y: 85 },
       },
     ],
@@ -376,7 +376,7 @@ const featureScreenshotSlides = [
     id: 4,
     title: "Dashboard using Dexie's API",
     description:
-      "To To-Do built a comprehensive analytics dashboard using Dexie's API to monitor user growth, app performance, and production metrics. Essential insights without complex analytics infrastructure.",
+      "Built a comprehensive analytics dashboard using Dexie's API to monitor user growth, app performance, and production metrics. Essential insights without complex analytics infrastructure.",
     imageUrl: "/assets/images/feature-screenshots/dashboard.png",
     imageAlt: "To To-Do analytics dashboard",
     features: [
