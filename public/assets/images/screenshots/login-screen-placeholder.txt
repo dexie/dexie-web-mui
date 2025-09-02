@@ -1,0 +1,5 @@
+<!-- Placeholder för login-screen.jpg -->
+<!-- Detta skulle vara en skärmdump av en inloggningssida med:
+- OTP login-fält i övre delen (position 25%, 40%)
+- Olika login providers (Google, MS, Apple, GitHub) i mitten (position 50%, 65%)
+-->

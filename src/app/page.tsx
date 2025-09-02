@@ -12,6 +12,7 @@ import TestimonialsWidget, {
 } from "@/components/content/TestimonialsWidget"
 import CallToActionWidget from "@/components/content/CallToActionWidget"
 import HackathonWidget from "@/components/content/HackathonWidget"
+import FeatureScreenshotWidget from "@/components/content/FeatureScreenshotWidget"
 import TypeWriter from "@/components/content/shared/TypeWriter"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import { Divider } from "@mui/material"
@@ -267,6 +268,112 @@ const hackathonWinners = [
   },
 ]
 
+// Feature screenshot slides data
+const featureScreenshotSlides = [
+  {
+    id: 1,
+    title: "Simple Login with Dexie Auth",
+    description:
+      "Show how users can log in quickly and securely with Dexie's built-in authentication and external providers.",
+    imageUrl: "/assets/images/feature-screenshots/login.png",
+    imageAlt: "Dexie login page",
+    features: [
+      {
+        id: 1,
+        number: "1",
+        title: "Custom login screen",
+        description:
+          "Design your own login screen to match your brand and user experience.",
+        position: { x: 5, y: 8 },
+      },
+      {
+        id: 2,
+        number: "2",
+        title: "Dexie OTP Login",
+        description:
+          "Use Dexie's built-in OTP (One-Time Password) login for secure passwordless authentication.",
+        position: { x: 50, y: 44.5 },
+      },
+      {
+        id: 3,
+        number: "3",
+        title: "Multi-provider Authentication",
+        description:
+          "Enable multi-factor authentication with Dexie Auth provider. Supports Google, Microsoft, Apple, and GitHub.",
+        position: { x: 50, y: 58 },
+      },
+    ],
+  },
+  {
+    id: 2,
+    title: "Real-time Data and Sync",
+    description:
+      "Demonstrate how data synchronizes in real-time between devices and users.",
+    imageUrl: "/assets/images/feature-screenshots/dashboard.png",
+    imageAlt: "Dexie sync dashboard",
+    features: [
+      {
+        id: 3,
+        number: "1",
+        title: "Instant Sync",
+        description:
+          "Data synchronizes automatically between all devices and users in real-time.",
+        position: { x: 30, y: 35 },
+      },
+      {
+        id: 4,
+        number: "2",
+        title: "Offline Support",
+        description:
+          "The application works completely offline and syncs automatically when connection is restored.",
+        position: { x: 70, y: 60 },
+      },
+      {
+        id: 5,
+        number: "3",
+        title: "Conflict Resolution",
+        description:
+          "Automatic conflict resolution for simultaneous edits from multiple users.",
+        position: { x: 45, y: 80 },
+      },
+    ],
+  },
+  {
+    id: 3,
+    title: "Cloud Storage and Files",
+    description:
+      "Show how files and data are stored securely in Dexie Cloud with unlimited capacity.",
+    imageUrl: "/assets/images/feature-screenshots/share.png",
+    imageAlt: "Dexie cloud storage interface",
+    features: [
+      {
+        id: 6,
+        number: "1",
+        title: "File Upload",
+        description:
+          "Upload files directly from frontend without needing to handle backend infrastructure.",
+        position: { x: 20, y: 30 },
+      },
+      {
+        id: 7,
+        number: "2",
+        title: "Access Control",
+        description:
+          "Detailed access control per object for secure sharing of data and files.",
+        position: { x: 60, y: 50 },
+      },
+      {
+        id: 8,
+        number: "3",
+        title: "Unlimited Storage",
+        description:
+          "Unlimited storage for both structured data and files in Dexie Cloud.",
+        position: { x: 40, y: 75 },
+      },
+    ],
+  },
+]
+
 export default function Home() {
   return (
     <>
@@ -387,6 +494,16 @@ export default function Home() {
         sectionTitle="Winners of Dexie Global Hackathon 25"
         description="After eight inspiring weeks of innovation, collaboration, and creativity, we're thrilled to announce the outstanding winners who pushed the boundaries of what's possible with Dexie.js and Dexie Cloud!"
         winners={hackathonWinners}
+        textColor="#dee2e6"
+        backgroundColor="#000000"
+        containerWidth="big"
+      />
+      <Divider />
+      <FeatureScreenshotWidget
+        sectionCaption="Features"
+        sectionTitle="To To-Do uses all of Dexie"
+        description="A simple To-Do app showcasing how to use Dexie.js and Dexie Cloud for building offline-first, real-time applications with authentication, cloud storage, and sync."
+        slides={featureScreenshotSlides}
         textColor="#dee2e6"
         backgroundColor="#000000"
         containerWidth="big"
