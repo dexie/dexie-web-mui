@@ -89,6 +89,9 @@ const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
                 textDecoration: "none",
                 "&:hover": { color: "white !important" },
               },
+              "& li:hover": {
+                background: "transparent",
+              },
             }}
           >
             {children}

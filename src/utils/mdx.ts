@@ -129,6 +129,11 @@ export async function serializeMarkdown(
             .replace(/<(https?:\/\/[^>]+)>/g, "[$1]($1)")
             // Remove Jekyll/Kramdown attributes like {:target="_blank"}
             .replace(/\{:[^}]*\}/g, "")
+            // Remove Jekyll Liquid tags like {% raw %} and {% endraw %}
+            .replace(/\{%\s*raw\s*%\}/g, "")
+            .replace(/\{%\s*endraw\s*%\}/g, "")
+            // Remove other Jekyll Liquid tags
+            .replace(/\{%[^}]*%\}/g, "")
             // Convert self-closing HTML tags to JSX format
             .replace(/<br\s*\/?>/g, "<br />")
             .replace(/<hr\s*\/?>/g, "<hr />")

@@ -17,7 +17,7 @@ Emails are sent out in the following use cases:
 
 To send emails from a custom domain and a custom sender, login to [Dexie Cloud Manager](https://manager.dexie.cloud) and check the option _Use custom Email Settings_
 
-![Email Settings screenshot](email-settings.png)
+![Email Settings screenshot](/assets/images/docs/email-settings.png)
 
 Befor saving the changes, use the **Test button** to verify that the configured SMTP settings works and successfully sends an email. After having verified that the settings work, click the Submit button to save the changes and immediately start using this new SMTP settings whenever emails are being sent.
 

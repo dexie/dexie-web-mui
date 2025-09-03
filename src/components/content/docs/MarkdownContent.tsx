@@ -268,6 +268,7 @@ export const components = {
           borderRadius: 2,
           border: "1px solid rgba(255, 255, 255, 0.15)",
           pr: 2,
+          mt: 2,
         }}
       >
         <CodeBlock

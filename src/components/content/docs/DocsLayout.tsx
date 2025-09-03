@@ -78,6 +78,9 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({ children, currentSlug }) => {
                 textDecoration: "none",
                 "&:hover": { color: "white !important" },
               },
+              "& li:hover": {
+                background: "transparent",
+              },
             }}
           >
             {children}
