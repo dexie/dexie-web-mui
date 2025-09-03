@@ -17,12 +17,12 @@ title: Docs Home
 
 [Addons, Adapters and Derived Work](/docs/DerivedWork)
 
-****
+---
 
-[![Click to download](/assets/images/download-button.png)](Download)
+[![Click to download](/assets/images/docs/download-button.png)](Download){:width="200px"}
 
-****
+---
 
 [stackoverflow questions tagged [dexie]](https://stackoverflow.com/questions/tagged/dexie?sort=newest)
 
-****
+---
