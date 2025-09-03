@@ -6,14 +6,17 @@ import { getAllCloudDocs } from "@/utils/mdx"
 
 export const metadata = {
   title: "Dexie Cloud Documentation",
-  description: "Comprehensive documentation for Dexie Cloud - authentication, synchronization, permissions, and more.",
+  description:
+    "Comprehensive documentation for Dexie Cloud - authentication, synchronization, permissions, and more.",
 }
 
 export default async function CloudDocsHome() {
   const allDocs = getAllCloudDocs()
-  
+
   // Filter to only get docs from the docs/ subfolder
-  const cloudDocs = allDocs.filter(doc => doc.metadata.slug.startsWith("docs/"))
+  const cloudDocs = allDocs.filter((doc) =>
+    doc.metadata.slug.startsWith("docs/")
+  )
 
   return (
     <CloudDocsLayout currentSlug="docs">
@@ -23,8 +26,9 @@ export default async function CloudDocsHome() {
             Dexie Cloud Documentation
           </Typography>
           <Typography variant="body1" color="text.secondary" paragraph>
-            Comprehensive documentation for Dexie Cloud - authentication, synchronization, 
-            permissions, and more. Get started with building cloud-enabled applications.
+            Comprehensive documentation for Dexie Cloud - authentication,
+            synchronization, permissions, and more. Get started with building
+            cloud-enabled applications.
           </Typography>
         </Box>
 
@@ -32,7 +36,7 @@ export default async function CloudDocsHome() {
           <Typography variant="h2" component="h2" gutterBottom>
             All Documentation
           </Typography>
-          
+
           <Box
             sx={{
               display: "grid",
@@ -49,9 +53,9 @@ export default async function CloudDocsHome() {
                   height: "100%",
                   textDecoration: "none",
                   transition: "all 0.2s",
-                  "&:hover": { 
+                  "&:hover": {
                     boxShadow: 4,
-                    transform: "translateY(-2px)"
+                    transform: "translateY(-2px)",
                   },
                 }}
               >
@@ -60,7 +64,8 @@ export default async function CloudDocsHome() {
                     {doc.metadata.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {(doc.metadata.description as string) || `Learn about ${doc.metadata.title}`}
+                    {(doc.metadata.description as string) ||
+                      `Learn about ${doc.metadata.title}`}
                   </Typography>
                 </CardContent>
               </Card>

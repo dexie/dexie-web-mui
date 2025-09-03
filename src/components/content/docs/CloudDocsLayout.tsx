@@ -21,9 +21,11 @@ const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
   currentSlug,
 }) => {
   const navigation = generateCloudNavigation()
-  
+
   // Remove docs/ prefix from currentSlug for navigation matching
-  const navSlug = currentSlug?.startsWith("docs/") ? currentSlug.replace("docs/", "") : currentSlug
+  const navSlug = currentSlug?.startsWith("docs/")
+    ? currentSlug.replace("docs/", "")
+    : currentSlug
 
   return (
     <Container maxWidth={false} sx={{ padding: 0, pt: "100px" }}>

@@ -125,6 +125,10 @@ export async function serializeMarkdown(
         // This is not a code block, apply replacements
         return (
           part
+            // Convert automatic links in angle brackets to markdown links
+            .replace(/<(https?:\/\/[^>]+)>/g, "[$1]($1)")
+            // Remove Jekyll/Kramdown attributes like {:target="_blank"}
+            .replace(/\{:[^}]*\}/g, "")
             // Convert self-closing HTML tags to JSX format
             .replace(/<br\s*\/?>/g, "<br />")
             .replace(/<hr\s*\/?>/g, "<hr />")
@@ -151,6 +155,8 @@ export async function serializeMarkdown(
               // Wrap function signatures in backticks to make them code spans
               return `\`${match}\``
             })
+            // Handle type annotations like {minInterval: number} in tables
+            .replace(/`\{([^}]*)\}`/g, "`\\{$1\\}`")
             // Also escape standalone curly braces that aren't in code blocks
             .replace(
               /(?<!`[\s\S]*?)\{([^}]*)\}(?![\s\S]*?`)/g,
@@ -159,7 +165,10 @@ export async function serializeMarkdown(
                 if (
                   content.includes("return") ||
                   content.includes(";") ||
-                  content.includes("function")
+                  content.includes("function") ||
+                  content.includes(":") ||
+                  content.includes("'") ||
+                  content.includes('"')
                 ) {
                   return `\\{${content}\\}`
                 }
@@ -269,15 +278,15 @@ export function generateCloudNavigation(): NavStructure {
   const allCloudDocs = getAllCloudDocs()
   // Filter to only docs from docs/ subfolder and remove the docs/ prefix from slugs for navigation
   const docsOnly = allCloudDocs
-    .filter(doc => doc.metadata.slug.startsWith("docs/"))
-    .map(doc => ({
+    .filter((doc) => doc.metadata.slug.startsWith("docs/"))
+    .map((doc) => ({
       ...doc,
       metadata: {
         ...doc.metadata,
-        slug: doc.metadata.slug.replace("docs/", "")
-      }
+        slug: doc.metadata.slug.replace("docs/", ""),
+      },
     }))
-  
+
   const nav: NavStructure = {}
 
   docsOnly.forEach((doc) => {

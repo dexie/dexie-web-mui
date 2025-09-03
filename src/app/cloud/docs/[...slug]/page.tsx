@@ -1,5 +1,9 @@
 import { notFound } from "next/navigation"
-import { getAllCloudDocs, getCloudDocBySlug, serializeMarkdown } from "@/utils/mdx"
+import {
+  getAllCloudDocs,
+  getCloudDocBySlug,
+  serializeMarkdown,
+} from "@/utils/mdx"
 
 import CloudDocsLayout from "@/components/content/docs/CloudDocsLayout"
 import MDXContent from "@/components/content/docs/MDXContent"
@@ -10,7 +14,7 @@ export async function generateStaticParams() {
   const docs = getAllCloudDocs()
 
   return docs
-    .filter(doc => doc.metadata.slug.startsWith("docs/"))
+    .filter((doc) => doc.metadata.slug.startsWith("docs/"))
     .map((doc) => ({
       slug: doc.metadata.slug.replace("docs/", "").split("/"),
     }))

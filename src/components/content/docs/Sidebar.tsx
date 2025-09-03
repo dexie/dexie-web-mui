@@ -23,7 +23,11 @@ const isNavItem = (item: NavItem | NavStructure): item is NavItem => {
   return "title" in item && "slug" in item
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ navigation, currentSlug, basePath = "/docs" }) => {
+const Sidebar: React.FC<SidebarProps> = ({
+  navigation,
+  currentSlug,
+  basePath = "/docs",
+}) => {
   const nav = navigation || generateNavigation()
 
   const renderNavItem = (
