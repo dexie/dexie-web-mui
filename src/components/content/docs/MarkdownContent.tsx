@@ -243,8 +243,7 @@ export const components = {
           sx={{
             fontFamily: "monospace",
             fontSize: "0.875rem",
-            backgroundColor: "grey.100",
-            color: "error.main",
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
             px: 1,
             py: 0.5,
             borderRadius: 1,

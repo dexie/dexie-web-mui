@@ -115,6 +115,27 @@ export async function serializeMarkdown(
     .replace(/<\/th>/g, "</TableHeaderCell>")
     .replace(/<td([^>]*)>/g, "<TableCell$1>")
     .replace(/<\/td>/g, "</TableCell>")
+    // Escape curly braces in text that might be interpreted as JSX expressions
+    // This handles patterns like "function (value) { return true/false; }"
+    .replace(/function\s*\([^)]*\)\s*\{\s*[^}]*\s*\}/g, (match) => {
+      // Wrap function signatures in backticks to make them code spans
+      return `\`${match}\``
+    })
+    // Also escape standalone curly braces that aren't in code blocks
+    .replace(
+      /(?<!```[\s\S]*?)\{([^}]*)\}(?![\s\S]*?```)/g,
+      (match, content) => {
+        // Only escape if it's not already in backticks and contains problematic patterns
+        if (
+          content.includes("return") ||
+          content.includes(";") ||
+          content.includes("function")
+        ) {
+          return `\\{${content}\\}`
+        }
+        return match
+      }
+    )
 
   const result = await serialize(processedContent, {
     mdxOptions: {
