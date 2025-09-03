@@ -4,6 +4,7 @@ import {
   Link,
   List,
   ListItem,
+  ListItemText,
   Paper,
   Table,
   TableBody,
@@ -20,7 +21,15 @@ interface MarkdownContentProps {
 }
 
 const MarkdownContent: React.FC<MarkdownContentProps> = ({ children }) => {
-  return <Box sx={{ "& .markdown-content": {} }}>{children}</Box>
+  return (
+    <Box
+      sx={{
+        "& .markdown-content": {},
+      }}
+    >
+      {children}
+    </Box>
+  )
 }
 
 // Helper function to convert class to className and style strings to objects
@@ -85,7 +94,7 @@ export const components = {
   h1: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
     const convertedProps = convertProps(props)
     return (
-      <Typography variant="h2" component="h1" gutterBottom {...convertedProps}>
+      <Typography variant="h1" component="h1" gutterBottom {...convertedProps}>
         {children}
       </Typography>
     )
@@ -94,7 +103,7 @@ export const components = {
     const convertedProps = convertProps(props)
     return (
       <Typography
-        variant="h4"
+        variant="h2"
         component="h2"
         gutterBottom
         sx={{ mt: 4 }}
@@ -108,7 +117,7 @@ export const components = {
     const convertedProps = convertProps(props)
     return (
       <Typography
-        variant="h5"
+        variant="h3"
         component="h3"
         gutterBottom
         sx={{ mt: 3 }}
@@ -122,7 +131,7 @@ export const components = {
     const convertedProps = convertProps(props)
     return (
       <Typography
-        variant="h6"
+        variant="h4"
         component="h4"
         gutterBottom
         sx={{ mt: 3 }}
@@ -147,7 +156,13 @@ export const components = {
   }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
     const convertedProps = convertProps(props)
     return (
-      <Link href={href} color="primary" underline="hover" {...convertedProps}>
+      <Link
+        href={href}
+        color="primary"
+        sx={{ fontWeight: 600 }}
+        underline="hover"
+        {...convertedProps}
+      >
         {children}
       </Link>
     )
@@ -155,7 +170,18 @@ export const components = {
   ul: ({ children, ...props }: React.HTMLAttributes<HTMLUListElement>) => {
     const convertedProps = convertProps(props)
     return (
-      <List sx={{ mb: 3 }} {...convertedProps}>
+      <List
+        sx={{
+          mb: 3,
+          listStyleType: "disc",
+          pl: 2,
+          "& .MuiListItem-root": {
+            display: "list-item",
+            pl: 0,
+          },
+        }}
+        {...convertedProps}
+      >
         {children}
       </List>
     )
@@ -163,16 +189,42 @@ export const components = {
   ol: ({ children, ...props }: React.HTMLAttributes<HTMLOListElement>) => {
     const convertedProps = convertProps(props)
     return (
-      <Box component="ol" sx={{ mb: 3, pl: 2 }} {...convertedProps}>
+      <List
+        component="ol"
+        sx={{
+          mb: 3,
+          pl: 2,
+          listStyleType: "decimal",
+          "& .MuiListItem-root": {
+            display: "list-item",
+            pl: 0,
+          },
+        }}
+        {...convertedProps}
+      >
         {children}
-      </Box>
+      </List>
     )
   },
   li: ({ children, ...props }: React.LiHTMLAttributes<HTMLLIElement>) => {
     const convertedProps = convertProps(props)
     return (
-      <ListItem sx={{ py: 0.5 }} {...convertedProps}>
-        <Typography component="span">{children}</Typography>
+      <ListItem
+        sx={{
+          py: 0.25,
+          display: "list-item",
+          pl: 0,
+        }}
+        {...convertedProps}
+      >
+        <ListItemText
+          primary={
+            <Typography component="span" variant="body1">
+              {children}
+            </Typography>
+          }
+          sx={{ m: 0 }}
+        />
       </ListItem>
     )
   },

@@ -52,6 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, currentSlug }) => {
               direction: "rtl",
               textAlign: "left",
               textDecoration: "none",
+              color: isActive ? "#c77dff" : "inherit",
             }}
             title={item.title}
           >

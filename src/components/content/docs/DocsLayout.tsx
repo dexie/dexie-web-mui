@@ -77,7 +77,17 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({ children, currentSlug }) => {
 
           <Divider sx={{ mb: 3 }} />
 
-          <Box className="docs-content">{children}</Box>
+          <Box
+            sx={{
+              "& a": {
+                color: "#c77dff !important",
+                textDecoration: "none",
+                "&:hover": { color: "white !important" },
+              },
+            }}
+          >
+            {children}
+          </Box>
         </Box>
       </Box>
     </Container>
