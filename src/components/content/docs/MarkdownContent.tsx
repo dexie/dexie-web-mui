@@ -155,13 +155,33 @@ export const components = {
     ...props
   }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
     const convertedProps = convertProps(props)
+
+    // Check if the link is external (starts with http/https or is an absolute URL)
+    const isExternal =
+      href &&
+      (href.startsWith("http://") ||
+        href.startsWith("https://") ||
+        href.startsWith("//") ||
+        (!href.startsWith("/") &&
+          !href.startsWith("#") &&
+          !href.startsWith("?")))
+
+    // For external links, add target="_blank" and rel="noopener noreferrer" for security
+    const linkProps = isExternal
+      ? {
+          target: "_blank",
+          rel: "noopener noreferrer",
+          ...convertedProps,
+        }
+      : convertedProps
+
     return (
       <Link
         href={href}
         color="primary"
         sx={{ fontWeight: 600 }}
         underline="hover"
-        {...convertedProps}
+        {...linkProps}
       >
         {children}
       </Link>
