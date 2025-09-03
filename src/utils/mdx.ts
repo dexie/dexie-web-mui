@@ -101,41 +101,53 @@ export async function serializeMarkdown(
   content: string
 ): Promise<MDXRemoteSerializeResult> {
   // Preprocess content to convert HTML table tags to JSX syntax
-  const processedContent = content
-    // Convert HTML table tags to JSX
-    .replace(/<table([^>]*)>/g, "<Table$1>")
-    .replace(/<\/table>/g, "</Table>")
-    .replace(/<thead([^>]*)>/g, "<TableHead$1>")
-    .replace(/<\/thead>/g, "</TableHead>")
-    .replace(/<tbody([^>]*)>/g, "<TableBody$1>")
-    .replace(/<\/tbody>/g, "</TableBody>")
-    .replace(/<tr([^>]*)>/g, "<TableRow$1>")
-    .replace(/<\/tr>/g, "</TableRow>")
-    .replace(/<th([^>]*)>/g, "<TableHeaderCell$1>")
-    .replace(/<\/th>/g, "</TableHeaderCell>")
-    .replace(/<td([^>]*)>/g, "<TableCell$1>")
-    .replace(/<\/td>/g, "</TableCell>")
-    // Escape curly braces in text that might be interpreted as JSX expressions
-    // This handles patterns like "function (value) { return true/false; }"
-    .replace(/function\s*\([^)]*\)\s*\{\s*[^}]*\s*\}/g, (match) => {
-      // Wrap function signatures in backticks to make them code spans
-      return `\`${match}\``
-    })
-    // Also escape standalone curly braces that aren't in code blocks
-    .replace(
-      /(?<!```[\s\S]*?)\{([^}]*)\}(?![\s\S]*?```)/g,
-      (match, content) => {
-        // Only escape if it's not already in backticks and contains problematic patterns
-        if (
-          content.includes("return") ||
-          content.includes(";") ||
-          content.includes("function")
-        ) {
-          return `\\{${content}\\}`
-        }
-        return match
+  const parts = content.split(/(```[\s\S]*?```)/g)
+  const processedContent = parts
+    .map((part, index) => {
+      if (index % 2 === 0) {
+        // This is not a code block, apply replacements
+        return (
+          part
+            // Convert HTML table tags to JSX
+            .replace(/<table([^>]*)>/g, "<Table$1>")
+            .replace(/<\/table>/g, "</Table>")
+            .replace(/<thead([^>]*)>/g, "<TableHead$1>")
+            .replace(/<\/thead>/g, "</TableHead>")
+            .replace(/<tbody([^>]*)>/g, "<TableBody$1>")
+            .replace(/<\/tbody>/g, "</TableBody>")
+            .replace(/<tr([^>]*)>/g, "<TableRow$1>")
+            .replace(/<\/tr>/g, "</TableRow>")
+            .replace(/<th([^>]*)>/g, "<TableHeaderCell$1>")
+            .replace(/<\/th>/g, "</TableHeaderCell>")
+            .replace(/<td([^>]*)>/g, "<TableCell$1>")
+            .replace(/<\/td>/g, "</TableCell>")
+            // Escape curly braces in text that might be interpreted as JSX expressions
+            // This handles patterns like "function (value) { return true/false; }"
+            .replace(/function\s*\([^)]*\)\s*\{\s*[^}]*\s*\}/g, (match) => {
+              // Wrap function signatures in backticks to make them code spans
+              return `\`${match}\``
+            })
+            // Also escape standalone curly braces that aren't in code blocks
+            .replace(
+              /(?<!`[\s\S]*?)\{([^}]*)\}(?![\s\S]*?`)/g,
+              (match, content) => {
+                // Only escape if it's not already in backticks and contains problematic patterns
+                if (
+                  content.includes("return") ||
+                  content.includes(";") ||
+                  content.includes("function")
+                ) {
+                  return `\\{${content}\\}`
+                }
+                return match
+              }
+            )
+        )
       }
-    )
+      // This is a code block, return as is
+      return part
+    })
+    .join("")
 
   const result = await serialize(processedContent, {
     mdxOptions: {
