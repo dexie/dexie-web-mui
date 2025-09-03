@@ -323,16 +323,14 @@ const theme = createTheme({
     MuiLink: {
       styleOverrides: {
         root: {
-          color: "#ffffff", // White links as default
-          opacity: 0.8, // Default opacity
-          textDecoration: "underline",
+          color: "#dee2e6", // Theme white color (normal state)
+          textDecoration: "none", // No underline
           "&:hover": {
-            opacity: 1, // Full opacity on hover
+            color: "#ffffff", // Pure white on hover
             textDecoration: "none", // No underline on hover
           },
           "&:visited": {
-            color: "#ffffff",
-            opacity: 0.8,
+            color: "#dee2e6",
           },
         },
       },

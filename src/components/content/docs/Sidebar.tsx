@@ -64,7 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, currentSlug }) => {
 
     // It's a NavStructure (folder)
     return (
-      <Box>
+      <Box key={key}>
         <Typography variant="overline">
           {key.charAt(0).toUpperCase() + key.slice(1)}
         </Typography>
@@ -80,13 +80,11 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, currentSlug }) => {
   return (
     <Box>
       <Box>
-        <Box>
-          <Typography variant="h5">Documentation</Typography>
-        </Box>
-        <List>
-          {Object.entries(nav).map(([key, item]) => renderNavItem(key, item))}
-        </List>
+        <Typography variant="h5">Documentation</Typography>
       </Box>
+      <List>
+        {Object.entries(nav).map(([key, item]) => renderNavItem(key, item))}
+      </List>
     </Box>
   )
 }

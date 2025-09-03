@@ -44,20 +44,10 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({ children, currentSlug }) => {
             }}
           >
             <Breadcrumbs aria-label="breadcrumb">
-              <MuiLink
-                component={Link}
-                href="/"
-                color="inherit"
-                underline="hover"
-              >
+              <MuiLink component={Link} href="/" color="inherit">
                 Home
               </MuiLink>
-              <MuiLink
-                component={Link}
-                href="/docs"
-                color="inherit"
-                underline="hover"
-              >
+              <MuiLink component={Link} href="/docs" color="inherit">
                 Documentation
               </MuiLink>
               {currentSlug && (
