@@ -1,89 +1,37 @@
 ---
 layout: docs-freestyle
-title: 'Samples'
+title: "Samples"
 ---
 
-<div class="row">
-    <div class="col-md-6">
-    <a class="clickable-square react-logo"
-        href="https://stackblitz.com/edit/dexie-todo-list?file=components/TodoListView.tsx"
-        style="background-image: linear-gradient(#77a, #aaa);">
+### React
 
-        <img src="/assets/images/React-icon.svg" style="width:75px;">
-        <span style="font-size: 22pt;">React</span>
-    </a>
-    </div>
-    <div class="col-md-6">
-        <a class="clickable-square" href="https://stackblitz.com/edit/vitejs-vite-gjzr7xhn?file=src%2FApp.svelte"
-        style="background-image: linear-gradient(#977, #aaa);">
-            <div class="framework-logo" style="margin: 0;">
-                <img src="/assets/images/Svelte_Logo.svg" />
-                Svelte
-            </div>
-        </a>
-    </div>
-    <div class="col-md-6">
-        <a class="clickable-square" href="https://codesandbox.io/s/vue-dexie-livequery-87exj?file=/src/components/DBItems.vue"
-        style="background-image: linear-gradient(#7a7, #aaa);">
-            <div class="framework-logo" style="margin: 0;">
+[Open React Example →](https://stackblitz.com/edit/dexie-todo-list?file=components/TodoListView.tsx)
 
-            <img src="/assets/images/vue.svg" />
-            Vue
+### Svelte
 
-            </div>
-        </a>
-    </div>
-    <div class="col-md-6">
-        <a class="clickable-square" href="https://stackblitz.com/edit/angular-ivy-4666q1?file=src%2Fapp%2Fapp.module.ts"
-            style="background-image: linear-gradient(#a77, #aaa);">
-            <div class="framework-logo react-logo" style="margin: 0;">
+[Open Svelte Example →](https://stackblitz.com/edit/vitejs-vite-gjzr7xhn?file=src%2FApp.svelte)
 
-            <img src="/assets/images/angular.svg" />
-            Angular
+### Vue
 
-            </div>
-        </a>
-    </div>
+[Open Vue Example →](https://codesandbox.io/s/vue-dexie-livequery-87exj?file=/src/components/DBItems.vue)
 
-</div>
-<hr/>
-<div class="row">
-    <div class="col-md-12">
-        <a class="clickable-square" href="https://jsfiddle.net/3tf5r0cu/"
-            style="background-image: linear-gradient(#aac, #ddf);">
-            <div class="framework-logo" style="margin: 0;">
-                Vanilla JS
-            </div>
-        </a>
-    </div>
-</div>
-<div class="row">
+### Angular
 
-    <div class="col-md-12">
-        <a class="clickable-square" href="/cloud/docs/access-control#example-a-simple-project-management-model"
-        style="background-image: linear-gradient( #5471e9, #1e3fd3, #4b965f);">
-            <!-- <div class="video-parent" style="overflow:hidden; border-radius: 5px;">
-                <video
-                    class="banner-video"
-                    autoplay
-                    muted
-                    loop
-                    playsinline
-                >
-                <source
-                    src="https://dexie.blob.core.windows.net/dexie/Galaxy.mp4"
-                    type="video/mp4">
-                </video>
-            </div> -->
-            <div class="framework-logo" style="margin: 0; position: relative; color: #fff;">
-                <img src="/assets/images/dexie-logo-icon.svg" style="position: absolute;left: -10px;top: 11px;width: 27px;">Dexie Cloud
-            </div>
-        </a>
-    </div>
+[Open Angular Example →](https://stackblitz.com/edit/angular-ivy-4666q1?file=src%2Fapp%2Fapp.module.ts)
 
-</div>
+---
 
-<hr/>
+### Vanilla JavaScript
+
+[Open Vanilla JS Example →](https://jsfiddle.net/3tf5r0cu/)
+
+### Dexie Cloud
+
+[View Dexie Cloud Example →](/cloud/docs/access-control#example-a-simple-project-management-model)
+
+---
+
+## Additional Examples
 
 #### Populate From Ajax
 
