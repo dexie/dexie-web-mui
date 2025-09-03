@@ -59,7 +59,7 @@ const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
               <MuiLink component={Link} href="/" color="inherit">
                 Home
               </MuiLink>
-              <MuiLink component={Link} href="/cloud" color="inherit">
+              <MuiLink component={Link} href="#" color="inherit">
                 Cloud
               </MuiLink>
               <MuiLink component={Link} href="/cloud/docs" color="inherit">
