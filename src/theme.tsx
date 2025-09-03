@@ -346,6 +346,70 @@ const theme = createTheme({
         },
       },
     },
+    MuiTable: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent",
+          border: "1px solid rgba(255, 255, 255, 0.05)",
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent",
+          border: "1px solid rgba(255, 255, 255, 0.05)",
+        },
+      },
+    },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent",
+        },
+      },
+    },
+    MuiTableBody: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent",
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+          "&:hover": {
+            backgroundColor: "rgba(255, 255, 255, 0.02)",
+          },
+        },
+        head: {
+          backgroundColor: "transparent",
+          borderBottom: "2px solid rgba(255, 255, 255, 0.05)",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+          borderRight: "1px solid rgba(255, 255, 255, 0.05)",
+          color: "#dee2e6",
+          "&:last-child": {
+            borderRight: "none",
+          },
+        },
+        head: {
+          backgroundColor: "transparent",
+          borderBottom: "2px solid rgba(255, 255, 255, 0.05)",
+          fontWeight: 600,
+          color: "#dee2e6",
+        },
+      },
+    },
   },
 })
 

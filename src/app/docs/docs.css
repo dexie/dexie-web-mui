@@ -1,0 +1,316 @@
+/* Documentation-specific styling for dark theme */
+
+/* CSS Custom Properties for Bootstrap primary color */
+:root {
+  --bs-primary-rgb: 199, 125, 255; /* #c77dff in RGB format */
+  --bs-primary: #c77dff;
+  --bs-text-opacity: 1;
+}
+
+/* Styling for div elements that replace p elements in MDX */
+.docs-content div:not([class]):not([id]) {
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+/* Sidebar styling for dark theme */
+.sidebar {
+  position: fixed;
+  top: 90px;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  width: 280px;
+  padding: 48px 0 0;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, .1);
+  height: calc(100vh - 90px);
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+.sidebar .nav-link {
+  color: #e8e8e8;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  margin: 0.125rem 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+  color: #fff;
+  background-color: rgba(74, 144, 226, 0.2);
+}
+
+.sidebar .nav-link.active {
+  color: #c77dff;
+  background-color: rgba(74, 144, 226, 0.2);
+  font-weight: 600;
+}
+
+.sidebar-heading {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: #a0a0a0;
+}
+
+/* Docs wrapper */
+.docs-wrapper {
+  margin-left: 0px;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* Main content for dark theme */
+.docs-content {
+  max-width: none;
+  padding-left: 0;
+  color: #e8e8e8;
+  line-height: 1.7;
+}
+
+.docs-content h1,
+.docs-content h2,
+.docs-content h3,
+.docs-content h4,
+.docs-content h5,
+.docs-content h6 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.docs-content h1 {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: #c77dff;
+}
+
+.docs-content h2 {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.3rem;
+}
+
+/* Code styling for dark theme */
+.docs-content pre {
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 1.5rem;
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e8e8e8;
+}
+
+.docs-content code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 90%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #c77dff;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.docs-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+}
+
+/* Links for dark theme */
+.docs-content a {
+  color: #c77dff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.docs-content a:hover {
+  color: #69a7ff;
+  text-decoration: underline;
+}
+
+/* Tables for dark theme */
+.docs-content table {
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.docs-content th,
+.docs-content td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75rem 1rem;
+}
+
+.docs-content th {
+  background: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  color: #fff;
+}
+
+.docs-content td {
+  color: #e8e8e8;
+}
+
+/* Blockquotes for dark theme */
+.docs-content blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.5rem;
+  color: #b8b8b8;
+  border-left: 4px solid #c77dff;
+  background: rgba(74, 144, 226, 0.05);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Lists */
+.docs-content ul,
+.docs-content ol {
+  padding-left: 2rem;
+  margin: 1rem 0;
+}
+
+.docs-content li {
+  margin: 0.5rem 0;
+  color: #e8e8e8;
+}
+
+.docs-content li > p {
+  margin: 0.25rem 0;
+}
+
+/* Breadcrumb styling for dark theme */
+.breadcrumb {
+  background: none;
+  padding: 0;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumb-item a {
+  color: #c77dff !important;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumb-item a:hover {
+  color: #69a7ff;
+  text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+  color: #e8e8e8;
+}
+
+/* Section title styling */
+.section-title {
+  color: #ffffff;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.badge
+{
+  background-color: #c77dff;
+  color: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 991.98px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    padding: 1rem 0;
+    top: auto;
+    background: rgba(0, 0, 0, 0.95);
+  }
+  
+  .docs-wrapper {
+    margin-left: 0;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    position: static;
+    height: auto;
+    padding: 1rem 0;
+    top: auto;
+    width: 100%;
+  }
+  
+  .docs-wrapper {
+    margin-left: 0;
+    padding-top: 2rem;
+  }
+  
+  main {
+    padding-left: 0 !important;
+  }
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Highlight syntax for code blocks */
+.docs-content pre[class*="language-"] {
+  background: #1a1a1a;
+  color: #e8e8e8;
+}
+
+/* Footer styling */
+.docs-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+}
+
+.docs-footer small {
+  color: #a0a0a0;
+}
+
+/* CodeBlock copy button styling */
+.copy-button {
+  margin-right: 0.5rem;
+}
+
+/* CodeBlock container max-width for docs */
+.docs-content .codeblock-container {
+  max-width: 900px; /* Ändra detta värde till önskad max-width */
+}
+
+
+/* Print styling */
+@media print {
+  .sidebar {
+    display: none;
+  }
+  
+  .docs-wrapper {
+    margin-left: 0 !important;
+  }
+  
+  .breadcrumb,
+  .docs-footer {
+    display: none;
+  }
+}
+
+

@@ -15,12 +15,17 @@
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
     "@mui/material-nextjs": "^7.3.0",
+    "fs": "^0.0.1-security",
+    "gray-matter": "^4.0.3",
     "next": "15.5.0",
+    "next-mdx-remote": "^5.0.0",
     "prism-themes": "^1.9.0",
     "prismjs": "^1.30.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-type-animation": "^3.2.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
     "swiper": "^11.2.10"
   },
   "devDependencies": {
