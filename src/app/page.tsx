@@ -274,7 +274,7 @@ const featureScreenshotSlides = [
     id: 1,
     title: "Custom optimized onboarding with Dexie Auth",
     description:
-      "Complete user authentication with passwordless login and OAuth providers. What typically requires complex backend setup and multiple services is handled entirely by Dexie Auth and with no backend.",
+      "Complete user authentication with passwordless login and OAuth providers. What typically requires complex backend setup and multiple services is handled entirely by Dexie Auth with no backend needed.",
     imageUrl: "/assets/images/feature-screenshots/login.png",
     imageAlt: "Dexie login page",
     features: [
@@ -283,7 +283,7 @@ const featureScreenshotSlides = [
         number: "1",
         title: "Branded Login Experience",
         description:
-          "Their login screen adapts to their brand while maintaining security standards. Built-in components handle validation and error states automatically.",
+          "The login screen adapts to the brand while maintaining security standards. Built-in components handle validation and error states automatically.",
         position: { x: 5, y: 8 },
       },
       {
@@ -291,7 +291,7 @@ const featureScreenshotSlides = [
         number: "2",
         title: "Magic Link Authentication",
         description:
-          "They implemented passwordless login with custom email templates. Users receive branded magic links with no password management needed.",
+          "Passwordless login with custom email templates gives users branded magic links with no password management complexity.",
         position: { x: 50, y: 44.5 },
       },
       {
@@ -299,25 +299,25 @@ const featureScreenshotSlides = [
         number: "3",
         title: "Social Login Integration",
         description:
-          "They also added Google, Microsoft, and GitHub login options that work seamlessly across all their platforms with automatic token management.",
+          "Google, Microsoft, and GitHub login options work seamlessly across all platforms with automatic token management.",
         position: { x: 50, y: 58 },
       },
     ],
   },
   {
     id: 2,
-    title: "Dexie´s built in sharing & collaboration",
+    title: "Dexie´s built-in sharing & collaboration",
     description:
       "Leverages Dexie's built-in sharing system with realms for seamless collaboration. No complex permission systems to build - just simple JavaScript objects control who can access what.",
     imageUrl: "/assets/images/feature-screenshots/share.png",
-    imageAlt: "To To-Do sharing interface",
+    imageAlt: "Task sharing interface showing collaboration features",
     features: [
       {
         id: 6,
         number: "1",
         title: "Per-Object Access Control",
         description:
-          "To To-Do uses Dexie's realm system where each task can be private, shared with teams, or public - all controlled by simple JavaScript objects.",
+          "Dexie's realm system allows each task to be private, shared with teams, or public - all controlled by simple JavaScript objects.",
         position: { x: 28, y: 11.5 },
       },
       {
@@ -325,7 +325,7 @@ const featureScreenshotSlides = [
         number: "2",
         title: "Instant Collaboration",
         description:
-          "When To To-Do users share projects, team members receive built-in invitation emails and in-app notifications for new invites. Real-time updates follow automatically with no complex APIs to manage.",
+          "When projects are shared, team members receive built-in invitation emails and in-app notifications. Real-time updates follow automatically with no complex APIs to manage.",
         position: { x: 36, y: 64 },
       },
       {
@@ -333,7 +333,7 @@ const featureScreenshotSlides = [
         number: "3",
         title: "Zero Setup Sharing",
         description:
-          "To To-Do's sharing works out of the box with Dexie Cloud. No servers, no permission databases, no backend complexity - just built-in collaborative features.",
+          "Sharing works out of the box with Dexie Cloud. No servers, no permission databases, no backend complexity - just built-in collaborative features.",
         position: { x: 64, y: 83 },
       },
     ],
@@ -344,14 +344,14 @@ const featureScreenshotSlides = [
     description:
       "Combines Dexie's reactive queries with Redux for optimal performance. Using useLiveQuery for real-time UI updates, RxJS liveQuery for complex data flows, and optimistic state management for instant user feedback.",
     imageUrl: "/assets/images/feature-screenshots/today.png",
-    imageAlt: "To To-Do reactive interface",
+    imageAlt: "Reactive interface showing live data updates",
     features: [
       {
         id: 3,
         number: "1",
         title: "Reactive Live Queries",
         description:
-          "They uses useLiveQuery hooks for automatic UI updates when data changes, combined with RxJS liveQuery for complex reactive data flows and subscriptions.",
+          "useLiveQuery hooks provide automatic UI updates when data changes, combined with RxJS liveQuery for complex reactive data flows and subscriptions.",
         position: { x: 17, y: 10 },
       },
       {
@@ -359,16 +359,16 @@ const featureScreenshotSlides = [
         number: "2",
         title: "Optimistic Updates",
         description:
-          "To To-Do implements optimistic state with Redux for instant UI feedback. Changes appear immediately while syncing with Dexie Cloud in the background.",
-        position: { x: 72, y: 45 },
+          "Optimistic state with Redux delivers instant UI feedback. Changes appear immediately while syncing with Dexie Cloud in the background.",
+        position: { x: 72, y: 40 },
       },
       {
         id: 5,
         number: "3",
         title: "Offline-First Architecture",
         description:
-          "They leverages Dexie's offline-first approach with smart state management. All operations work locally first, then sync seamlessly when online.",
-        position: { x: 40, y: 85 },
+          "Dexie's offline-first approach with smart state management ensures all operations work locally first, then sync seamlessly when online.",
+        position: { x: 25, y: 90 },
       },
     ],
   },
@@ -378,14 +378,14 @@ const featureScreenshotSlides = [
     description:
       "Built a comprehensive analytics dashboard using Dexie's API to monitor user growth, app performance, and production metrics. Essential insights without complex analytics infrastructure.",
     imageUrl: "/assets/images/feature-screenshots/dashboard.png",
-    imageAlt: "To To-Do analytics dashboard",
+    imageAlt: "Analytics dashboard showing user metrics and performance data",
     features: [
       {
         id: 3,
         number: "1",
         title: "User Growth Tracking",
         description:
-          "They monitors new user registrations, active users, and retention metrics directly through Dexie's built-in analytics API.",
+          "Monitoring new user registrations, active users, and retention metrics directly through Dexie's built-in analytics API.",
         position: { x: 20, y: 30 },
       },
       {
@@ -393,7 +393,7 @@ const featureScreenshotSlides = [
         number: "2",
         title: "Production Monitoring",
         description:
-          "To To-Do tracks app performance, sync success rates, and error monitoring across all their production environments in real-time.",
+          "Real-time tracking of app performance, sync success rates, and error monitoring across all production environments.",
         position: { x: 72, y: 45 },
       },
       {
@@ -401,7 +401,7 @@ const featureScreenshotSlides = [
         number: "3",
         title: "Business Intelligence",
         description:
-          "They gain valuable insights into user behavior and app usage patterns to drive product decisions, all built into Dexie Cloud.",
+          "Valuable insights into user behavior and app usage patterns drive product decisions, all built into Dexie Cloud.",
         position: { x: 40, y: 85 },
       },
     ],
