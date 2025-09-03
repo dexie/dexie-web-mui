@@ -6,7 +6,7 @@ import { MDXRemoteSerializeResult } from "next-mdx-remote"
 import remarkGfm from "remark-gfm"
 
 // Document source types
-export type DocumentSource = "docs" | "roadmap"
+export type DocumentSource = "docs" | "roadmap" | "cloud"
 
 // Helper function to get directory path based on source
 function getSourceDirectory(source: DocumentSource): string {
@@ -21,6 +21,7 @@ export interface DocMetadata {
 }
 
 export interface Doc {
+  slug: string
   metadata: DocMetadata
   content: string
   serializedContent?: unknown
@@ -50,7 +51,13 @@ export function getAllDocuments(source: DocumentSource): Doc[] {
         const relativePath = path.join(basePath, item)
         const slug = relativePath.replace(/\.md$/, "").replace(/\\/g, "/")
 
+        // For cloud source, prefix docs/ if the file is in the docs subfolder
+        if (source === "cloud" && basePath.includes("docs")) {
+          // Already has the correct path structure
+        }
+
         docs.push({
+          slug, // Add the missing slug property
           metadata: {
             ...data,
             slug,
@@ -74,7 +81,16 @@ export function getDocumentBySlug(
 ): Doc | null {
   try {
     const sourceDirectory = getSourceDirectory(source)
-    const filePath = path.join(sourceDirectory, `${slug}.md`)
+    let filePath: string
+
+    // For cloud source, check if the slug starts with 'docs/'
+    if (source === "cloud" && slug.startsWith("docs/")) {
+      // Remove 'docs/' prefix and look in cloud/docs/
+      const docSlug = slug.replace("docs/", "")
+      filePath = path.join(sourceDirectory, "docs", `${docSlug}.md`)
+    } else {
+      filePath = path.join(sourceDirectory, `${slug}.md`)
+    }
 
     if (!fs.existsSync(filePath)) {
       return null
@@ -84,10 +100,11 @@ export function getDocumentBySlug(
     const { data, content } = matter(fileContents)
 
     return {
+      slug, // Add the missing slug property
       metadata: {
         ...data,
         slug,
-        title: data.title || slug,
+        title: data.title || slug.split("/").pop() || slug,
       },
       content,
     }
@@ -108,6 +125,13 @@ export async function serializeMarkdown(
         // This is not a code block, apply replacements
         return (
           part
+            // Convert self-closing HTML tags to JSX format
+            .replace(/<br\s*\/?>/g, "<br />")
+            .replace(/<hr\s*\/?>/g, "<hr />")
+            .replace(/<img([^>]*)\s*\/?>/g, "<img$1 />")
+            .replace(/<input([^>]*)\s*\/?>/g, "<input$1 />")
+            .replace(/<meta([^>]*)\s*\/?>/g, "<meta$1 />")
+            .replace(/<link([^>]*)\s*\/?>/g, "<link$1 />")
             // Convert HTML table tags to JSX
             .replace(/<table([^>]*)>/g, "<Table$1>")
             .replace(/<\/table>/g, "</Table>")
@@ -230,6 +254,58 @@ export function getRoadmapDocBySlug(slug: string): Doc | null {
 
 export function generateRoadmapNavigation(): NavStructure {
   return generateDocumentNavigation("roadmap")
+}
+
+// CONVENIENCE FUNCTIONS FOR CLOUD
+export function getAllCloudDocs(): Doc[] {
+  return getAllDocuments("cloud")
+}
+
+export function getCloudDocBySlug(slug: string): Doc | null {
+  return getDocumentBySlug(slug, "cloud")
+}
+
+export function generateCloudNavigation(): NavStructure {
+  const allCloudDocs = getAllCloudDocs()
+  // Filter to only docs from docs/ subfolder and remove the docs/ prefix from slugs for navigation
+  const docsOnly = allCloudDocs
+    .filter(doc => doc.metadata.slug.startsWith("docs/"))
+    .map(doc => ({
+      ...doc,
+      metadata: {
+        ...doc.metadata,
+        slug: doc.metadata.slug.replace("docs/", "")
+      }
+    }))
+  
+  const nav: NavStructure = {}
+
+  docsOnly.forEach((doc) => {
+    const parts = doc.metadata.slug.split("/")
+    let current: NavStructure = nav
+
+    parts.forEach((part, index) => {
+      if (index === parts.length - 1) {
+        // Last part is the file
+        current[part] = {
+          title: doc.metadata.title,
+          slug: doc.metadata.slug,
+          layout: doc.metadata.layout,
+        }
+      } else {
+        // Create folder structure
+        if (
+          !current[part] ||
+          (typeof current[part] === "object" && "title" in current[part])
+        ) {
+          current[part] = {}
+        }
+        current = current[part] as NavStructure
+      }
+    })
+  })
+
+  return nav
 }
 
 // Convert Markdown to HTML (for simpler usage) - deprecated, use serializeMarkdown instead

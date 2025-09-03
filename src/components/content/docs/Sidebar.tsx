@@ -16,13 +16,14 @@ interface NavStructure {
 interface SidebarProps {
   navigation?: NavStructure
   currentSlug?: string
+  basePath?: string // Add basePath prop
 }
 
 const isNavItem = (item: NavItem | NavStructure): item is NavItem => {
   return "title" in item && "slug" in item
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ navigation, currentSlug }) => {
+const Sidebar: React.FC<SidebarProps> = ({ navigation, currentSlug, basePath = "/docs" }) => {
   const nav = navigation || generateNavigation()
 
   const renderNavItem = (
@@ -42,7 +43,7 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, currentSlug }) => {
           }}
         >
           <Link
-            href={`/docs/${item.slug}`}
+            href={`${basePath}/${item.slug}`}
             style={{
               fontWeight: 700,
               maxWidth: "250px",

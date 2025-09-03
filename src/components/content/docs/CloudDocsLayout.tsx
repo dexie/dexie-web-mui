@@ -1,7 +1,7 @@
 import React from "react"
 import Link from "next/link"
 import Sidebar from "./Sidebar"
-import { generateNavigation } from "@/utils/mdx"
+import { generateCloudNavigation } from "@/utils/mdx"
 import {
   Box,
   Container,
@@ -11,21 +11,27 @@ import {
   Link as MuiLink,
 } from "@mui/material"
 
-interface DocsLayoutProps {
+interface CloudDocsLayoutProps {
   children: React.ReactNode
   currentSlug?: string
 }
 
-const DocsLayout: React.FC<DocsLayoutProps> = ({ children, currentSlug }) => {
-  const navigation = generateNavigation()
+const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
+  children,
+  currentSlug,
+}) => {
+  const navigation = generateCloudNavigation()
+  
+  // Remove docs/ prefix from currentSlug for navigation matching
+  const navSlug = currentSlug?.startsWith("docs/") ? currentSlug.replace("docs/", "") : currentSlug
 
   return (
     <Container maxWidth={false} sx={{ padding: 0, pt: "100px" }}>
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
         <Sidebar
           navigation={navigation}
-          currentSlug={currentSlug}
-          basePath="/docs"
+          currentSlug={navSlug}
+          basePath="/cloud/docs"
         />
 
         <Box
@@ -51,7 +57,10 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({ children, currentSlug }) => {
               <MuiLink component={Link} href="/" color="inherit">
                 Home
               </MuiLink>
-              <MuiLink component={Link} href="/docs" color="inherit">
+              <MuiLink component={Link} href="/cloud" color="inherit">
+                Cloud
+              </MuiLink>
+              <MuiLink component={Link} href="/cloud/docs" color="inherit">
                 Documentation
               </MuiLink>
               {currentSlug && (
@@ -88,4 +97,4 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({ children, currentSlug }) => {
   )
 }
 
-export default DocsLayout
+export default CloudDocsLayout
