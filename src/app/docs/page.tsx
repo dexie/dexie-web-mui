@@ -1,5 +1,14 @@
 import { getAllDocs } from "@/utils/mdx"
 import Link from "next/link"
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Button,
+  Divider,
+} from "@mui/material"
+import DocsLayout from "@/components/content/docs/DocsLayout"
 
 export default function DocsHomePage() {
   const docs = getAllDocs()
@@ -15,108 +24,138 @@ export default function DocsHomePage() {
   }, {} as Record<string, typeof docs>)
 
   return (
-    <>
-      <div className="theme-modern">
-        <div className="dark-mode">
-          <div className="page bg-dark-1" id="top">
-            <main id="main">
-              {/* Docs Home Section */}
-              <section className="page-section bg-dark-1 light-content pt-0">
-                <div className="container position-relative">
-                  <div className="pt-100 pt-xs-60">
-                    <div className="docs-home">
-                      <div className="text-center mb-80 mb-xs-60">
-                        <h1 className="section-title mb-40 mb-xs-30">
-                          Documentation
-                        </h1>
-                        <p className="section-descr mb-0 opacity-085">
-                          Welcome to the Dexie.js documentation. Here you will
-                          find guides, API references, and examples.
-                        </p>
-                      </div>
+    <DocsLayout currentSlug="">
+      <Box component="article">
+        <Box component="header" sx={{ mb: 5, textAlign: "center" }}>
+          <Typography variant="h1" component="h1" sx={{ mb: 3 }}>
+            Documentation
+          </Typography>
+          <Typography
+            variant="h6"
+            color="text.secondary"
+            sx={{ mb: 4, maxWidth: 600, mx: "auto" }}
+          >
+            Welcome to the Dexie.js documentation. Here you will find guides,
+            API references, and examples.
+          </Typography>
+        </Box>
 
-                      <div className="row">
-                        {Object.entries(docsByCategory).map(
-                          ([category, categoryDocs]) => (
-                            <div
-                              key={category}
-                              className="col-md-6 col-lg-4 mb-40"
-                            >
-                              <div className="card h-100 bg-dark-2 border-light-1">
-                                <div className="card-body">
-                                  <h5 className="card-title text-white mb-30">
-                                    {category.charAt(0).toUpperCase() +
-                                      category.slice(1)}
-                                  </h5>
-                                  <ul className="list-unstyled">
-                                    {categoryDocs.slice(0, 5).map((doc) => (
-                                      <li
-                                        key={doc.metadata.slug}
-                                        className="mb-10"
-                                      >
-                                        <Link
-                                          href={`/docs/${doc.metadata.slug}`}
-                                          className="text-primary text-decoration-none"
-                                        >
-                                          {doc.metadata.title}
-                                        </Link>
-                                      </li>
-                                    ))}
-                                    {categoryDocs.length > 5 && (
-                                      <li className="text-muted opacity-065">
-                                        ... and {categoryDocs.length - 5} more
-                                      </li>
-                                    )}
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
-                          )
-                        )}
-                      </div>
-
-                      <hr className="my-80 my-xs-60 opacity-1" />
-
-                      <div className="row">
-                        <div className="col-md-8">
-                          <h2 className="section-title-medium mb-30">
-                            Get Started Quickly
-                          </h2>
-                          <p className="text-white opacity-085 mb-40">
-                            Start by reading our tutorial to get started with
-                            Dexie.js.
-                          </p>
-                          <Link
-                            href="/docs/Tutorial"
-                            className="btn btn-mod btn-color btn-large btn-round"
+        <Box className="docs-content">
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: 3,
+              mb: 6,
+            }}
+          >
+            {Object.entries(docsByCategory).map(([category, categoryDocs]) => (
+              <Card
+                key={category}
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  backgroundColor: "#000000",
+                  border: "1px solid #333333",
+                }}
+              >
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h5" component="h2" gutterBottom>
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </Typography>
+                  <Box component="ul" sx={{ listStyle: "none", p: 0, m: 0 }}>
+                    {categoryDocs.slice(0, 8).map((doc) => (
+                      <Box
+                        component="li"
+                        key={doc.metadata.slug}
+                        sx={{ mb: 1 }}
+                      >
+                        <Link
+                          href={`/docs/${doc.metadata.slug}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              "&:hover": {
+                                color: "#FFFFFF",
+                              },
+                            }}
                           >
-                            Read Tutorial
-                          </Link>
-                        </div>
-                        <div className="col-md-4">
-                          <h3 className="section-title-small mb-20">
-                            API Reference
-                          </h3>
-                          <p className="text-white opacity-085 mb-30">
-                            Explore the complete API documentation.
-                          </p>
-                          <Link
-                            href="/docs/API-Reference"
-                            className="btn btn-mod btn-border-w btn-large btn-round"
-                          >
-                            View API
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
-              {/* End Docs Home Section */}
-            </main>
-          </div>
-        </div>
-      </div>
-    </>
+                            {doc.metadata.title}
+                          </Typography>
+                        </Link>
+                      </Box>
+                    ))}
+                    {categoryDocs.length > 8 && (
+                      <Box component="li" sx={{ mt: 1 }}>
+                        <Typography variant="body2" color="text.secondary">
+                          ... and {categoryDocs.length - 8} more
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+
+          <Divider sx={{ my: 6 }} />
+
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "2fr 1fr" },
+              gap: 4,
+            }}
+          >
+            <Box>
+              <Typography variant="h4" component="h2" gutterBottom>
+                Get Started Quickly
+              </Typography>
+              <Typography variant="body1" color="text.secondary" paragraph>
+                Start by reading our tutorial to get started with Dexie.js.
+              </Typography>
+              <Link href="/docs/Tutorial" style={{ textDecoration: "none" }}>
+                <Button variant="contained" size="large" sx={{ mt: 2 }}>
+                  Read Tutorial
+                </Button>
+              </Link>
+            </Box>
+            <Box>
+              <Typography variant="h5" component="h3" gutterBottom>
+                API Reference
+              </Typography>
+              <Typography variant="body2" color="text.secondary" paragraph>
+                Explore the complete API documentation.
+              </Typography>
+              <Link
+                href="/docs/API-Reference"
+                style={{ textDecoration: "none" }}
+              >
+                <Button variant="outlined" size="large" sx={{ mt: 2 }}>
+                  View API
+                </Button>
+              </Link>
+            </Box>
+          </Box>
+        </Box>
+
+        <Box
+          component="footer"
+          sx={{
+            mt: 5,
+            pt: 4,
+            borderTop: 1,
+            borderColor: "divider",
+          }}
+        >
+          <Typography variant="caption" color="text.secondary">
+            Documentation Overview
+          </Typography>
+        </Box>
+      </Box>
+    </DocsLayout>
   )
 }
