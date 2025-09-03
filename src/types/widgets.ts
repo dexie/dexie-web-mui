@@ -15,8 +15,10 @@ export interface WidgetSettings {
   textWidth?: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface HeroWidgetSettings extends WidgetSettings {
-  // Hero-specific settings can be added here
+  // Inherits all properties from WidgetSettings
+  // Hero-specific settings can be added here as needed
 }
 
 export interface BenefitsSettings extends WidgetSettings {
