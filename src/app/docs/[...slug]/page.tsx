@@ -33,7 +33,7 @@ export default async function DocPage({ params }: DocPageProps) {
   const mdxContent = await serializeMarkdown(doc.content)
 
   return (
-    <DocsLayout currentSlug={slugString}>
+    <DocsLayout currentSlug={slugString} pageTitle={doc.metadata.title}>
       <Box component="article">
         <Box component="header" sx={{ mb: 5 }}>
           <Typography variant="h1" component="h1" sx={{ mb: 3 }}>

@@ -14,11 +14,13 @@ import {
 interface CloudDocsLayoutProps {
   children: React.ReactNode
   currentSlug?: string
+  pageTitle?: string
 }
 
 const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
   children,
   currentSlug,
+  pageTitle,
 }) => {
   const navigation = generateCloudNavigation()
 
@@ -74,7 +76,7 @@ const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
                     margin: 0,
                   }}
                 >
-                  {currentSlug.split("/").pop()}
+                  {pageTitle || currentSlug.split("/").pop()}
                 </Typography>
               )}
             </Breadcrumbs>

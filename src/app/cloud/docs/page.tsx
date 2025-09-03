@@ -19,7 +19,7 @@ export default async function CloudDocsHome() {
   )
 
   return (
-    <CloudDocsLayout currentSlug="docs">
+    <CloudDocsLayout currentSlug="docs" pageTitle="Dexie Cloud Documentation">
       <Box component="article">
         <Box component="header" sx={{ mb: 5 }}>
           <Typography variant="h1" component="h1" sx={{ mb: 3 }}>
@@ -53,6 +53,8 @@ export default async function CloudDocsHome() {
                   height: "100%",
                   textDecoration: "none",
                   transition: "all 0.2s",
+                  backgroundColor: "#000000",
+                  border: "1px solid #333333",
                   "&:hover": {
                     boxShadow: 4,
                     transform: "translateY(-2px)",

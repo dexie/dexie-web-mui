@@ -24,7 +24,7 @@ export default function DocsHomePage() {
   }, {} as Record<string, typeof docs>)
 
   return (
-    <DocsLayout currentSlug="">
+    <DocsLayout currentSlug="" pageTitle="Documentation">
       <Box component="article">
         <Box component="header" sx={{ mb: 5, textAlign: "center" }}>
           <Typography variant="h1" component="h1" sx={{ mb: 3 }}>

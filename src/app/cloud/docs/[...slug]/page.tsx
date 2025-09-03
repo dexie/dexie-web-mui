@@ -39,7 +39,7 @@ export default async function CloudDocPage({ params }: CloudDocPageProps) {
   const mdxContent = await serializeMarkdown(doc.content)
 
   return (
-    <CloudDocsLayout currentSlug={slugString}>
+    <CloudDocsLayout currentSlug={slugString} pageTitle={doc.metadata.title}>
       <Box component="article">
         <Box component="header" sx={{ mb: 5 }}>
           <Typography variant="h1" component="h1" sx={{ mb: 3 }}>

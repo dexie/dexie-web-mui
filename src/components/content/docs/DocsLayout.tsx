@@ -14,9 +14,14 @@ import {
 interface DocsLayoutProps {
   children: React.ReactNode
   currentSlug?: string
+  pageTitle?: string
 }
 
-const DocsLayout: React.FC<DocsLayoutProps> = ({ children, currentSlug }) => {
+const DocsLayout: React.FC<DocsLayoutProps> = ({
+  children,
+  currentSlug,
+  pageTitle,
+}) => {
   const navigation = generateNavigation()
 
   return (
@@ -63,7 +68,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({ children, currentSlug }) => {
                     margin: 0,
                   }}
                 >
-                  {currentSlug.split("/").pop()}
+                  {pageTitle || currentSlug.split("/").pop()}
                 </Typography>
               )}
             </Breadcrumbs>
