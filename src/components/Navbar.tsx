@@ -3,11 +3,13 @@ import { useState, useEffect } from "react"
 import {
   AppBar,
   Toolbar,
-  Typography,
   Button,
   Box,
   useTheme,
   alpha,
+  Menu,
+  MenuItem,
+  Divider,
 } from "@mui/material"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -15,13 +17,78 @@ import { menuItems } from "../config/navigation"
 import LockIcon from "@mui/icons-material/Lock"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import LaunchIcon from "@mui/icons-material/Launch"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { formatNumber } from "../utils/formatNumber"
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [stars, setStars] = useState(13000)
+  const [supportMenuAnchor, setSupportMenuAnchor] =
+    useState<null | HTMLElement>(null)
   const theme = useTheme()
   const pathname = usePathname()
+
+  const supportMenuOpen = Boolean(supportMenuAnchor)
+
+  const handleSupportMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setSupportMenuAnchor(event.currentTarget)
+  }
+
+  const handleSupportMenuClose = () => {
+    setSupportMenuAnchor(null)
+  }
+
+  const supportMenuItems = [
+    {
+      text: "Dexie Questions on StackOverflow",
+      href: "http://stackoverflow.com/questions/tagged/dexie",
+      external: true,
+    },
+    {
+      text: "Q & A on Github",
+      href: "https://github.com/dexie/Dexie.js/issues?q=label%3AQ%26A%20",
+      external: true,
+    },
+    { divider: true },
+    {
+      text: "Ask Dexie question on Stackoverflow (best chance for a reply)",
+      href: "http://stackoverflow.com/questions/ask?tags=dexie",
+      external: true,
+    },
+    {
+      text: "Ask Dexie Cloud question on GitHub",
+      href: "https://github.com/dexie/Dexie.js/issues/new?labels=cloud,question",
+      external: true,
+    },
+    {
+      text: "File a GitHub issue on Dexie.js",
+      href: "https://github.com/dexie/Dexie.js/issues/new",
+      external: true,
+    },
+    { divider: true },
+    {
+      text: "Private support",
+      href: "/contact#private-support-issues",
+      external: false,
+    },
+    {
+      text: "Report issue with Dexie Cloud service",
+      href: "https://betteruptime.com/report/ArgfwoqUmwYQCdwYWHRUDkdc",
+      external: true,
+    },
+    {
+      text: "Dexie Cloud Status",
+      href: "https://www.dexie-cloud-status.com",
+      external: true,
+      target: "dexie-cloud-status",
+    },
+    { divider: true },
+    {
+      text: "Contact",
+      href: "/contact",
+      external: false,
+    },
+  ]
 
   useEffect(() => {
     const handleScroll = () => {
@@ -88,6 +155,115 @@ export default function Navbar() {
           {menuItems.map((item) => {
             const isActive = pathname === item.href
             const isExternal = item.href.startsWith("http")
+            const isSupport = item.text === "Support"
+
+            if (isSupport) {
+              return (
+                <Box key={item.id}>
+                  <Button
+                    onClick={handleSupportMenuClick}
+                    sx={{
+                      opacity: isActive ? 1 : 0.78,
+                      color: theme.palette.text.primary,
+                      fontSize: "17px !important",
+                      textTransform: "none",
+                      fontWeight: isActive ? 600 : 400,
+                      transition: "all 0.3s ease-in-out",
+                      position: "relative",
+                      padding: "0px 18px !important",
+                      display: "flex",
+                      alignItems: "center",
+
+                      "&:hover": {
+                        backgroundColor: alpha(
+                          theme.palette.primary.main,
+                          0.08
+                        ),
+                      },
+                    }}
+                    endIcon={<ExpandMoreIcon sx={{ fontSize: "16px" }} />}
+                  >
+                    {item.text}
+                  </Button>
+                  <Menu
+                    anchorEl={supportMenuAnchor}
+                    open={supportMenuOpen}
+                    onClose={handleSupportMenuClose}
+                    MenuListProps={{
+                      "aria-labelledby": "support-button",
+                    }}
+                    sx={{
+                      padding: "0px !important",
+                      mt: 2,
+                      "& .MuiPaper-root": {
+                        minWidth: "280px",
+                        backgroundColor: "#000000",
+                      },
+                      "& .MuiList-root": {
+                        padding: "0px !important",
+                      },
+                      "& .MuiList-root .MuiButtonBase-root:first-child": {
+                        paddingTop: "10px !important",
+                      },
+                      "& .MuiList-root .MuiButtonBase-root:last-child": {
+                        paddingBottom: "15px !important",
+                      },
+                    }}
+                  >
+                    {supportMenuItems.map((menuItem, index) => {
+                      if (menuItem.divider) {
+                        return (
+                          <Divider
+                            sx={{
+                              border: "1px solid rgba(255, 255, 255, 0.12)",
+                            }}
+                            key={`divider-${index}`}
+                          />
+                        )
+                      }
+                      return (
+                        <MenuItem
+                          key={index}
+                          component={menuItem.external ? "a" : Link}
+                          href={menuItem.href}
+                          target={
+                            menuItem.external
+                              ? menuItem.target || "_blank"
+                              : undefined
+                          }
+                          rel={
+                            menuItem.external
+                              ? "noopener noreferrer"
+                              : undefined
+                          }
+                          onClick={handleSupportMenuClose}
+                          sx={{
+                            fontSize: "14px",
+                            py: 1,
+                            px: 2,
+                            marginBottom: "0px !important",
+
+                            "&:hover": {
+                              backgroundColor: alpha(
+                                theme.palette.primary.main,
+                                0.08
+                              ),
+                            },
+                          }}
+                        >
+                          {menuItem.text}
+                          {menuItem.external && (
+                            <LaunchIcon
+                              sx={{ fontSize: "12px", ml: 1, opacity: 0.7 }}
+                            />
+                          )}
+                        </MenuItem>
+                      )
+                    })}
+                  </Menu>
+                </Box>
+              )
+            }
 
             return (
               <Button
