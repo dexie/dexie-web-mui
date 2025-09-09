@@ -56,6 +56,9 @@ export default function Navbar() {
       setScrolled(isScrolled)
     }
 
+    // Check scroll position on mount
+    handleScroll()
+
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])

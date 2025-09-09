@@ -189,6 +189,8 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
                     verticalAlign: "middle",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
+                    zoom: 0.8,
+                    mb: 0.5,
                   }}
                 >
                   {plan.badge.text}
