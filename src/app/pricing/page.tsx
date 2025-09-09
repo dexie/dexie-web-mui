@@ -586,7 +586,13 @@ export default function PricingPage() {
             "Fully managed cloud solution for seamless scaling and automatic hosting, or host everything yourself for full control over your backend and infrastructure.",
           typewriterStrings: ["full backend control"],
         }}
-        sx={{ paddingTop: "200px !important" }}
+        sx={{
+          paddingTop: "200px !important",
+          background:
+            "linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('/assets/images/dexie-bg.jpg')",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+        }}
       />
       <Divider />
 
