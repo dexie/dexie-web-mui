@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation"
 import { menuItems } from "../config/navigation"
 import LockIcon from "@mui/icons-material/Lock"
 import GitHubIcon from "@mui/icons-material/GitHub"
+import LaunchIcon from "@mui/icons-material/Launch"
 import { formatNumber } from "../utils/formatNumber"
 
 export default function Navbar() {
@@ -86,12 +87,15 @@ export default function Navbar() {
         >
           {menuItems.map((item) => {
             const isActive = pathname === item.href
+            const isExternal = item.href.startsWith("http")
 
             return (
               <Button
                 key={item.id}
-                component={Link}
+                component={isExternal ? "a" : Link}
                 href={item.href}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noopener noreferrer" : undefined}
                 sx={{
                   opacity: isActive ? 1 : 0.78,
                   color: theme.palette.text.primary,
@@ -101,6 +105,9 @@ export default function Navbar() {
                   transition: "all 0.3s ease-in-out",
                   position: "relative",
                   padding: "0px 18px !important",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
 
                   "&:hover": {
                     backgroundColor: alpha(theme.palette.primary.main, 0.08),
@@ -108,6 +115,9 @@ export default function Navbar() {
                 }}
               >
                 {item.text}
+                {isExternal && (
+                  <LaunchIcon sx={{ fontSize: "14px", opacity: 0.7 }} />
+                )}
               </Button>
             )
           })}
