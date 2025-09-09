@@ -33,6 +33,13 @@ export interface PricingPlan {
     target: string
   }
   isPopular?: boolean
+  badge?: {
+    text: string
+    variant?: "outlined" | "contained"
+    color?: string
+    backgroundColor?: string
+    borderColor?: string
+  }
   sectionTitle?: string
   features: {
     text: string
@@ -137,17 +144,57 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
               textAlign: "left",
             }}
           >
-            <Typography
-              variant="h5"
-              component="h3"
-              sx={{
-                color: settings.textColor || "#ffffff",
-                fontWeight: 700,
-                mb: 1,
-              }}
-            >
-              {plan.title}
-            </Typography>
+            <Box sx={{ position: "relative", mb: 1 }}>
+              <Typography
+                variant="h5"
+                component="h3"
+                sx={{
+                  color: settings.textColor || "#ffffff",
+                  fontWeight: 700,
+                  display: "inline-block",
+                  mr: plan.badge ? 1 : 0,
+                }}
+              >
+                {plan.title}
+              </Typography>
+              {plan.badge && (
+                <Box
+                  component="span"
+                  sx={{
+                    display: "inline-block",
+                    backgroundColor:
+                      plan.badge.variant === "outlined"
+                        ? "transparent"
+                        : plan.badge.backgroundColor || "#c77dff",
+                    color:
+                      plan.badge.variant === "outlined"
+                        ? plan.badge.borderColor ||
+                          plan.badge.color ||
+                          "#c77dff"
+                        : plan.badge.color || "#ffffff",
+                    border:
+                      plan.badge.variant === "outlined"
+                        ? `1px solid ${
+                            plan.badge.borderColor ||
+                            plan.badge.color ||
+                            "#c77dff"
+                          }`
+                        : "none",
+                    fontSize: "0.75rem",
+                    fontWeight: 600,
+                    px: 1.5,
+                    py: 0.5,
+                    borderRadius: "12px",
+                    ml: 1,
+                    verticalAlign: "middle",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  {plan.badge.text}
+                </Box>
+              )}
+            </Box>
 
             <Typography
               variant="body2"

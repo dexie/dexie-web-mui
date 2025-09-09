@@ -157,6 +157,12 @@ const cloudPlans = [
       target: "_self",
     },
     isPopular: true,
+    badge: {
+      text: "Popular",
+      variant: "outlined" as const,
+      color: "#c77dff",
+      borderColor: "#c77dff",
+    },
     sectionTitle: "Everything in the Free Plan, plus:",
     features: [
       { text: "Unlimited production users" },
@@ -208,6 +214,12 @@ const cloudPlans = [
       querystring: "",
       title: "Buy now",
       target: "_self",
+    },
+    badge: {
+      text: "Bestseller",
+      variant: "outlined" as const,
+      color: "#c77dff",
+      borderColor: "#c77dff",
     },
     sectionTitle: "Everything in Business, plus:",
     features: [
