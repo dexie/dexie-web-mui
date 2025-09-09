@@ -403,7 +403,7 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
           </Box>
 
           {/* Need Help Section */}
-          <Box
+          {/* <Box
             sx={{ display: "flex", justifyContent: "center", mb: 6, mt: -6 }}
           >
             <Box
@@ -421,7 +421,7 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
             >
               Need help choosing a plan?
             </Box>
-          </Box>
+          </Box> */}
         </Box>
 
         {/* Footer Text */}

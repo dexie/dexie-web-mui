@@ -10,6 +10,7 @@ import {
   AccordionDetails,
 } from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import CodeBlock from "./shared/CodeBlock"
 
 export interface FAQItem {
   id: number
@@ -48,6 +49,93 @@ const FAQWidget: React.FC<FAQWidgetProps> = ({ items, settings }) => {
       default:
         return "lg"
     }
+  }
+
+  const renderAnswer = (answer: string) => {
+    // Check if answer contains code blocks
+    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g
+    const parts = []
+    let lastIndex = 0
+    let match
+
+    while ((match = codeBlockRegex.exec(answer)) !== null) {
+      // Add text before code block
+      if (match.index > lastIndex) {
+        parts.push({
+          type: "text",
+          content: answer.slice(lastIndex, match.index),
+        })
+      }
+
+      // Add code block
+      parts.push({
+        type: "code",
+        language: match[1] || "typescript",
+        content: match[2],
+      })
+
+      lastIndex = match.index + match[0].length
+    }
+
+    // Add remaining text
+    if (lastIndex < answer.length) {
+      parts.push({
+        type: "text",
+        content: answer.slice(lastIndex),
+      })
+    }
+
+    // If no code blocks found, just return the original text
+    if (parts.length === 0) {
+      return (
+        <Typography
+          variant="body1"
+          sx={{
+            opacity: 0.85,
+            lineHeight: 1.6,
+            fontSize: { xs: "0.9rem", md: "1rem" },
+            whiteSpace: "pre-line",
+          }}
+        >
+          {answer}
+        </Typography>
+      )
+    }
+
+    return (
+      <Box>
+        {parts.map((part, index) => {
+          if (part.type === "text") {
+            return (
+              <Typography
+                key={index}
+                variant="body1"
+                sx={{
+                  opacity: 0.85,
+                  lineHeight: 1.6,
+                  fontSize: { xs: "0.9rem", md: "1rem" },
+                  whiteSpace: "pre-line",
+                  mb: part.content.trim() ? 1 : 0,
+                }}
+              >
+                {part.content}
+              </Typography>
+            )
+          } else if (part.type === "code") {
+            return (
+              <Box key={index} sx={{ my: 2 }}>
+                <CodeBlock
+                  code={part.content}
+                  language={part.language}
+                  showLineNumbers={false}
+                />
+              </Box>
+            )
+          }
+          return null
+        })}
+      </Box>
+    )
   }
 
   return (
@@ -156,16 +244,7 @@ const FAQWidget: React.FC<FAQWidgetProps> = ({ items, settings }) => {
                   pb: 3,
                 }}
               >
-                <Typography
-                  variant="body1"
-                  sx={{
-                    opacity: 0.85,
-                    lineHeight: 1.6,
-                    fontSize: { xs: "0.9rem", md: "1rem" },
-                  }}
-                >
-                  {item.answer}
-                </Typography>
+                {renderAnswer(item.answer)}
               </AccordionDetails>
             </Accordion>
           ))}
