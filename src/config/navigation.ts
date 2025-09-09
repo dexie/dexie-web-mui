@@ -6,7 +6,7 @@ export const menuItems = [
   { id: 4, href: "/pricing", text: "Pricing" },
   { id: 5, href: "/docs", text: "Docs" },
   { id: 6, href: "/support", text: "Support" },
-  { id: 7, href: "/blog", text: "Blog" },
+  { id: 7, href: "https://medium.com/dexie-js", text: "Blog" },
 ]
 
 export type MenuItem = (typeof menuItems)[0]

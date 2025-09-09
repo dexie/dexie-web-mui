@@ -6,6 +6,7 @@ import PricingWidget, {
 import SupportPlansWidget, {
   type SupportPlan,
 } from "@/components/content/SupportPlansWidget"
+import PreferredPartnersWidget from "@/components/content/PreferredPartnersWidget"
 import PricingTableWidget, {
   type TableColumn,
   type TableRow,
@@ -282,6 +283,101 @@ const supportPlans: SupportPlan[] = [
   },
 ]
 
+// Professional Services data
+const professionalServices: SupportPlan[] = [
+  {
+    title: "Kickstart & Onboarding",
+    price: "$2,500",
+    description:
+      "Get up and running fast with 1-2 days of expert guidance. Perfect for teams new to offline-first concepts and Dexie Cloud sync patterns.",
+    features: [
+      "1-2 days with Dexie Cloud expert",
+      "Offline-first architecture guidance",
+      "Sync patterns and best practices",
+      "Authentication setup assistance",
+      "Q&A and troubleshooting session",
+      "Follow-up documentation",
+    ],
+  },
+  {
+    title: "Setup & Integration",
+    price: "$5,000 - $15,000",
+    description:
+      "Complete implementation support for your production environment. We help you set up authentication, access control, and integrate with your existing systems.",
+    features: [
+      "Complete Dexie Cloud setup",
+      "Custom authentication integration",
+      "Access control and permissions setup",
+      "Integration with existing backend",
+      "Performance optimization",
+      "Production deployment guidance",
+      "Team handover session",
+    ],
+  },
+  {
+    title: "Team Training",
+    price: "$15,000",
+    description:
+      "Comprehensive 5-day remote training program for your development team. Master offline-first architecture and advanced Dexie Cloud patterns.",
+    features: [
+      "5 days remote training program",
+      "Offline-first architecture deep dive",
+      "Advanced sync patterns",
+      "Performance optimization techniques",
+      "Best practices and common pitfalls",
+      "Hands-on workshops",
+      "Custom training materials",
+    ],
+  },
+  {
+    title: "Development Services",
+    price: "Contact Us",
+    description:
+      "Need help building your MVP or migrating from another database? Our experts can help you with proof-of-concepts, prototypes, and migration projects.",
+    features: [
+      "MVP/POC development",
+      "Database migration services",
+      "Custom feature development",
+      "Architecture consulting",
+      "Code review and optimization",
+      "Ongoing development support",
+    ],
+  },
+]
+
+// Preferred Partners data
+interface PreferredPartner {
+  name: string
+  description: string
+  website: string
+  logo?: string
+  services: string[]
+  contact: {
+    email: string
+    phone?: string
+  }
+}
+
+const preferredPartners: PreferredPartner[] = [
+  {
+    name: "Zenta AB",
+    description:
+      "Expert Dexie Cloud implementation and development services with deep offline-first expertise",
+    website: "https://www.zenta.se",
+    services: [
+      "Dexie Cloud Implementation",
+      "Offline-First Development",
+      "Custom Application Development",
+      "Migration Services",
+      "Training & Consulting",
+      "Enterprise Integration",
+    ],
+    contact: {
+      email: "info@zenta.se",
+    },
+  },
+]
+
 // Detailed comparison table data
 const comparisonColumns: TableColumn[] = [
   { key: "feature", label: "Feature" },
@@ -530,6 +626,34 @@ export default function PricingPage() {
           textColor: "#dee2e6",
           backgroundColor: "#000000",
           containerWidth: "big",
+        }}
+      />
+      <Divider />
+
+      {/* Professional Services Section */}
+      <SupportPlansWidget
+        plans={professionalServices}
+        settings={{
+          textColor: "#dee2e6",
+          backgroundColor: "#000000",
+          containerWidth: "big",
+          sectionTitle: "Professional Services",
+          sectionSubtitle:
+            "Get expert help to implement, optimize, and scale your Dexie Cloud applications with our professional services",
+        }}
+      />
+      <Divider />
+
+      {/* Preferred Partners Section */}
+      <PreferredPartnersWidget
+        partners={preferredPartners}
+        settings={{
+          textColor: "#dee2e6",
+          backgroundColor: "#000000",
+          containerWidth: "big",
+          sectionTitle: "Preferred Partners",
+          sectionSubtitle:
+            "Work with certified Dexie Cloud experts who can help you implement, migrate, and optimize your offline-first applications",
         }}
       />
       <Divider />

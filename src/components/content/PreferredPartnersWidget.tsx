@@ -1,0 +1,341 @@
+"use client"
+
+import React from "react"
+import {
+  Box,
+  Typography,
+  Container,
+  Card,
+  CardContent,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Button,
+  Link,
+  SxProps,
+  Theme,
+} from "@mui/material"
+import CheckIcon from "@mui/icons-material/Check"
+import LaunchIcon from "@mui/icons-material/Launch"
+import EmailIcon from "@mui/icons-material/Email"
+
+export interface PreferredPartner {
+  name: string
+  description: string
+  website: string
+  logo?: string
+  services: string[]
+  contact: {
+    email: string
+    phone?: string
+  }
+}
+
+interface PreferredPartnersWidgetProps {
+  partners: PreferredPartner[]
+  settings?: {
+    textColor?: string
+    backgroundColor?: string
+    containerWidth?: "small" | "medium" | "big"
+    sectionTitle?: string
+    sectionSubtitle?: string
+  }
+  sx?: SxProps<Theme>
+}
+
+export default function PreferredPartnersWidget({
+  partners,
+  settings = {},
+  sx = {},
+}: PreferredPartnersWidgetProps) {
+  const {
+    textColor = "#dee2e6",
+    backgroundColor = "#000000",
+    containerWidth = "big",
+    sectionTitle = "Preferred Partners",
+    sectionSubtitle = "Work with certified Dexie Cloud experts who can help you implement, migrate, and optimize your offline-first applications",
+  } = settings
+
+  const getMaxWidth = () => {
+    switch (containerWidth) {
+      case "small":
+        return "sm"
+      case "medium":
+        return "md"
+      case "big":
+        return "xl"
+      default:
+        return "xl"
+    }
+  }
+
+  return (
+    <Box sx={{ backgroundColor, py: 8, ...sx }}>
+      <Container maxWidth={getMaxWidth()}>
+        <Typography
+          variant="h2"
+          component="h2"
+          gutterBottom
+          sx={{
+            textAlign: "center",
+            mb: 2,
+            color: textColor,
+            fontWeight: 600,
+          }}
+        >
+          {sectionTitle}
+        </Typography>
+        <Typography
+          variant="h6"
+          sx={{
+            textAlign: "center",
+            mb: 6,
+            color: "#adb5bd",
+            maxWidth: "800px",
+            mx: "auto",
+          }}
+        >
+          {sectionSubtitle}
+        </Typography>
+
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "repeat(auto-fit, minmax(400px, 1fr))",
+            },
+            gap: 4,
+          }}
+        >
+          {partners.map((partner, index) => (
+            <Card
+              key={index}
+              sx={{
+                backgroundColor: "#1a1a1a",
+                border: "1px solid #333",
+                borderRadius: "12px",
+                "&:hover": {
+                  borderColor: "#555",
+                  transform: "translateY(-2px)",
+                  transition: "all 0.2s ease-in-out",
+                },
+              }}
+            >
+              <CardContent sx={{ p: 4 }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  {partner.logo && (
+                    <Box
+                      component="img"
+                      src={partner.logo}
+                      alt={`${partner.name} logo`}
+                      sx={{
+                        width: 48,
+                        height: 48,
+                        mr: 2,
+                        objectFit: "contain",
+                      }}
+                    />
+                  )}
+                  <Box>
+                    <Typography
+                      variant="h5"
+                      component="h3"
+                      sx={{ color: textColor, fontWeight: 600, mb: 0.5 }}
+                    >
+                      {partner.name}
+                    </Typography>
+                    <Link
+                      href={partner.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{
+                        color: "#c77dff",
+                        textDecoration: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        fontSize: "0.9rem",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      Visit Website
+                      <LaunchIcon sx={{ ml: 0.5, fontSize: "1rem" }} />
+                    </Link>
+                  </Box>
+                </Box>
+
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "#adb5bd",
+                    mb: 3,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {partner.description}
+                </Typography>
+
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: textColor,
+                    fontWeight: 600,
+                    mb: 2,
+                  }}
+                >
+                  Services
+                </Typography>
+
+                <List sx={{ padding: 0, mb: 3 }}>
+                  {partner.services.map((service, serviceIndex) => (
+                    <ListItem
+                      key={serviceIndex}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-start !important",
+                        alignContent: "flex-start !important",
+                        p: "1px !important",
+                        pb: "5px !important",
+                        pl: "10px !important",
+                        ml: "-10px !important",
+                        borderRadius: "4px",
+                        "& .MuiTypography-root": {
+                          mb: "0px",
+                        },
+                        "& .MuiListItemText-root": {
+                          m: "0px",
+                        },
+                      }}
+                    >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: "auto",
+                          mr: 1,
+                          justifyContent: "flex-start",
+                          alignContent: "flex-start",
+                        }}
+                      >
+                        <CheckIcon
+                          sx={{
+                            fontSize: "16px",
+                            color: "#00d4aa",
+                          }}
+                        />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={
+                          <Typography
+                            component="span"
+                            sx={{
+                              color: textColor,
+                              fontSize: "0.9rem",
+                              lineHeight: 1.4,
+                            }}
+                          >
+                            {service}
+                          </Typography>
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <Button
+                    href={`mailto:${partner.contact.email}`}
+                    variant="contained"
+                    startIcon={<EmailIcon />}
+                    sx={{
+                      backgroundColor: "#c77dff",
+                      color: "#000000",
+                      borderRadius: "8px",
+                      textTransform: "none",
+                      "&:hover": {
+                        backgroundColor: "#b366ff",
+                      },
+                    }}
+                  >
+                    Contact
+                  </Button>
+                  <Button
+                    href={partner.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="outlined"
+                    sx={{
+                      borderColor: "#c77dff",
+                      color: "#c77dff",
+                      borderRadius: "8px",
+                      textTransform: "none",
+                      "&:hover": {
+                        borderColor: "#b366ff",
+                        backgroundColor: "rgba(199, 125, 255, 0.1)",
+                      },
+                    }}
+                  >
+                    Learn More
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+
+        <Box
+          sx={{
+            textAlign: "center",
+            mt: 6,
+            p: 4,
+            backgroundColor: "#1a1a1a",
+            borderRadius: "12px",
+            border: "1px solid #333",
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              color: textColor,
+              fontWeight: 600,
+              mb: 2,
+            }}
+          >
+            Become a Preferred Partner
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#adb5bd",
+              mb: 3,
+              maxWidth: "600px",
+              mx: "auto",
+            }}
+          >
+            Are you an expert in Dexie Cloud and offline-first development? Join
+            our preferred partner program and help businesses implement robust
+            offline-first solutions.
+          </Typography>
+          <Button
+            href="#contact"
+            variant="outlined"
+            sx={{
+              borderColor: "#c77dff",
+              color: "#c77dff",
+              borderRadius: "8px",
+              textTransform: "none",
+              px: 4,
+              "&:hover": {
+                borderColor: "#b366ff",
+                backgroundColor: "rgba(199, 125, 255, 0.1)",
+              },
+            }}
+          >
+            Apply to Partner Program
+          </Button>
+        </Box>
+      </Container>
+    </Box>
+  )
+}
