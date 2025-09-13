@@ -316,11 +316,11 @@ const professionalServices: SupportPlan[] = [
   },
   {
     title: "Team Training",
-    price: "$15,000",
+    price: "Contact us",
     description:
-      "Comprehensive 5-day remote training program for your development team. Master offline-first architecture and advanced Dexie Cloud patterns.",
+      "Comprehensive 1-5-day remote training program for your development team. Master offline-first architecture and advanced Dexie Cloud patterns.",
     features: [
-      "5 days remote training program",
+      "1-5 days remote training program",
       "Offline-first architecture deep dive",
       "Advanced sync patterns",
       "Performance optimization techniques",
