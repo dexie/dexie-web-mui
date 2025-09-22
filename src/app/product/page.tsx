@@ -37,6 +37,7 @@ export function TaskList() {
     id: "vue",
     name: "Vue",
     logo: "/assets/images/icons/vue-svgrepo-com.svg",
+    zoom: 0.85,
     code: `<template>
   <div>
     <h2>Tasks</h2>
@@ -92,6 +93,7 @@ export default {
     id: "angular",
     name: "Angular",
     logo: "/assets/images/icons/angular-svgrepo-com.svg",
+    zoom: 0.9,
     code: `import { Component } from '@angular/core';
 import { liveQuery } from 'dexie';
 import { db } from './db';
@@ -248,37 +250,8 @@ function CustomProductHero() {
             intuitive code.
           </Typography>
 
-          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap", mb: 4 }}>
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<CodeIcon />}
-              href="https://dexie.org/docs/Tutorial/Getting-started"
-              target="_blank"
-              sx={{ px: 4, py: 1.5 }}
-            >
-              Get Started
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              startIcon={<GitHubIcon />}
-              href="https://github.com/dexie/Dexie.js"
-              target="_blank"
-              sx={{
-                px: 4,
-                py: 1.5,
-                borderColor: "rgba(255,255,255,0.3)",
-                color: "white",
-                "&:hover": {
-                  borderColor: "primary.light",
-                  backgroundColor: "rgba(255,255,255,0.05)",
-                },
-              }}
-            >
-              13k+ Stars
-            </Button>
-          </Box>
+          <br />
+          <br />
 
           {/* Framework logos */}
           <Typography variant="h6" sx={{ mb: 2, opacity: 0.8 }}>
@@ -326,11 +299,13 @@ function CustomProductHero() {
               </Typography>
             </Box>
 
-            <CodeBlock
-              language="javascript"
-              showLineNumbers={true}
-              code={currentExample?.code || frameworkExamples[0].code}
-            />
+            <Box sx={{ zoom: currentExample?.zoom ? currentExample?.zoom : 1 }}>
+              <CodeBlock
+                language="javascript"
+                showLineNumbers={true}
+                code={currentExample?.code || frameworkExamples[0].code}
+              />
+            </Box>
 
             <Typography
               variant="body2"
