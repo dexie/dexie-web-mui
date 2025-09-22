@@ -6,6 +6,8 @@ import { styled } from "@mui/material/styles"
 import CodeIcon from "@mui/icons-material/Code"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import Image from "next/image"
+import TypeWriter from "@/components/content/shared/TypeWriter"
+import CodeBlock from "@/components/content/shared/CodeBlock"
 
 // Framework examples showcasing Dexie.js support
 const frameworkExamples = [
@@ -142,11 +144,12 @@ const subscription = liveQuery(
 
 // Styled components for the new hero
 const CustomHeroSection = styled(Box)(({ theme }) => ({
-  background: `linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)`,
+  background: 'url("/assets/images/dexie-bg.jpg") center/cover no-repeat',
   color: "white",
   padding: theme.spacing(12, 0),
   position: "relative",
   overflow: "hidden",
+  height: "100vh",
   "&::before": {
     content: '""',
     position: "absolute",
@@ -154,8 +157,13 @@ const CustomHeroSection = styled(Box)(({ theme }) => ({
     left: 0,
     right: 0,
     bottom: 0,
-    background: 'url("/assets/images/hero-pattern.svg") center/cover',
-    opacity: 0.05,
+    background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)",
+    opacity: 0.95,
+    zIndex: 1,
+  },
+  "> *": {
+    position: "relative",
+    zIndex: 2,
   },
 }))
 
@@ -178,21 +186,6 @@ const FrameworkCard = styled(Box)(({ theme }) => ({
   },
 }))
 
-const CodeBlock = styled(Box)(({ theme }) => ({
-  backgroundColor: "#1e1e1e",
-  border: "1px solid rgba(255,255,255,0.1)",
-  borderRadius: theme.spacing(1),
-  padding: theme.spacing(3),
-  fontFamily: "Monaco, 'Cascadia Code', 'Roboto Mono', monospace",
-  fontSize: "0.875rem",
-  lineHeight: 1.6,
-  overflow: "auto",
-  maxHeight: "400px",
-  "& .syntax-keyword": { color: "#569cd6" },
-  "& .syntax-string": { color: "#ce9178" },
-  "& .syntax-comment": { color: "#6a9955" },
-}))
-
 function CustomProductHero() {
   const [selectedFramework, setSelectedFramework] = useState("react")
   const currentExample = frameworkExamples.find(
@@ -206,12 +199,11 @@ function CustomProductHero() {
           maxWidth: "1400px",
           margin: "0 auto",
           px: 3,
-          py: 8,
+          py: 18,
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           gap: 6,
-          alignItems: "center",
-          minHeight: "100vh",
+          alignItems: "flex-start",
         }}
       >
         {/* Left side - Hero text */}
@@ -220,19 +212,26 @@ function CustomProductHero() {
             variant="h1"
             component="h1"
             sx={{
-              fontWeight: 800,
-              fontSize: { xs: "2.5rem", md: "3.5rem" },
-              lineHeight: 1.1,
+              fontWeight: 500,
+              fontSize: { xs: "2.5rem", md: "60px" },
+              lineHeight: "72px",
               mb: 3,
             }}
           >
-            The Natural Way to Use
-            <Box
-              component="span"
-              sx={{ color: "primary.light", display: "block" }}
-            >
-              IndexedDB
-            </Box>
+            The natural way to use
+            <br />
+            <TypeWriter
+              colorClass=""
+              strings={[
+                "IndexedDB",
+                "Browser Storage",
+                "Local Databases",
+                "Offline Data",
+                "Sync & Collaboration",
+                "Authentication",
+              ]}
+              breakRows={false}
+            />
           </Typography>
 
           <Typography
@@ -327,11 +326,11 @@ function CustomProductHero() {
               </Typography>
             </Box>
 
-            <CodeBlock>
-              <pre style={{ margin: 0, color: "#d4d4d4" }}>
-                {currentExample?.code}
-              </pre>
-            </CodeBlock>
+            <CodeBlock
+              language="javascript"
+              showLineNumbers={true}
+              code={currentExample?.code || frameworkExamples[0].code}
+            />
 
             <Typography
               variant="body2"
