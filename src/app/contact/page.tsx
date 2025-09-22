@@ -17,15 +17,18 @@ import GitHubIcon from "@mui/icons-material/GitHub"
 import LaunchIcon from "@mui/icons-material/Launch"
 import PersonIcon from "@mui/icons-material/Person"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
+import ChatIcon from "@mui/icons-material/Chat"
 import ContactForm from "@/components/content/ContactForm"
 import CallToActionWidget from "@/components/content/CallToActionWidget"
 import FAQWidget from "@/components/content/FAQWidget"
-
+import ManageSearchIcon from "@mui/icons-material/ManageSearch"
 interface ContactAction {
   text: string
   href: string
-  primary?: boolean
   external?: boolean
+  variant?: "contained" | "text" | "outlined"
+  icon?: React.ReactElement
+  color?: string
 }
 
 interface ContactMethod {
@@ -40,17 +43,79 @@ const contactMethods: ContactMethod[] = [
     title: "Sales & Partnerships",
     description:
       "Contact our sales team or schedule a meeting to discuss business opportunities",
-    icon: <BusinessIcon sx={{ fontSize: 40, color: "#c77dff" }} />,
+    icon: (
+      <BusinessIcon sx={{ fontSize: 40, color: "rgba(255, 255, 255, 0.3)" }} />
+    ),
     actions: [
       {
         text: "Email Sales",
         href: "mailto:sales@awarica.com",
-        primary: true,
+        variant: "text",
       },
       {
         text: "Schedule Meeting",
         href: "https://calendly.com/david-fahlander-awarica/30min",
         external: true,
+        variant: "contained",
+      },
+    ],
+  },
+
+  {
+    title: "Google your problem first",
+    description:
+      "Before you file an issue, please Google your problem first - chances are you find hints or answers in an existing stackoverflow-, GitHub, docs page or some blog. ",
+    icon: (
+      <ManageSearchIcon
+        sx={{ fontSize: 40, color: "rgba(255, 255, 255, 0.3)" }}
+      />
+    ),
+    actions: [
+      {
+        text: "Existing Issues",
+        href: "https://github.com/dexie/Dexie.js/issues?q=is%3Aissue",
+        external: true,
+        variant: "text",
+      },
+    ],
+  },
+  {
+    title: "Community & Questions",
+    description:
+      "Join our community where you can ask questions, help others, and hang with like-minded individuals or discuss on GitHub Discussions",
+    icon: (
+      <QuestionAnswerIcon
+        sx={{ fontSize: 40, color: "rgba(255, 255, 255, 0.3)" }}
+      />
+    ),
+    actions: [
+      {
+        text: "Discord Chat",
+        href: "https://discord.com/channels/1328303736363421747/1339957860657926204",
+        external: true,
+        variant: "contained",
+        icon: (
+          <svg
+            width="26 px"
+            height="26px"
+            viewBox="0 0 24 24"
+            fill="#ffffff"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M18.8943 4.34399C17.5183 3.71467 16.057 3.256 14.5317 3C14.3396 3.33067 14.1263 3.77866 13.977 4.13067C12.3546 3.89599 10.7439 3.89599 9.14391 4.13067C8.99457 3.77866 8.77056 3.33067 8.58922 3C7.05325 3.256 5.59191 3.71467 4.22552 4.34399C1.46286 8.41865 0.716188 12.3973 1.08952 16.3226C2.92418 17.6559 4.69486 18.4666 6.4346 19C6.86126 18.424 7.24527 17.8053 7.57594 17.1546C6.9466 16.92 6.34927 16.632 5.77327 16.2906C5.9226 16.184 6.07194 16.0667 6.21061 15.9493C9.68793 17.5387 13.4543 17.5387 16.889 15.9493C17.0383 16.0667 17.177 16.184 17.3263 16.2906C16.7503 16.632 16.153 16.92 15.5236 17.1546C15.8543 17.8053 16.2383 18.424 16.665 19C18.4036 18.4666 20.185 17.6559 22.01 16.3226C22.4687 11.7787 21.2836 7.83202 18.8943 4.34399ZM8.05593 13.9013C7.01058 13.9013 6.15725 12.952 6.15725 11.7893C6.15725 10.6267 6.98925 9.67731 8.05593 9.67731C9.11191 9.67731 9.97588 10.6267 9.95454 11.7893C9.95454 12.952 9.11191 13.9013 8.05593 13.9013ZM15.065 13.9013C14.0196 13.9013 13.1652 12.952 13.1652 11.7893C13.1652 10.6267 13.9983 9.67731 15.065 9.67731C16.121 9.67731 16.985 10.6267 16.9636 11.7893C16.9636 12.952 16.1317 13.9013 15.065 13.9013Z"
+              stroke="none"
+              stroke-linejoin="round"
+            />
+          </svg>
+        ),
+        color: "discord",
+      },
+      {
+        text: "GitHub Discussions",
+        href: "https://github.com/dexie/Dexie.js/discussions",
+        external: true,
+        variant: "text",
       },
     ],
   },
@@ -58,65 +123,43 @@ const contactMethods: ContactMethod[] = [
     title: "Technical Support",
     description:
       "Get help with technical issues, implementation questions, or request private support",
-    icon: <SupportIcon sx={{ fontSize: 40, color: "#c77dff" }} />,
+    icon: (
+      <SupportIcon sx={{ fontSize: 40, color: "rgba(255, 255, 255, 0.3)" }} />
+    ),
     actions: [
       {
         text: "Ask on StackOverflow",
         href: "http://stackoverflow.com/questions/ask?tags=dexie",
         external: true,
+        variant: "text",
       },
       {
         text: "Private Support (€150/h)",
         href: "mailto:privsupport@dexie.org",
+        variant: "text",
       },
     ],
   },
-  {
-    title: "Community & Questions",
-    description:
-      "Join our community or ask questions about Dexie.js and Dexie Cloud",
-    icon: <QuestionAnswerIcon sx={{ fontSize: 40, color: "#c77dff" }} />,
-    actions: [
-      {
-        text: "Discord Chat",
-        href: "https://discord.com/channels/1328303736363421747/1339957860657926204",
-        external: true,
-      },
-      {
-        text: "GitHub Discussions",
-        href: "https://github.com/dexie/Dexie.js/discussions",
-        external: true,
-      },
-    ],
-  },
+
   {
     title: "Bug Reports & Issues",
     description:
       "Found a bug or have a feature request? File an issue on GitHub",
-    icon: <BugReportIcon sx={{ fontSize: 40, color: "#c77dff" }} />,
+    icon: (
+      <BugReportIcon sx={{ fontSize: 40, color: "rgba(255, 255, 255, 0.3)" }} />
+    ),
     actions: [
       {
         text: "File Dexie Issue",
         href: "https://github.com/dexie/Dexie.js/issues/new",
         external: true,
-        primary: true,
+        variant: "text",
       },
       {
         text: "File Cloud Issue",
         href: "https://github.com/dexie/Dexie.js/issues/new?labels=cloud",
         external: true,
-      },
-    ],
-  },
-  {
-    title: "Business Inquiries",
-    description: "Non-technical business questions and partnerships",
-    icon: <EmailIcon sx={{ fontSize: 40, color: "#c77dff" }} />,
-    actions: [
-      {
-        text: "Contact Business Team",
-        href: "mailto:business@dexie.org",
-        primary: true,
+        variant: "text",
       },
     ],
   },
@@ -230,8 +273,36 @@ export default function ContactPage() {
               amazing applications. Choose the best way to reach us based on
               your needs.
             </Typography>
-            <Button variant="contained" size="large" href="#contact-form">
-              Send us a Message
+            <Button
+              variant="contained"
+              size="large"
+              href="https://discord.com/channels/1328303736363421747/1339957860657926204"
+              target="_blank"
+              rel="noopener noreferrer"
+              startIcon={
+                <svg
+                  width="26 px"
+                  height="26px"
+                  viewBox="0 0 24 24"
+                  fill="#ffffff"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M18.8943 4.34399C17.5183 3.71467 16.057 3.256 14.5317 3C14.3396 3.33067 14.1263 3.77866 13.977 4.13067C12.3546 3.89599 10.7439 3.89599 9.14391 4.13067C8.99457 3.77866 8.77056 3.33067 8.58922 3C7.05325 3.256 5.59191 3.71467 4.22552 4.34399C1.46286 8.41865 0.716188 12.3973 1.08952 16.3226C2.92418 17.6559 4.69486 18.4666 6.4346 19C6.86126 18.424 7.24527 17.8053 7.57594 17.1546C6.9466 16.92 6.34927 16.632 5.77327 16.2906C5.9226 16.184 6.07194 16.0667 6.21061 15.9493C9.68793 17.5387 13.4543 17.5387 16.889 15.9493C17.0383 16.0667 17.177 16.184 17.3263 16.2906C16.7503 16.632 16.153 16.92 15.5236 17.1546C15.8543 17.8053 16.2383 18.424 16.665 19C18.4036 18.4666 20.185 17.6559 22.01 16.3226C22.4687 11.7787 21.2836 7.83202 18.8943 4.34399ZM8.05593 13.9013C7.01058 13.9013 6.15725 12.952 6.15725 11.7893C6.15725 10.6267 6.98925 9.67731 8.05593 9.67731C9.11191 9.67731 9.97588 10.6267 9.95454 11.7893C9.95454 12.952 9.11191 13.9013 8.05593 13.9013ZM15.065 13.9013C14.0196 13.9013 13.1652 12.952 13.1652 11.7893C13.1652 10.6267 13.9983 9.67731 15.065 9.67731C16.121 9.67731 16.985 10.6267 16.9636 11.7893C16.9636 12.952 16.1317 13.9013 15.065 13.9013Z"
+                    stroke="none"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              }
+              sx={{
+                backgroundColor: "discord.main",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "discord.dark",
+                },
+              }}
+            >
+              Join our Discord community
             </Button>
           </Box>
           <Box sx={{ flex: 1, textAlign: "center" }}>
@@ -290,7 +361,7 @@ export default function ContactPage() {
                   <Typography
                     variant="h5"
                     gutterBottom
-                    textAlign="center"
+                    textAlign="left"
                     sx={{ mb: 2 }}
                   >
                     {method.title}
@@ -298,7 +369,7 @@ export default function ContactPage() {
                   <Typography
                     variant="body1"
                     color="text.secondary"
-                    textAlign="center"
+                    textAlign="left"
                     sx={{ mb: 3, flexGrow: 1 }}
                   >
                     {method.description}
@@ -309,12 +380,23 @@ export default function ContactPage() {
                     {method.actions.map((action, actionIndex) => (
                       <Button
                         key={actionIndex}
-                        variant={action.primary ? "contained" : "outlined"}
+                        variant={action.variant || "outlined"}
                         href={action.href}
+                        color={
+                          (action.color as
+                            | "primary"
+                            | "secondary"
+                            | "success"
+                            | "error"
+                            | "info"
+                            | "warning"
+                            | "discord") || "secondary"
+                        }
                         target={action.external ? "_blank" : undefined}
                         rel={
                           action.external ? "noopener noreferrer" : undefined
                         }
+                        startIcon={action.icon}
                         endIcon={action.external ? <LaunchIcon /> : undefined}
                         fullWidth
                       >
@@ -367,7 +449,7 @@ export default function ContactPage() {
               sx={{
                 p: 4,
                 height: "100%",
-                backgroundColor: "rgba(255,255,255,0.05)",
+                backgroundColor: "rgba(255,255,255,0.01)",
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
@@ -378,8 +460,14 @@ export default function ContactPage() {
                 {companyInfo.name}
               </Typography>
               <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                <LocationOnIcon sx={{ mr: 1, color: "text.secondary" }} />
-                <Typography variant="body1" color="text.secondary">
+                <LocationOnIcon
+                  sx={{ mr: 1, color: "text.secondary", fontSize: 20 }}
+                />
+                <Typography
+                  variant="body1"
+                  color="text.secondary"
+                  sx={{ mb: 0 }}
+                >
                   {companyInfo.location}
                 </Typography>
               </Box>
@@ -387,7 +475,7 @@ export default function ContactPage() {
                 {companyInfo.description}
               </Typography>
               <Button
-                variant="outlined"
+                variant="contained"
                 href="mailto:business@dexie.org"
                 startIcon={<EmailIcon />}
               >
@@ -400,7 +488,7 @@ export default function ContactPage() {
               sx={{
                 p: 4,
                 height: "100%",
-                backgroundColor: "rgba(255,255,255,0.05)",
+                backgroundColor: "rgba(255,255,255,0.01)",
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
@@ -421,7 +509,7 @@ export default function ContactPage() {
                 {author.links.map((link, index) => (
                   <Button
                     key={index}
-                    variant="outlined"
+                    variant="contained"
                     size="small"
                     href={link.href}
                     target="_blank"
@@ -447,18 +535,6 @@ export default function ContactPage() {
             "Common questions about contacting our team and getting support",
           containerWidth: "medium",
           backgroundColor: "rgba(255,255,255,0.05)",
-        }}
-      />
-
-      {/* Call to Action */}
-      <CallToActionWidget
-        text="Ready to get started with Dexie.js? Join thousands of developers building amazing offline-first applications."
-        buttonText="Get Started"
-        buttonLink={{
-          url: "/docs",
-          querystring: "",
-          title: "Get Started with Dexie.js",
-          target: "_self",
         }}
       />
     </Box>

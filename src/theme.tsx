@@ -1,13 +1,31 @@
 "use client"
-import { createTheme } from "@mui/material/styles"
+import {
+  createTheme,
+  PaletteColor,
+  PaletteColorOptions,
+} from "@mui/material/styles"
 
-// Extend the theme interface to add custom background.main
+// Extend the theme interface to add custom background.main and discord color
 declare module "@mui/material/styles" {
   interface TypeBackground {
     main: string
   }
+
+  interface Palette {
+    discord: PaletteColor
+  }
+
+  interface PaletteOptions {
+    discord?: PaletteColorOptions
+  }
 }
 
+// Extend Button props to include discord color
+declare module "@mui/material/Button" {
+  interface ButtonPropsColorOverrides {
+    discord: true
+  }
+}
 const theme = createTheme({
   cssVariables: true,
   breakpoints: {
@@ -36,6 +54,11 @@ const theme = createTheme({
       main: "#c77dff", // Bootstrap dark primary blue
       light: "#e0b3ff",
       dark: "#9b59b6",
+    },
+    discord: {
+      main: "#5865F2", // Discord Blurple
+      light: "#7289DA",
+      dark: "#4752C4",
     },
     text: {
       primary: "#dee2e6", // Main text color
@@ -238,6 +261,28 @@ const theme = createTheme({
           letterSpacing: "1.105px",
           fontSize: "13px !important",
           color: "rgba(255, 255, 255, 0.8)",
+          // Discord color variants
+          "&.MuiButton-containedDiscord": {
+            backgroundColor: "#5865F2",
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#4752C4",
+            },
+          },
+          "&.MuiButton-outlinedDiscord": {
+            color: "#5865F2",
+            borderColor: "#5865F2",
+            "&:hover": {
+              backgroundColor: "rgba(88, 101, 242, 0.1)",
+              borderColor: "#4752C4",
+            },
+          },
+          "&.MuiButton-textDiscord": {
+            color: "#5865F2",
+            "&:hover": {
+              backgroundColor: "rgba(88, 101, 242, 0.1)",
+            },
+          },
         },
         text: {
           textTransform: "none",
