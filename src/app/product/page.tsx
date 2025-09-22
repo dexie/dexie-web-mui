@@ -142,6 +142,34 @@ const subscription = liveQuery(
     description:
       "Pure JavaScript with reactive queries - no framework required",
   },
+  {
+    id: "sync",
+    name: "Cloud",
+    logo: "/assets/favicon/favicon-white.svg",
+    zoom: 0.9,
+    code: `import Dexie from "dexie";
+import dexieCloud from "dexie-cloud-addon";
+
+const db = new Dexie('SyncedTasks', {addons: [dexieCloud]});
+
+db.version(1).stores({
+  tasks: '@id, title, created' // '@' = auto-generated global ID
+});
+
+// Connect your dexie-cloud database:
+db.cloud.configure({
+  databaseUrl: "https://<yourdatabase>.dexie.cloud",
+  requireAuth: true // optional
+});
+
+// Now your tasks sync automatically!
+await db.tasks.add({
+  title: "Synced task",
+  created: new Date()
+});`,
+    description:
+      "Real-time sync and collaboration - start local, add sync when ready",
+  },
 ]
 
 // Styled components for the new hero
@@ -172,18 +200,17 @@ const CustomHeroSection = styled(Box)(({ theme }) => ({
 const FrameworkCard = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
   margin: theme.spacing(1),
-  backgroundColor: "rgba(255, 255, 255, 0.1)",
+  backgroundColor: "rgba(255, 255, 255, 0.05)",
   backdropFilter: "blur(10px)",
-  border: "1px solid rgba(255, 255, 255, 0.2)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
   borderRadius: theme.spacing(2),
   cursor: "pointer",
   transition: "all 0.3s ease",
   minWidth: 80,
   textAlign: "center",
   "&:hover, &.active": {
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderColor: theme.palette.primary.light,
-    transform: "translateY(-4px)",
     boxShadow: `0 8px 24px rgba(0, 0, 0, 0.3)`,
   },
 }))
