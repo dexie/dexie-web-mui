@@ -22,18 +22,6 @@ export const menuItems: MenuItem[] = [
     href: "/product",
     text: "Product",
     external: false,
-    children: [
-      {
-        text: "Dexie.js",
-        href: "/product/dexie",
-        external: false,
-      },
-      {
-        text: "Dexie Cloud",
-        href: "/product/cloud",
-        external: false,
-      },
-    ],
   },
   { id: 4, href: "/pricing", text: "Pricing", external: false },
   { id: 5, href: "/docs", text: "Docs", external: false },

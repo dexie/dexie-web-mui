@@ -5,6 +5,9 @@ import { Box, Typography, Button, Divider } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import CodeIcon from "@mui/icons-material/Code"
 import GitHubIcon from "@mui/icons-material/GitHub"
+import AddIcon from "@mui/icons-material/Add"
+import CloudIcon from "@mui/icons-material/Cloud"
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import Image from "next/image"
 import TypeWriter from "@/components/content/shared/TypeWriter"
 import CodeBlock from "@/components/content/shared/CodeBlock"
@@ -144,9 +147,13 @@ const subscription = liveQuery(
   },
   {
     id: "sync",
-    name: "Cloud",
+    name: "Dexie Cloud",
     logo: "/assets/favicon/favicon-white.svg",
-    zoom: 0.9,
+    zoom: 0.85,
+    commandLineCode: `npx dexie-cloud create
+npx dexie-cloud whitelist http://localhost:3000
+npm install dexie@latest
+npm install dexie-cloud-addon`,
     code: `import Dexie from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
@@ -284,34 +291,86 @@ function CustomProductHero() {
           <Typography variant="h6" sx={{ mb: 2, opacity: 0.8 }}>
             Works with your favorite framework:
           </Typography>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-            {frameworkExamples.map((framework) => (
-              <FrameworkCard
-                key={framework.id}
-                className={selectedFramework === framework.id ? "active" : ""}
-                onClick={() => setSelectedFramework(framework.id)}
-              >
-                <Box sx={{ mb: 1 }}>
-                  <Image
-                    src={framework.logo}
-                    alt={framework.name}
-                    width={32}
-                    height={32}
-                  />
-                </Box>
-                <Typography
-                  variant="caption"
-                  sx={{ color: "white", fontWeight: 500 }}
+          <Box
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1,
+              alignItems: "center",
+              zoom: 0.9,
+            }}
+          >
+            {frameworkExamples
+              .filter((f) => f.id !== "sync")
+              .map((framework) => (
+                <FrameworkCard
+                  key={framework.id}
+                  className={selectedFramework === framework.id ? "active" : ""}
+                  onClick={() => setSelectedFramework(framework.id)}
                 >
-                  {framework.name}
-                </Typography>
-              </FrameworkCard>
-            ))}
+                  <Box sx={{ mb: 1 }}>
+                    <Image
+                      src={framework.logo}
+                      alt={framework.name}
+                      width={32}
+                      height={32}
+                    />
+                  </Box>
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "white", fontWeight: 500 }}
+                  >
+                    {framework.name}
+                  </Typography>
+                </FrameworkCard>
+              ))}
+
+            {/* Progression indicator */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                mx: 2,
+                opacity: 0.6,
+              }}
+            >
+              <ArrowForwardIcon sx={{ fontSize: 24, color: "white" }} />
+            </Box>
+
+            {/* Cloud functionality */}
+            <Box>
+              {frameworkExamples
+                .filter((f) => f.id === "sync")
+                .map((framework) => (
+                  <FrameworkCard
+                    key={framework.id}
+                    className={
+                      selectedFramework === framework.id ? "active" : ""
+                    }
+                    onClick={() => setSelectedFramework(framework.id)}
+                  >
+                    <Box sx={{ mb: 1 }}>
+                      <Image
+                        src={framework.logo}
+                        alt={framework.name}
+                        width={32}
+                        height={32}
+                      />
+                    </Box>
+                    <Typography
+                      variant="caption"
+                      sx={{ color: "white", fontWeight: 500 }}
+                    >
+                      {framework.name}
+                    </Typography>
+                  </FrameworkCard>
+                ))}
+            </Box>
           </Box>
         </Box>
 
         {/* Right side - Code example */}
-        <Box sx={{ flex: 1, maxWidth: { md: "50%" } }}>
+        <Box sx={{ flex: 1, mt: -5, maxWidth: { md: "50%" } }}>
           <Box sx={{ position: "sticky", top: 20 }}>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <Image
@@ -327,11 +386,30 @@ function CustomProductHero() {
             </Box>
 
             <Box sx={{ zoom: currentExample?.zoom ? currentExample?.zoom : 1 }}>
-              <CodeBlock
-                language="javascript"
-                showLineNumbers={true}
-                code={currentExample?.code || frameworkExamples[0].code}
-              />
+              {currentExample?.id === "sync" &&
+                currentExample.commandLineCode && (
+                  <>
+                    <CodeBlock
+                      language="bash"
+                      showLineNumbers={false}
+                      commandLine={true}
+                      commandPrompt="~/web-app $"
+                      code={currentExample.commandLineCode}
+                    />
+                    <CodeBlock
+                      language="javascript"
+                      showLineNumbers={true}
+                      code={currentExample?.code || frameworkExamples[0].code}
+                    />
+                  </>
+                )}
+              {currentExample?.id !== "sync" && (
+                <CodeBlock
+                  language="javascript"
+                  showLineNumbers={true}
+                  code={currentExample?.code || frameworkExamples[0].code}
+                />
+              )}
             </Box>
 
             <Typography
