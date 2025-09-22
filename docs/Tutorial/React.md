@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: 'Get started with Dexie in React'
+title: "Get started with Dexie in React"
 ---
 
 <div style="opacity: 0.8; padding: 40px 0 40px 0">
@@ -50,7 +50,7 @@ npm install dexie-react-hooks
 
 <img
   src="/assets/images/CodeSandBoxDeps.png"
-  style="width: 200px;margin: 0 10px 0 0px;opacity: 0.7;border-radius: 5px;">
+  style="width: 200px;margin: 0 10px 0 0px;opacity: 0.7;border-radius: 5px;" />
 
 # 3. Create a file `db.js` (or `db.ts`)
 
@@ -58,12 +58,12 @@ Applications typically have one single Dexie instance declared as its own module
 
 ```ts
 // db.js
-import Dexie from 'dexie';
+import Dexie from "dexie"
 
-export const db = new Dexie('myDatabase');
+export const db = new Dexie("myDatabase")
 db.version(1).stores({
-  friends: '++id, name, age' // Primary key and indexed props
-});
+  friends: "++id, name, age", // Primary key and indexed props
+})
 ```
 
 ### Using Typescript?
@@ -72,28 +72,28 @@ If you use Typescript, table properties (such as `db.friends`) needs to be expli
 
 ```ts
 // db.ts
-import Dexie, { type EntityTable } from 'dexie';
+import Dexie, { type EntityTable } from "dexie"
 
 interface Friend {
-  id: number;
-  name: string;
-  age: number;
+  id: number
+  name: string
+  age: number
 }
 
-const db = new Dexie('FriendsDatabase') as Dexie & {
+const db = new Dexie("FriendsDatabase") as Dexie & {
   friends: EntityTable<
     Friend,
-    'id' // primary key "id" (for the typings only)
-  >;
-};
+    "id" // primary key "id" (for the typings only)
+  >
+}
 
 // Schema declaration:
 db.version(1).stores({
-  friends: '++id, name, age' // primary key "id" (for the runtime!)
-});
+  friends: "++id, name, age", // primary key "id" (for the runtime!)
+})
 
-export type { Friend };
-export { db };
+export type { Friend }
+export { db }
 ```
 
 # 4. Create a component that adds some data
@@ -102,23 +102,23 @@ Writing to the database can be done using [Table.add()](</docs/Table/Table.add()
 
 ```tsx
 export function AddFriendForm({ defaultAge } = { defaultAge: 21 }) {
-  const [name, setName] = useState('');
-  const [age, setAge] = useState(defaultAge);
-  const [status, setStatus] = useState('');
+  const [name, setName] = useState("")
+  const [age, setAge] = useState(defaultAge)
+  const [status, setStatus] = useState("")
 
   async function addFriend() {
     try {
       // Add the new friend!
       const id = await db.friends.add({
         name,
-        age
-      });
+        age,
+      })
 
-      setStatus(`Friend ${name} successfully added. Got id ${id}`);
-      setName('');
-      setAge(defaultAge);
+      setStatus(`Friend ${name} successfully added. Got id ${id}`)
+      setName("")
+      setAge(defaultAge)
     } catch (error) {
-      setStatus(`Failed to add ${name}: ${error}`);
+      setStatus(`Failed to add ${name}: ${error}`)
     }
   }
 
@@ -139,7 +139,7 @@ export function AddFriendForm({ defaultAge } = { defaultAge: 21 }) {
       />
       <button onClick={addFriend}>Add</button>
     </>
-  );
+  )
 }
 ```
 
@@ -149,7 +149,7 @@ Write a simple component that just renders all friends in the database.
 
 ```tsx
 export function FriendList() {
-  const friends = useLiveQuery(() => db.friends.toArray());
+  const friends = useLiveQuery(() => db.friends.toArray())
 
   return (
     <ul>
@@ -159,7 +159,7 @@ export function FriendList() {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 ```
 
@@ -183,16 +183,16 @@ export function FriendList({ minAge, maxAge }) {
       // Query Dexie's API
       //
       const friends = await db.friends
-        .where('age')
+        .where("age")
         .between(minAge, maxAge)
-        .toArray();
+        .toArray()
 
       // Return result
-      return friends;
+      return friends
     },
     // specify vars that affect query:
     [minAge, maxAge]
-  );
+  )
 
   return (
     <ul>
@@ -202,7 +202,7 @@ export function FriendList({ minAge, maxAge }) {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 ```
 
@@ -224,7 +224,7 @@ export const App = () => (
     <h2>Friend List</h2>
     <FriendList minAge={18} maxAge={65} />
   </>
-);
+)
 ```
 
 When running this example, notice that adding friends within the given age range will make them show up instantly in your view.

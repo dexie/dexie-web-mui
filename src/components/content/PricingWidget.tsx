@@ -491,9 +491,8 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
             }}
           >
             All plans include core Dexie.js features, offline-first
-            capabilities, and access to our documentation and community.
-            <br />
-            Need a custom solution?{" "}
+            capabilities, and access to our documentation and community. Need a
+            custom solution?{" "}
             <Box
               component="a"
               href="#contact"

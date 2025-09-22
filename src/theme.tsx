@@ -25,7 +25,7 @@ const theme = createTheme({
     background: {
       main: "#212529", // Dark background for navbar
       default: "#000000", // Main dark background
-      paper: "#343a40", // Secondary dark background
+      paper: "rgba(255,255,255, 0.02) !important", // Very subtle white overlay
     },
     primary: {
       main: "#000000", // Bootstrap dark primary blue

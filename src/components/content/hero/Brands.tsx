@@ -3,6 +3,8 @@
 import React from "react"
 import Image from "next/image"
 import { Box, Container, Typography, Grid, SxProps } from "@mui/material"
+import { link } from "fs"
+import Link from "next/link"
 
 interface BrandProps {
   sx?: SxProps
@@ -15,36 +17,42 @@ export default function Brands({ sx }: BrandProps) {
       width: 120,
       height: 35,
       alt: "Facebook",
+      link: "https://www.facebook.com",
     },
     {
       src: "/assets/images/brands/openai.png",
       width: 125,
       height: 35,
       alt: "OpenAI",
+      link: "https://www.openai.com",
     },
     {
       src: "/assets/images/brands/microsoft.png",
       width: 164,
       height: 35,
       alt: "Microsoft",
+      link: "https://www.microsoft.com",
     },
     {
       src: "/assets/images/brands/whatsapp.png",
       width: 148,
       height: 35,
       alt: "WhatsApp",
+      link: "https://www.whatsapp.com",
     },
     {
       src: "/assets/images/brands/github.png",
       width: 119,
       height: 35,
       alt: "GitHub",
+      link: "https://github.com",
     },
     {
       src: "/assets/images/brands/totodo.png",
       width: 150,
       height: 35,
-      alt: "Totodo",
+      alt: "To To-Do",
+      link: "https://totodo.app/go",
     },
   ]
 
@@ -92,30 +100,39 @@ export default function Brands({ sx }: BrandProps) {
           }}
         >
           {brands.map((brand, index) => (
-            <Box
+            <Link
               key={index}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                opacity: 0.7,
-                transition: "opacity 0.3s ease",
-                "&:hover": {
-                  opacity: 1,
-                },
-              }}
+              href={brand.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: "none" }}
+              title={brand.alt}
             >
-              <Image
-                src={brand.src}
-                width={brand.width}
-                height={brand.height}
-                alt={brand.alt}
-                style={{
-                  maxWidth: "100%",
-                  height: "auto",
+              <Box
+                key={index}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  opacity: 0.7,
+                  transition: "opacity 0.3s ease",
+                  "&:hover": {
+                    opacity: 1,
+                  },
                 }}
-              />
-            </Box>
+              >
+                <Image
+                  src={brand.src}
+                  width={brand.width}
+                  height={brand.height}
+                  alt={brand.alt}
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                  }}
+                />
+              </Box>
+            </Link>
           ))}
         </Box>
       </Box>

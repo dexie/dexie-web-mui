@@ -163,18 +163,32 @@ const testimonials: TestimonialItem[] = [
       "With Dexie, we've made IndexedDB accessible to all web developers. No more complex database operations.",
   },
   {
-    author: "Sarah Johnson",
-    role: "Frontend Developer",
+    author: "Alba Rincon",
+    role: "Founder of Routickr",
     image: "/api/placeholder/80/80",
     quote:
-      "Dexie transformed how I handle offline data. The API is intuitive and the documentation is excellent.",
+      "Integrating Dexie Cloud was seamless. Sync and auth worked in minutes, and the docs made everything easy.",
   },
   {
-    author: "Mike Chen",
-    role: "Full Stack Developer",
+    author: "Dusty Phillips",
+    role: "Founder of Fablehenge",
     image: "/api/placeholder/80/80",
     quote:
-      "The reactive hooks in Dexie make building real-time applications incredibly straightforward.",
+      "Dexie Cloud makes offline-first and sync effortless. It’s the perfect abstraction for a small team to ship big features.",
+  },
+  {
+    author: "Anton Andreasson",
+    role: "Founder of Birdlist",
+    image: "/api/placeholder/80/80",
+    quote:
+      "Dexie Cloud made sharing bird lists and managing invites simple. It’s fast, reliable, and easy to use.",
+  },
+  {
+    author: "Bennie Forss",
+    role: "Founder of Zenta AB",
+    image: "/api/placeholder/80/80",
+    quote:
+      "What truly sets Dexie Cloud apart is its ability to unleash productivity and nurturing creativity. Unlike other platforms, Dexie Cloud doesn't confine our visions; it expands them.",
   },
 ]
 
@@ -512,12 +526,6 @@ export default function Home() {
       <CallToActionWidget
         text="The power of Dexie lies in turning complex data problems into simple scalable solutions. Reduce time to market and deliver offline-first, real-time apps faster than ever."
         buttonText="CONTACT US"
-        buttonLink={{
-          url: "/contact",
-          querystring: "",
-          title: "Contact us",
-          target: "_self",
-        }}
         textColor="#dee2e6"
         backgroundColor="#000000"
         containerWidth="big"

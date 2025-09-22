@@ -679,22 +679,9 @@ export default function PricingPage() {
 
       {/* Call to Action Section */}
       <CallToActionWidget
-        text="Join thousands of developers building amazing offline-first applications with Dexie Cloud."
+        text="Join thousands of developers building amazing offline-first applications with Dexie."
         title="Ready to Get Started?"
         buttonText="Start Free"
-        buttonLink={{
-          url: "https://dexie.org/cloud/docs/getting-started",
-          querystring: "",
-          title: "Start Free",
-          target: "_blank",
-        }}
-        secondaryButtonText="Contact Sales"
-        secondaryButtonLink={{
-          url: "#contact",
-          querystring: "",
-          title: "Contact Sales",
-          target: "_self",
-        }}
         textColor="#dee2e6"
         backgroundColor="#000000"
         containerWidth="big"

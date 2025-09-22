@@ -35,7 +35,6 @@ export const menuItems: MenuItem[] = [
       },
     ],
   },
-  { id: 3, href: "/developers", text: "Developers", external: false },
   { id: 4, href: "/pricing", text: "Pricing", external: false },
   { id: 5, href: "/docs", text: "Docs", external: false },
   {

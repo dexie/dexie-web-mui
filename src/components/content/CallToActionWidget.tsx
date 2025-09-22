@@ -5,8 +5,8 @@ import ButtonWidget from "./shared/Button"
 interface CallToActionWidgetProps {
   text: string
   title?: string
-  buttonText: string
-  buttonLink: {
+  buttonText?: string
+  buttonLink?: {
     url: string
     querystring: string
     title: string
@@ -111,25 +111,27 @@ export default function CallToActionWidget({
               alignItems: "center",
             }}
           >
-            <ButtonWidget
-              text={buttonText}
-              link={buttonLink}
-              color="primary"
-              size="large"
-              variant="contained"
-              sx={{
-                px: 4,
-                py: 1.5,
-                fontSize: "1rem",
-                fontWeight: 500,
-                textTransform: "none",
-                "&:hover": {
-                  transform: "translateY(-2px)",
-                  boxShadow: "0 8px 25px rgba(0, 0, 0, 0.3)",
-                },
-                transition: "all 0.3s ease",
-              }}
-            />
+            {buttonText && buttonLink && (
+              <ButtonWidget
+                text={buttonText}
+                link={buttonLink}
+                color="primary"
+                size="large"
+                variant="contained"
+                sx={{
+                  px: 4,
+                  py: 1.5,
+                  fontSize: "1rem",
+                  fontWeight: 500,
+                  textTransform: "none",
+                  "&:hover": {
+                    transform: "translateY(-2px)",
+                    boxShadow: "0 8px 25px rgba(0, 0, 0, 0.3)",
+                  },
+                  transition: "all 0.3s ease",
+                }}
+              />
+            )}
             {secondaryButtonText && secondaryButtonLink && (
               <ButtonWidget
                 text={secondaryButtonText}
