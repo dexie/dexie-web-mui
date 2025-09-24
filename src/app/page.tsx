@@ -99,7 +99,7 @@ const dexieBenefitsData: BenefitItem[] = [
   },
 ]
 
-const blogPostsData: BlogPostItem[] = [
+export const blogPostsData: BlogPostItem[] = [
   {
     id: 1,
     delay: "0.1s",
@@ -552,7 +552,7 @@ export default function Home() {
       <Divider />
       <BlogPostsWidget
         items={blogPostsData}
-        sectionTitle="Get started in seconds"
+        sectionTitle="Get started in minutes"
         sectionSubtitle="Accelerate your development with templates built by us and our community."
         textColor="#dee2e6"
         backgroundColor="#000000"
