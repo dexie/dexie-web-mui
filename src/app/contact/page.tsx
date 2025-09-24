@@ -77,6 +77,12 @@ const contactMethods: ContactMethod[] = [
         external: true,
         variant: "text",
       },
+      {
+        text: "Post Github issue",
+        href: "https://github.com/dexie/Dexie.js/issues/new",
+        external: true,
+        variant: "contained",
+      },
     ],
   },
   {

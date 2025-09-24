@@ -577,9 +577,9 @@ export default function Home() {
       />
       <Divider />
       <FeatureScreenshotWidget
-        sectionCaption="Features"
+        sectionCaption="Case study"
         sectionTitle="Built totally on Dexie"
-        description="In To To-Do Dexie handles everything - authentication, real-time sync, file storage, and offline support. No backend setup, no separate services, no complexity."
+        description="In the application totodo.app, Dexie handles everything - authentication, real-time sync, file storage, and offline support. No backend setup, no separate services, no complexity."
         slides={featureScreenshotSlides}
         textColor="#dee2e6"
         backgroundColor="#000000"

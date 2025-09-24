@@ -594,6 +594,7 @@ export default function PricingPage() {
           backgroundSize: "cover",
         }}
       />
+
       <Divider />
 
       {/* Support Plans Section */}

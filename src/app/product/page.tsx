@@ -77,7 +77,7 @@ const dexieCloudBenefits: BenefitItem[] = [
   {
     id: 1,
     className: "col-md-6 col-lg-4 d-flex align-items-stretch mb-sm-30",
-    title: "Offline-First Sync Without Backend Building",
+    title: "Local-First Without Backend Building",
     description:
       "Add two-way sync, user auth, and access control on top of Dexie – without having to develop and maintain your own sync API.",
     keyPoints: [
@@ -126,6 +126,7 @@ const dexieCloudBenefits: BenefitItem[] = [
       "SaaS for simplicity",
       "Self-hosted option available",
       "Full infrastructure control",
+      "Full source code access available",
     ],
     svgPath:
       "M22 9.74l-2 1.02v7.24c-1.007 2.041-5.606 3-8.5 3-3.175 0-7.389-.994-8.5-3v-7.796l-3-1.896 12-5.308 11 6.231v8.769l1 3h-3l1-3v-8.26zm-18 1.095v6.873c.958 1.28 4.217 2.292 7.5 2.292 2.894 0 6.589-.959 7.5-2.269v-6.462l-7.923 4.039-7.077-4.473zm-1.881-2.371l9.011 5.694 9.759-4.974-8.944-5.066-9.826 4.346z",
@@ -331,7 +332,9 @@ const CustomHeroSection = styled(Box)(({ theme }) => ({
   padding: theme.spacing(12, 0),
   position: "relative",
   overflow: "hidden",
-  height: "100vh",
+  display: "flex",
+  alignItems: "center",
+  height: "90vh",
   "&::before": {
     content: '""',
     position: "absolute",
@@ -340,7 +343,7 @@ const CustomHeroSection = styled(Box)(({ theme }) => ({
     right: 0,
     bottom: 0,
     background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)",
-    opacity: 0.95,
+    opacity: 0.9,
     zIndex: 1,
   },
   "> *": {
@@ -583,7 +586,7 @@ export default function ProductPage() {
           textColor: "#dee2e6",
           backgroundColor: "#000000",
           containerWidth: "big",
-          sectionTitle: "Why Dexie.js?",
+          sectionTitle: "What is Dexie.js?",
           sectionSubtitle: "The Smarter Way to Use IndexedDB",
         }}
       />
@@ -597,7 +600,7 @@ export default function ProductPage() {
           textColor: "#dee2e6",
           backgroundColor: "#000000",
           containerWidth: "big",
-          sectionTitle: "Why Dexie Cloud?",
+          sectionTitle: "What is Dexie Cloud?",
           sectionSubtitle: "Offline-First Sync Without the Complexity",
         }}
       />
