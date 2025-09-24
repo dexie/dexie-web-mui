@@ -388,6 +388,41 @@ const featureScreenshotSlides = [
   },
   {
     id: 4,
+    title: "Account and payment",
+    description:
+      "Manage user accounts, subscriptions, and payment methods seamlessly with Dexie Cloud.",
+    imageUrl: "/assets/images/feature-screenshots/account.png",
+    imageAlt:
+      "Account management interface showing user details and payment options",
+    features: [
+      {
+        id: 3,
+        number: "1",
+        title: "Built-in Evaluation Policies",
+        description:
+          "Flexible evaluation periods with pausable or fixed duration options. Control how new users experience your app with customizable trial periods up to 30 days.",
+        position: { x: 36, y: 27 },
+      },
+      {
+        id: 4,
+        number: "2",
+        title: "Multi-Platform Payment Integration",
+        description:
+          "Seamless integration with Stripe for web payments and RevenueCat for iOS and Android subscriptions, enabling unified payment handling across all platforms.",
+        position: { x: 63, y: 67 },
+      },
+      {
+        id: 5,
+        number: "3",
+        title: "Smart User Management Policies",
+        description:
+          "Configure how new users are handled - from automatic evaluation accounts to domain-based production access, or webhook-driven custom logic for user onboarding.",
+        position: { x: 50, y: 88 },
+      },
+    ],
+  },
+  {
+    id: 5,
     title: "Dashboard using Dexie's API",
     description:
       "Built a comprehensive analytics dashboard using Dexie's API to monitor user growth, app performance, and production metrics. Essential insights without complex analytics infrastructure.",

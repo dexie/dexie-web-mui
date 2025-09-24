@@ -254,7 +254,7 @@ function CustomProductHero() {
               mb: 3,
             }}
           >
-            The natural way to use
+            The smarter way to use
             <br />
             <TypeWriter
               colorClass=""
@@ -437,7 +437,7 @@ export default function ProductPage() {
           Why Dexie.js?
         </Typography>
         <Typography variant="h6" color="text.secondary" paragraph>
-          The natural way to use IndexedDB
+          The smarter way to use IndexedDB
         </Typography>
 
         <Box sx={{ mt: 4 }}>
