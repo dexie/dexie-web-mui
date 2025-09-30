@@ -28,6 +28,7 @@ export default function Navbar() {
     useState<null | HTMLElement>(null)
   const [productMenuAnchor, setProductMenuAnchor] =
     useState<null | HTMLElement>(null)
+  const [mounted, setMounted] = useState(false)
   const theme = useTheme()
   const pathname = usePathname()
 
@@ -50,7 +51,14 @@ export default function Navbar() {
     setProductMenuAnchor(null)
   }
 
+  // Handle client-side mounting to prevent hydration mismatch
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
     const handleScroll = () => {
       const isScrolled = window.scrollY > 20
       setScrolled(isScrolled)
@@ -61,9 +69,11 @@ export default function Navbar() {
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [mounted])
 
   useEffect(() => {
+    if (!mounted) return
+
     const fetchStars = async () => {
       try {
         const response = await fetch(
@@ -76,16 +86,17 @@ export default function Navbar() {
       }
     }
     fetchStars()
-  }, [])
+  }, [mounted])
 
   return (
     <AppBar
       position="fixed"
       elevation={0}
       sx={{
-        backgroundColor: scrolled
-          ? theme.palette.background.default
-          : "transparent",
+        backgroundColor:
+          mounted && scrolled
+            ? theme.palette.background.default
+            : "transparent",
         transition: "all 0.3s ease-in-out",
       }}
     >
@@ -385,56 +396,51 @@ export default function Navbar() {
 
         {/* Sign In Button - Right */}
         <Box sx={{ flex: "0 0 auto" }}>
-          <Link
+          <Button
+            component="a"
             href="https://manager.dexie.cloud"
             target="_blank"
-            passHref
-            style={{
+            rel="noopener noreferrer"
+            variant="outlined"
+            sx={{
+              textTransform: "uppercase",
               textDecoration: "none !important",
+              fontWeight: 400,
+              fontSize: "13px",
+              letterSpacing: "0.65px",
+              padding: "6px 15px !important",
+              height: "33.5px",
+              minWidth: "104.922px",
+              borderRadius: "30px",
+              border: `1px solid ${theme.palette.secondary.main}`,
+              color: `${theme.palette.secondary.main} !important`,
+              backgroundColor: "transparent",
+              boxSizing: "border-box",
+              cursor: "pointer",
+              display: "flex",
+              textAlign: "center",
+              verticalAlign: "middle",
+              userSelect: "none",
+              lineHeight: "19.5px",
+              transition:
+                "color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.main,
+                color: `${theme.palette.background.default} !important`,
+                borderColor: theme.palette.secondary.main,
+              },
             }}
+            startIcon={
+              <LockIcon
+                sx={{
+                  height: "16px",
+                  mt: "2px",
+                }}
+              />
+            }
           >
-            <Button
-              variant="outlined"
-              color="secondary"
-              sx={{
-                textTransform: "uppercase",
-                fontWeight: 400,
-                fontSize: "13px",
-                letterSpacing: "0.65px",
-                padding: "6px 15px !important",
-                height: "33.5px",
-                minWidth: "104.922px",
-                borderRadius: "30px",
-                border: `1px solid ${theme.palette.secondary.main}`,
-                color: theme.palette.secondary.main,
-                backgroundColor: "transparent",
-                boxSizing: "border-box",
-                cursor: "pointer",
-                display: "flex",
-                textAlign: "center",
-                verticalAlign: "middle",
-                userSelect: "none",
-                lineHeight: "19.5px",
-                transition:
-                  "color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out",
-                "&:hover": {
-                  backgroundColor: theme.palette.secondary.main,
-                  color: theme.palette.background.default,
-                  borderColor: theme.palette.secondary.main,
-                },
-              }}
-              startIcon={
-                <LockIcon
-                  sx={{
-                    height: "16px",
-                    mt: "2px",
-                  }}
-                />
-              }
-            >
-              Sign In
-            </Button>
-          </Link>
+            Sign In
+          </Button>
         </Box>
       </Toolbar>
     </AppBar>
