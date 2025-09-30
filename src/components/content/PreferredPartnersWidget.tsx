@@ -343,9 +343,9 @@ export default function PreferredPartnersWidget({
                   flex: 1, // Added to take up remaining space
                 }}
               >
-                Are you an expert in Dexie Cloud and offline-first development? Join
-                our preferred partner program and help businesses implement robust
-                offline-first solutions.
+                Are you an expert in Dexie Cloud and offline-first development?
+                Join our preferred partner program and help businesses implement
+                robust offline-first solutions.
               </Typography>
               <Button
                 href="#contact"

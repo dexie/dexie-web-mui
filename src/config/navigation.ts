@@ -59,11 +59,6 @@ export const menuItems: MenuItem[] = [
       },
       { divider: true },
       {
-        text: "Private support",
-        href: "/contact#private-support-issues",
-        external: false,
-      },
-      {
         text: "Report issue with Dexie Cloud service",
         href: "https://betteruptime.com/report/ArgfwoqUmwYQCdwYWHRUDkdc",
         external: true,

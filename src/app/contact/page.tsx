@@ -237,7 +237,7 @@ export default function ContactPage() {
           display: "flex",
           minWidth: "100%",
           flexDirection: "column",
-          padding: 40,
+          padding: { xs: 3, md: 6, lg: 12, xl: 40 },
           paddingTop: "200px !important",
           paddingBottom: "100px !important",
           background:
