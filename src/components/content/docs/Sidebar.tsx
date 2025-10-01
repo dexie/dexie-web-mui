@@ -52,14 +52,15 @@ const Sidebar: React.FC<SidebarProps> = ({
               fontWeight: 700,
               maxWidth: "250px",
               overflow: "hidden",
-              textOverflow: "ellipsis",
               whiteSpace: "nowrap",
               textDecoration: "none",
               color: isActive ? "#c77dff" : "inherit",
             }}
             title={item.title}
           >
-            {item.title}
+            {item.title.length > 28
+              ? `...${item.title.slice(-26)}`
+              : item.title}
           </Link>
         </ListItem>
       )
