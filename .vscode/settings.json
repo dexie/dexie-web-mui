@@ -1,0 +1,13 @@
+{
+  "typescript.preferences.noSemicolons": "off",
+  "typescript.suggest.includeCompletionsForImportStatements": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "debug.javascript.unmapMissingSources": true,
+  "debug.javascript.autoAttachFilter": "onlyWithFlag",
+  "debug.javascript.breakOnConditionalError": true,
+  "debug.allowBreakpointsEverywhere": true,
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.next": true
+  }
+}
