@@ -54,8 +54,6 @@ const Sidebar: React.FC<SidebarProps> = ({
               overflow: "hidden",
               textOverflow: "ellipsis",
               whiteSpace: "nowrap",
-              direction: "rtl",
-              textAlign: "left",
               textDecoration: "none",
               color: isActive ? "#c77dff" : "inherit",
             }}
