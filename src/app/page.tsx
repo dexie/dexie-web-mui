@@ -158,35 +158,35 @@ const testimonials: TestimonialItem[] = [
   {
     author: "David Fahlander",
     role: "Founder of Dexie.js",
-    image: "/api/placeholder/80/80",
+    image: "/assets/images/testimonials/david.jpg",
     quote:
       "With Dexie, we've made IndexedDB accessible to all web developers. No more complex database operations.",
   },
   {
     author: "Alba Rincon",
     role: "Founder of Routickr",
-    image: "/api/placeholder/80/80",
+    image: "/assets/images/testimonials/albarin.jpg",
     quote:
       "Integrating Dexie Cloud was seamless. Sync and auth worked in minutes, and the docs made everything easy.",
   },
   {
     author: "Dusty Phillips",
     role: "Founder of Fablehenge",
-    image: "/api/placeholder/80/80",
+    image: "/assets/images/testimonials/dusty2.jpeg",
     quote:
       "Dexie Cloud makes offline-first and sync effortless. It’s the perfect abstraction for a small team to ship big features.",
   },
   {
     author: "Anton Andreasson",
     role: "Founder of Birdlist",
-    image: "/api/placeholder/80/80",
+    image: "/assets/images/testimonials/naton2.jpeg",
     quote:
       "Dexie Cloud made sharing bird lists and managing invites simple. It’s fast, reliable, and easy to use.",
   },
   {
     author: "Bennie Forss",
     role: "Founder of Zenta AB",
-    image: "/api/placeholder/80/80",
+    image: "/assets/images/testimonials/bennie.jpg",
     quote:
       "What truly sets Dexie Cloud apart is its ability to unleash productivity and nurturing creativity. Unlike other platforms, Dexie Cloud doesn't confine our visions; it expands them.",
   },
