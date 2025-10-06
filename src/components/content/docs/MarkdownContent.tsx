@@ -14,7 +14,9 @@ import {
   TableRow,
   Box,
 } from "@mui/material"
-import CodeBlock from "../shared/CodeBlock"
+import dynamic from "next/dynamic"
+
+const CodeBlock = dynamic(() => import("../shared/CodeBlock"), { ssr: false })
 
 interface MarkdownContentProps {
   children: React.ReactNode
@@ -352,24 +354,28 @@ export const components = {
     ...props
   }: React.TableHTMLAttributes<HTMLTableElement>) => {
     const convertedProps = convertProps(props)
-    
+
     // Check if children are already wrapped in table sections (thead, tbody, tfoot)
     const childrenArray = React.Children.toArray(children)
     const hasTableSections = childrenArray.some((child) => {
       if (React.isValidElement(child)) {
-        return child.type === TableHead || 
-               child.type === TableBody ||
-               (typeof child.type === 'string' && 
-                ['thead', 'tbody', 'tfoot'].includes(child.type))
+        return (
+          child.type === TableHead ||
+          child.type === TableBody ||
+          (typeof child.type === "string" &&
+            ["thead", "tbody", "tfoot"].includes(child.type))
+        )
       }
       return false
     })
 
     // If no explicit table sections are found, wrap all children in TableBody
-    const tableContent = hasTableSections ? children : (
+    const tableContent = hasTableSections ? (
+      children
+    ) : (
       <TableBody>{children}</TableBody>
     )
-    
+
     return (
       <TableContainer
         component={Paper}

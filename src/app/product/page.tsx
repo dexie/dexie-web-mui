@@ -4,26 +4,17 @@ import React, { useState } from "react"
 import { Box, Typography, Button, Divider } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import CodeIcon from "@mui/icons-material/Code"
-import GitHubIcon from "@mui/icons-material/GitHub"
-import AddIcon from "@mui/icons-material/Add"
-import CloudIcon from "@mui/icons-material/Cloud"
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import Image from "next/image"
 import TypeWriter from "@/components/content/shared/TypeWriter"
 import CodeBlock from "@/components/content/shared/CodeBlock"
-import Brands from "@/components/content/hero/Brands"
 import Benefits, {
   BenefitItem,
 } from "@/components/content/Benefits/BenefitsWidget"
-import TestimonialsWidget, {
-  TestimonialItem,
-} from "@/components/content/TestimonialsWidget"
+import { TestimonialItem } from "@/components/content/TestimonialsWidget"
 import CallToActionWidget from "@/components/content/CallToActionWidget"
-import FeatureScreenshotWidget from "@/components/content/FeatureScreenshotWidget"
-import BlogPostsWidget, {
-  BlogPostItem,
-} from "@/components/content/BlogPostsWidget"
+import BlogPostsWidget from "@/components/content/BlogPostsWidget"
 import { blogPostsData } from "../page"
 
 // Why Dexie.js? - Benefits data
