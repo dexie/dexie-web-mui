@@ -104,7 +104,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 sx={{ mt: 3 }}
                 {...convertProps(attribs || {})}
               >
-                {domToReact(children as DOMNode[], options)}
+                {domToReact(children, options)}
               </Typography>
             )
           case 'h4':
@@ -117,7 +117,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 sx={{ mt: 3 }}
                 {...convertProps(attribs || {})}
               >
-                {domToReact(children as DOMNode[], options)}
+                {domToReact(children, options)}
               </Typography>
             )
           case 'p':
@@ -129,7 +129,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 paragraph
                 {...convertProps(attribs || {})}
               >
-                {domToReact(children as DOMNode[], options)}
+                {domToReact(children, options)}
               </Typography>
             )
           case 'a':
@@ -160,7 +160,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 underline="hover"
                 {...linkProps}
               >
-                {domToReact(children as DOMNode[], options)}
+                {domToReact(children, options)}
               </Link>
             )
           case 'ul':
@@ -178,7 +178,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 }}
                 {...convertProps(attribs || {})}
               >
-                {domToReact(children as DOMNode[], options)}
+                {domToReact(children, options)}
               </List>
             )
           case 'ol':
@@ -197,7 +197,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 }}
                 {...convertProps(attribs || {})}
               >
-                {domToReact(children as DOMNode[], options)}
+                {domToReact(children, options)}
               </List>
             )
           case 'li':
@@ -214,7 +214,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 <ListItemText
                   primary={
                     <Typography component="span" variant="body1">
-                      {domToReact(children as DOMNode[], options)}
+                      {domToReact(children, options)}
                     </Typography>
                   }
                   sx={{ m: 0 }}
@@ -223,7 +223,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
             )
           case 'pre':
             // For code blocks, let the code component handle it
-            return <>{domToReact(children as DOMNode[], options)}</>
+            return <>{domToReact(children, options)}</>
           case 'code':
             const className = attribs?.class
             // Check if this is inside a pre element
@@ -233,7 +233,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
               // This is a code block from markdown (```language)
               const match = /language-(\w+)/.exec(className || "")
               const language = match ? match[1] : "javascript"
-              const codeString = domToReact(children as DOMNode[], options)?.toString() || ""
+              const codeString = domToReact(children, options)?.toString() || ""
 
               return (
                 <Box
@@ -270,7 +270,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                   }}
                   {...convertProps(attribs || {})}
                 >
-                  {domToReact(children as DOMNode[], options)}
+                  {domToReact(children, options)}
                 </Box>
               )
             }
@@ -291,7 +291,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 }}
                 {...convertProps(attribs || {})}
               >
-                <Typography component="div">{domToReact(children as DOMNode[], options)}</Typography>
+                <Typography component="div">{domToReact(children, options)}</Typography>
               </Paper>
             )
           case 'table':
@@ -306,25 +306,25 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 }}
                 {...convertProps(attribs || {})}
               >
-                <Table>{domToReact(children as DOMNode[], options)}</Table>
+                <Table>{domToReact(children, options)}</Table>
               </TableContainer>
             )
           case 'thead':
-            return <TableHead key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children as DOMNode[], options)}</TableHead>
+            return <TableHead key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children, options)}</TableHead>
           case 'tbody':
-            return <TableBody key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children as DOMNode[], options)}</TableBody>
+            return <TableBody key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children, options)}</TableBody>
           case 'tr':
-            return <TableRow key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children as DOMNode[], options)}</TableRow>
+            return <TableRow key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children, options)}</TableRow>
           case 'th':
             return (
               <TableCell key={Math.random()} component="th" {...convertProps(attribs || {})}>
                 <Typography variant="subtitle2" component="span">
-                  {domToReact(children as DOMNode[], options)}
+                  {domToReact(children, options)}
                 </Typography>
               </TableCell>
             )
           case 'td':
-            return <TableCell key={Math.random()} component="td" {...convertProps(attribs || {})}>{domToReact(children as DOMNode[], options)}</TableCell>
+            return <TableCell key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children, options)}</TableCell>
           case 'img':
             return (
               <Box
@@ -344,13 +344,13 @@ function parseHTMLToComponents(html: string): React.ReactNode {
           case 'div':
             return (
               <Box key={Math.random()} component="div" {...convertProps(attribs || {})}>
-                {domToReact(children as DOMNode[], options)}
+                {domToReact(children, options)}
               </Box>
             )
           case 'span':
             return (
               <Box key={Math.random()} component="span" {...convertProps(attribs || {})}>
-                {domToReact(children as DOMNode[], options)}
+                {domToReact(children, options)}
               </Box>
             )
           case 'hr':
@@ -368,7 +368,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 key: Math.random(),
                 ...convertProps(attribs || {}),
               },
-              domToReact(children as DOMNode[], options)
+              domToReact(children, options)
             )
         }
       }

@@ -1,8 +1,9 @@
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
-import { serialize } from "next-mdx-remote/serialize"
-import { MDXRemoteSerializeResult } from "next-mdx-remote"
+import { unified } from "unified"
+import remarkParse from "remark-parse"
+import remarkHtml from "remark-html"
 import remarkGfm from "remark-gfm"
 
 // Document source types
@@ -114,89 +115,39 @@ export function getDocumentBySlug(
 }
 
 // Serialize Markdown content for rendering (uses MDX instead of plain HTML)
-export async function serializeMarkdown(
-  content: string
-): Promise<MDXRemoteSerializeResult> {
-  // Preprocess content to convert HTML table tags to JSX syntax
-  const parts = content.split(/(```[\s\S]*?```)/g)
-  const processedContent = parts
-    .map((part, index) => {
-      if (index % 2 === 0) {
-        // This is not a code block, apply replacements
-        return (
-          part
-            // Convert automatic links in angle brackets to markdown links
-            .replace(/<(https?:\/\/[^>]+)>/g, "[$1]($1)")
-            // Remove Jekyll/Kramdown attributes like {:target="_blank"}
-            .replace(/\{:[^}]*\}/g, "")
-            // Remove Jekyll Liquid tags like {% raw %} and {% endraw %}
-            .replace(/\{%\s*raw\s*%\}/g, "")
-            .replace(/\{%\s*endraw\s*%\}/g, "")
-            // Remove other Jekyll Liquid tags
-            .replace(/\{%[^}]*%\}/g, "")
-            // Convert self-closing HTML tags to JSX format
-            .replace(/<br\s*\/?>/g, "<br />")
-            .replace(/<hr\s*\/?>/g, "<hr />")
-            .replace(/<img([^>]*)\s*\/?>/g, "<img$1 />")
-            .replace(/<input([^>]*)\s*\/?>/g, "<input$1 />")
-            .replace(/<meta([^>]*)\s*\/?>/g, "<meta$1 />")
-            .replace(/<link([^>]*)\s*\/?>/g, "<link$1 />")
-            // Convert HTML table tags to JSX
-            .replace(/<table([^>]*)>/g, "<Table$1>")
-            .replace(/<\/table>/g, "</Table>")
-            .replace(/<thead([^>]*)>/g, "<TableHead$1>")
-            .replace(/<\/thead>/g, "</TableHead>")
-            .replace(/<tbody([^>]*)>/g, "<TableBody$1>")
-            .replace(/<\/tbody>/g, "</TableBody>")
-            .replace(/<tr([^>]*)>/g, "<TableRow$1>")
-            .replace(/<\/tr>/g, "</TableRow>")
-            .replace(/<th([^>]*)>/g, "<TableHeaderCell$1>")
-            .replace(/<\/th>/g, "</TableHeaderCell>")
-            .replace(/<td([^>]*)>/g, "<TableCell$1>")
-            .replace(/<\/td>/g, "</TableCell>")
-            // Escape curly braces in text that might be interpreted as JSX expressions
-            // This handles patterns like "function (value) { return true/false; }"
-            .replace(/function\s*\([^)]*\)\s*\{\s*[^}]*\s*\}/g, (match) => {
-              // Wrap function signatures in backticks to make them code spans
-              return `\`${match}\``
-            })
-            // Handle type annotations like {minInterval: number} in tables
-            .replace(/`\{([^}]*)\}`/g, "`\\{$1\\}`")
-            // Also escape standalone curly braces that aren't in code blocks
-            .replace(
-              /(?<!`[\s\S]*?)\{([^}]*)\}(?![\s\S]*?`)/g,
-              (match, content) => {
-                // Only escape if it's not already in backticks and contains problematic patterns
-                if (
-                  content.includes("return") ||
-                  content.includes(";") ||
-                  content.includes("function") ||
-                  content.includes(":") ||
-                  content.includes("'") ||
-                  content.includes('"')
-                ) {
-                  return `\\{${content}\\}`
-                }
-                return match
-              }
-            )
-        )
+export async function serializeMarkdown(content: string): Promise<string> {
+  // Preprocess content to handle Jekyll attributes and other transformations
+  const processedContent = content
+    // Convert Jekyll image attributes like {:width="200px"} to style attributes
+    .replace(
+      /<img([^>]*)\s*\/?>(\s*)\{([^}]*)\}/g,
+      (match, imgAttrs, space, jekyllAttrs) => {
+        const styleAttrs =
+          jekyllAttrs.match(/width="([^"]*)"/)?.[1] ||
+          jekyllAttrs.match(/height="([^"]*)"/)?.[1] ||
+          ""
+        if (styleAttrs) {
+          return `<img${imgAttrs} style="width:${styleAttrs}" />`
+        }
+        return `<img${imgAttrs} />`
       }
-      // This is a code block, return as is
-      return part
+    )
+    // Remove other Jekyll attributes
+    .replace(/\{:[^}]*\}/g, "")
+    // Remove Jekyll Liquid tags
+    .replace(/\{%\s*raw\s*%\}/g, "")
+    .replace(/\{%\s*endraw\s*%\}/g, "")
+    .replace(/\{%[^}]*%\}/g, "")
+
+  const result = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkHtml, {
+      sanitize: false, // Allow raw HTML
     })
-    .join("")
+    .process(processedContent)
 
-  const result = await serialize(processedContent, {
-    mdxOptions: {
-      remarkPlugins: [remarkGfm],
-      rehypePlugins: [],
-      development: process.env.NODE_ENV === "development",
-    },
-    parseFrontmatter: true,
-  })
-
-  return result
+  return result.toString()
 }
 
 interface NavItem {
@@ -324,12 +275,11 @@ export function generateCloudNavigation(): NavStructure {
 
 // Convert Markdown to HTML (for simpler usage) - deprecated, use serializeMarkdown instead
 export async function markdownToHtml(markdown: string): Promise<string> {
-  await serialize(markdown, {
-    mdxOptions: {
-      remarkPlugins: [remarkGfm],
-    },
-  })
+  const result = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkHtml)
+    .process(markdown)
 
-  // This is a fallback - you should use serializeMarkdown and MDX components instead
-  return `<div>Please use serializeMarkdown with MDX components instead</div>`
+  return result.toString()
 }
