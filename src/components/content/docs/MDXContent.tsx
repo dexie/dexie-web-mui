@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import {
   Typography,
   Box,
@@ -22,11 +22,13 @@ interface MDXContentProps {
 
 // Convert HTML attributes to MUI props
 function convertProps(props: Record<string, any>) {
-  const { style, className, ...rest } = props
+  const { style, className, class: classAttr, ...rest } = props
   const converted: Record<string, any> = { ...rest }
 
-  if (className) {
-    converted.className = className
+  // Handle both className and class attributes (class gets converted to className)
+  const finalClassName = className || classAttr
+  if (finalClassName) {
+    converted.className = finalClassName
   }
 
   if (style) {
@@ -429,7 +431,20 @@ function parseHTMLToComponents(html: string): React.ReactNode {
 }
 
 export default function MDXContent({ source }: MDXContentProps) {
-  const content = parseHTMLToComponents(source)
+  const [isClient, setIsClient] = useState(false)
+  
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+  
+  const content = useMemo(() => {
+    if (!isClient) return null
+    return parseHTMLToComponents(source)
+  }, [source, isClient])
+
+  if (!isClient) {
+    return <Box className="mdx-content" sx={{ maxWidth: "none" }} />
+  }
 
   return (
     <Box className="mdx-content" sx={{ maxWidth: "none" }}>
