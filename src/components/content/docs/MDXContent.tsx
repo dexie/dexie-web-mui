@@ -8,17 +8,11 @@ import {
   List,
   ListItem,
   ListItemText,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
   Divider,
 } from "@mui/material"
 import dynamic from "next/dynamic"
-import parse, { domToReact, Element, DOMNode } from 'html-react-parser'
+import parse, { domToReact, Element, DOMNode } from "html-react-parser"
 
 const CodeBlock = dynamic(() => import("../shared/CodeBlock"), { ssr: false })
 
@@ -43,17 +37,21 @@ function convertProps(props: Record<string, any>) {
 }
 
 // Parse inline style string to MUI sx object
-function parseStyleString(styleString: string | undefined): Record<string, string> {
+function parseStyleString(
+  styleString: string | undefined
+): Record<string, string> {
   if (!styleString) return {}
 
   const styles: Record<string, string> = {}
-  const declarations = styleString.split(';').filter(s => s.trim())
+  const declarations = styleString.split(";").filter((s) => s.trim())
 
-  declarations.forEach(declaration => {
-    const [property, value] = declaration.split(':').map(s => s.trim())
+  declarations.forEach((declaration) => {
+    const [property, value] = declaration.split(":").map((s) => s.trim())
     if (property && value) {
       // Convert CSS property names to camelCase
-      const camelProperty = property.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
+      const camelProperty = property.replace(/-([a-z])/g, (_, letter) =>
+        letter.toUpperCase()
+      )
       styles[camelProperty] = value
     }
   })
@@ -63,16 +61,19 @@ function parseStyleString(styleString: string | undefined): Record<string, strin
 
 // Custom HTML parser that converts HTML to MUI components
 function parseHTMLToComponents(html: string): React.ReactNode {
+  let keyCounter = 0
+  const getKey = () => `mdx-${++keyCounter}`
+
   const options = {
     replace: (domNode: Element | { type: string; data: string }) => {
       if (domNode instanceof Element) {
         const { name, attribs, children } = domNode
 
         switch (name) {
-          case 'h1':
+          case "h1":
             return (
               <Typography
-                key={Math.random()}
+                key={getKey()}
                 variant="h1"
                 component="h1"
                 gutterBottom
@@ -81,10 +82,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {domToReact(children as DOMNode[], options)}
               </Typography>
             )
-          case 'h2':
+          case "h2":
             return (
               <Typography
-                key={Math.random()}
+                key={getKey()}
                 variant="h2"
                 component="h2"
                 gutterBottom
@@ -94,10 +95,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {domToReact(children as DOMNode[], options)}
               </Typography>
             )
-          case 'h3':
+          case "h3":
             return (
               <Typography
-                key={Math.random()}
+                key={getKey()}
                 variant="h3"
                 component="h3"
                 gutterBottom
@@ -107,10 +108,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {domToReact(children as DOMNode[], options)}
               </Typography>
             )
-          case 'h4':
+          case "h4":
             return (
               <Typography
-                key={Math.random()}
+                key={getKey()}
                 variant="h4"
                 component="h4"
                 gutterBottom
@@ -120,10 +121,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {domToReact(children as DOMNode[], options)}
               </Typography>
             )
-          case 'p':
+          case "p":
             return (
               <Typography
-                key={Math.random()}
+                key={getKey()}
                 variant="body1"
                 component="div"
                 paragraph
@@ -132,7 +133,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {domToReact(children as DOMNode[], options)}
               </Typography>
             )
-          case 'a':
+          case "a":
             const href = attribs?.href
             const isExternal =
               href &&
@@ -153,7 +154,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
 
             return (
               <Link
-                key={Math.random()}
+                key={getKey()}
                 href={href}
                 color="primary"
                 sx={{ fontWeight: 600 }}
@@ -163,10 +164,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {domToReact(children as DOMNode[], options)}
               </Link>
             )
-          case 'ul':
+          case "ul":
             return (
               <List
-                key={Math.random()}
+                key={getKey()}
                 sx={{
                   mb: 3,
                   listStyleType: "disc",
@@ -181,10 +182,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {domToReact(children as DOMNode[], options)}
               </List>
             )
-          case 'ol':
+          case "ol":
             return (
               <List
-                key={Math.random()}
+                key={getKey()}
                 component="ol"
                 sx={{
                   mb: 3,
@@ -200,10 +201,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {domToReact(children as DOMNode[], options)}
               </List>
             )
-          case 'li':
+          case "li":
             return (
               <ListItem
-                key={Math.random()}
+                key={getKey()}
                 sx={{
                   py: 0.25,
                   display: "list-item",
@@ -221,23 +222,25 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 />
               </ListItem>
             )
-          case 'pre':
+          case "pre":
             // For code blocks, let the code component handle it
             return <>{domToReact(children as DOMNode[], options)}</>
-          case 'code':
+          case "code":
             const className = attribs?.class
             // Check if this is inside a pre element
-            const isInPre = domNode.parent && (domNode.parent as Element).name === 'pre'
+            const isInPre =
+              domNode.parent && (domNode.parent as Element).name === "pre"
 
             if (isInPre) {
               // This is a code block from markdown (```language)
               const match = /language-(\w+)/.exec(className || "")
               const language = match ? match[1] : "javascript"
-              const codeString = domToReact(children as DOMNode[], options)?.toString() || ""
+              const codeString =
+                domToReact(children as DOMNode[], options)?.toString() || ""
 
               return (
                 <Box
-                  key={Math.random()}
+                  key={getKey()}
                   sx={{
                     mb: 3,
                     background: "rgba(255, 255, 255, 0.1)",
@@ -258,7 +261,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
               // Inline code
               return (
                 <Box
-                  key={Math.random()}
+                  key={getKey()}
                   component="code"
                   sx={{
                     fontFamily: "monospace",
@@ -274,10 +277,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 </Box>
               )
             }
-          case 'blockquote':
+          case "blockquote":
             return (
               <Paper
-                key={Math.random()}
+                key={getKey()}
                 component="blockquote"
                 elevation={0}
                 sx={{
@@ -291,44 +294,83 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 }}
                 {...convertProps(attribs || {})}
               >
-                <Typography component="div">{domToReact(children as DOMNode[], options)}</Typography>
+                <Typography component="div">
+                  {domToReact(children as DOMNode[], options)}
+                </Typography>
               </Paper>
             )
-          case 'table':
+          case "table":
             return (
-              <TableContainer
-                key={Math.random()}
-                component={Paper}
-                sx={{
-                  mb: 3,
+              <div
+                style={{
+                  marginBottom: "24px",
                   width: "fit-content",
                   maxWidth: "100%",
+                  overflow: "auto",
+                  border: "1px solid rgba(255, 255, 255, 0.12)",
+                  borderRadius: "4px",
                 }}
                 {...convertProps(attribs || {})}
               >
-                <Table>{domToReact(children as DOMNode[], options)}</Table>
-              </TableContainer>
+                <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                  {domToReact(children as DOMNode[], options)}
+                </table>
+              </div>
             )
-          case 'thead':
-            return <TableHead key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children as DOMNode[], options)}</TableHead>
-          case 'tbody':
-            return <TableBody key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children as DOMNode[], options)}</TableBody>
-          case 'tr':
-            return <TableRow key={Math.random()} {...convertProps(attribs || {})}>{domToReact(children as DOMNode[], options)}</TableRow>
-          case 'th':
+          case "thead":
             return (
-              <TableCell key={Math.random()} component="th" {...convertProps(attribs || {})}>
+              <thead {...convertProps(attribs || {})}>
+                {domToReact(children as DOMNode[], options)}
+              </thead>
+            )
+          case "tbody":
+            return (
+              <tbody {...convertProps(attribs || {})}>
+                {domToReact(children as DOMNode[], options)}
+              </tbody>
+            )
+          case "tr":
+            return (
+              <tr
+                style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.12)" }}
+                {...convertProps(attribs || {})}
+              >
+                {domToReact(children as DOMNode[], options)}
+              </tr>
+            )
+          case "th":
+            return (
+              <th
+                style={{
+                  padding: "16px",
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  borderBottom: "2px solid rgba(255, 255, 255, 0.12)",
+                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                }}
+                {...convertProps(attribs || {})}
+              >
                 <Typography variant="subtitle2" component="span">
                   {domToReact(children as DOMNode[], options)}
                 </Typography>
-              </TableCell>
+              </th>
             )
-          case 'td':
-            return <TableCell key={Math.random()} component="td" {...convertProps(attribs || {})}>{domToReact(children as DOMNode[], options)}</TableCell>
-          case 'img':
+          case "td":
+            return (
+              <td
+                style={{
+                  padding: "16px",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
+                }}
+                {...convertProps(attribs || {})}
+              >
+                {domToReact(children as DOMNode[], options)}
+              </td>
+            )
+          case "img":
             return (
               <Box
-                key={Math.random()}
+                key={getKey()}
                 component="img"
                 src={attribs?.src}
                 alt={attribs?.alt || ""}
@@ -341,22 +383,30 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {...convertProps(attribs || {})}
               />
             )
-          case 'div':
+          case "div":
             return (
-              <Box key={Math.random()} component="div" {...convertProps(attribs || {})}>
+              <Box
+                key={getKey()}
+                component="div"
+                {...convertProps(attribs || {})}
+              >
                 {domToReact(children as DOMNode[], options)}
               </Box>
             )
-          case 'span':
+          case "span":
             return (
-              <Box key={Math.random()} component="span" {...convertProps(attribs || {})}>
+              <Box
+                key={getKey()}
+                component="span"
+                {...convertProps(attribs || {})}
+              >
                 {domToReact(children as DOMNode[], options)}
               </Box>
             )
-          case 'hr':
+          case "hr":
             return (
               <Divider
-                key={Math.random()}
+                key={getKey()}
                 sx={{ my: 3 }}
                 {...convertProps(attribs || {})}
               />
@@ -365,7 +415,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
             return React.createElement(
               name,
               {
-                key: Math.random(),
+                key: getKey(),
                 ...convertProps(attribs || {}),
               },
               domToReact(children as DOMNode[], options)
@@ -382,7 +432,7 @@ export default function MDXContent({ source }: MDXContentProps) {
   const content = parseHTMLToComponents(source)
 
   return (
-    <Box className="mdx-content" sx={{ maxWidth: 'none' }}>
+    <Box className="mdx-content" sx={{ maxWidth: "none" }}>
       {content}
     </Box>
   )
