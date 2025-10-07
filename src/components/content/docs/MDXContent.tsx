@@ -432,11 +432,11 @@ function parseHTMLToComponents(html: string): React.ReactNode {
 
 export default function MDXContent({ source }: MDXContentProps) {
   const [isClient, setIsClient] = useState(false)
-  
+
   useEffect(() => {
     setIsClient(true)
   }, [])
-  
+
   const content = useMemo(() => {
     if (!isClient) return null
     return parseHTMLToComponents(source)

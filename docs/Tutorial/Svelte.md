@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: 'Get started with Dexie in Svelte'
+title: "Get started with Dexie in Svelte"
 ---
 
 <div style="opacity: 0.8; padding: 40px 0 40px 0">
@@ -39,12 +39,12 @@ Applications typically have one single Dexie instance declared as its own module
 
 ```ts
 // db.js
-import Dexie from 'dexie';
+import Dexie from "dexie"
 
-export const db = new Dexie('myDatabase');
+export const db = new Dexie("myDatabase")
 db.version(1).stores({
-  friends: '++id, name, age' // Primary key and indexed props
-});
+  friends: "++id, name, age", // Primary key and indexed props
+})
 ```
 
 ### Using Typescript?
@@ -53,28 +53,28 @@ If you use Typescript, table properties (such as `db.friends`) needs to be expli
 
 ```ts
 // db.ts
-import Dexie, { type EntityTable } from 'dexie';
+import Dexie, { type EntityTable } from "dexie"
 
 interface Friend {
-  id: number;
-  name: string;
-  age: number;
+  id: number
+  name: string
+  age: number
 }
 
-const db = new Dexie('FriendsDatabase') as Dexie & {
+const db = new Dexie("FriendsDatabase") as Dexie & {
   friends: EntityTable<
     Friend,
-    'id' // primary key "id" (for the typings only)
-  >;
-};
+    "id" // primary key "id" (for the typings only)
+  >
+}
 
 // Schema declaration:
 db.version(1).stores({
-  friends: '++id, name, age' // primary key "id" (for the runtime!)
-});
+  friends: "++id, name, age", // primary key "id" (for the runtime!)
+})
 
-export type { Friend };
-export { db };
+export type { Friend }
+export { db }
 ```
 
 _See also [issue 1560](https://github.com/dexie/Dexie.js/issues/1560) containing a solution to improve typings for `liveQuery()` in case you want a more precise typings of the '$' vars._
