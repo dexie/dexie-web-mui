@@ -169,10 +169,10 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 sx={{
                   mb: 3,
                   listStyleType: "disc",
-                  pl: 2,
+                  pl: 3, // Öka från 2 till 4 för mer förskjutning
                   "& .MuiListItem-root": {
                     display: "list-item",
-                    pl: 0,
+                    pl: 0, // Lägg till extra padding här också
                   },
                 }}
                 {...convertProps(attribs || {})}
@@ -187,11 +187,11 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 component="ol"
                 sx={{
                   mb: 3,
-                  pl: 2,
+                  pl: 4, // Öka från 2 till 4 för mer förskjutning
                   listStyleType: "decimal",
                   "& .MuiListItem-root": {
                     display: "list-item",
-                    pl: 0,
+                    pl: 1, // Lägg till extra padding här också
                   },
                 }}
                 {...convertProps(attribs || {})}
@@ -206,18 +206,11 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 sx={{
                   py: 0.25,
                   display: "list-item",
-                  pl: 0,
+                  pl: 2, // Öka detta värde för att förskjuta markören mer åt höger
                 }}
                 {...convertProps(attribs || {})}
               >
-                <ListItemText
-                  primary={
-                    <Typography component="span" variant="body1">
-                      {domToReact(children as DOMNode[], options)}
-                    </Typography>
-                  }
-                  sx={{ m: 0 }}
-                />
+                {domToReact(children as DOMNode[], options)}
               </ListItem>
             )
           case "pre":
@@ -241,12 +234,11 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                   key={getKey()}
                   sx={{
                     mb: 3,
-                    background: "rgba(255, 255, 255, 0.1)",
+                    background: "rgba(255, 255, 255, 0.05)",
                     borderRadius: 2,
-                    border: "1px solid rgba(255, 255, 255, 0.15)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
                     p: 3,
                     mt: 2,
-                    maxWidth: "1200px",
                   }}
                 >
                   <CodeBlock
