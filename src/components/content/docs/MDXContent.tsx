@@ -299,6 +299,40 @@ function parseHTMLToComponents(html: string): React.ReactNode {
               </Paper>
             )
           case "table":
+            // Check if the table children need to be wrapped in tbody
+            const tableChildren = children as Element[]
+            const hasStructuralElements = tableChildren.some(
+              (child) =>
+                child.type === "tag" &&
+                ["thead", "tbody", "tfoot"].includes(child.name)
+            )
+
+            let tableContent
+            if (hasStructuralElements) {
+              // Table already has proper structure
+              tableContent = domToReact(children as DOMNode[], options)
+            } else {
+              // Wrap all tr elements in tbody
+              const trElements = tableChildren.filter(
+                (child) => child.type === "tag" && child.name === "tr"
+              )
+              const otherElements = tableChildren.filter(
+                (child) => !(child.type === "tag" && child.name === "tr")
+              )
+
+              tableContent = (
+                <>
+                  {otherElements.length > 0 &&
+                    domToReact(otherElements as DOMNode[], options)}
+                  {trElements.length > 0 && (
+                    <tbody>
+                      {domToReact(trElements as DOMNode[], options)}
+                    </tbody>
+                  )}
+                </>
+              )
+            }
+
             return (
               <div
                 style={{
@@ -312,7 +346,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {...convertProps(attribs || {})}
               >
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  {domToReact(children as DOMNode[], options)}
+                  {tableContent}
                 </table>
               </div>
             )
