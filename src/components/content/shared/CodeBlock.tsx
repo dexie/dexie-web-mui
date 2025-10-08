@@ -26,6 +26,38 @@ interface CodeBlockProps {
   commandOutput?: string | number[]
 }
 
+function formatCommandLine(
+  code: string,
+  language: string,
+  commandPrompt: string,
+  commandOutput?: string | number[]
+): string {
+  // Få rätt språk för Prism
+  const prismLanguage = Prism.languages[language] || Prism.languages.javascript
+  
+  const lines = code.split("\n").filter(line => line.trim() !== "")
+  
+  return lines
+    .map((line, index) => {
+      const lineNumber = index + 1
+      const highlighted = Prism.highlight(line, prismLanguage, language)
+      
+      // Kolla om denna rad är en output-rad
+      const isOutputLine = Array.isArray(commandOutput) 
+        ? commandOutput.includes(lineNumber)
+        : false
+      
+      if (isOutputLine) {
+        // Output-rad utan prompt - bara visa som output
+        return `<span class="command-line-prompt"><span data-prompt=""></span></span><span class="token output">${highlighted}</span>\n`
+      } else {
+        // Command-rad med prompt
+        return `<span class="command-line-prompt"><span data-prompt="${commandPrompt}"></span></span>${highlighted}\n`
+      }
+    })
+    .join("")
+}
+
 function formatCodeWithLineNumbers(
   code: string,
   language: string,
@@ -126,7 +158,10 @@ export default function CodeBlock({
   const prismLanguage = Prism.languages[language] || Prism.languages.javascript
 
   let formattedContent: string
-  if (
+  if (commandLine) {
+    // Hantera command-line formatering
+    formattedContent = formatCommandLine(code, language, commandPrompt, commandOutput)
+  } else if (
     showLineNumbers ||
     highlightLines.length > 0 ||
     strikethroughLines.length > 0

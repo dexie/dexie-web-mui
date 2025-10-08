@@ -1,6 +1,6 @@
 "use client"
 
-import { Box, Tabs, Tab } from "@mui/material"
+import { Box, Tabs, Tab, Divider } from "@mui/material"
 import { useState } from "react"
 import CodeBlock from "@/components/content/shared/CodeBlock"
 
@@ -135,7 +135,7 @@ db.version(1).stores({
         <CodeBlock
           language="js"
           showLineNumbers={true}
-          code={`	// Find some old friends
+          code={`// Find some old friends
 const oldFriends = await db.friends
   .where('age').above(75)
   .toArray();
@@ -182,20 +182,28 @@ await db.friends.add({
         />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <CodeBlock
-          language="bash"
-          showLineNumbers={false}
-          commandLine={true}
-          commandPrompt="~/web-app $"
-          code={`npx dexie-cloud create
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 4,
+          }}
+        >
+          <CodeBlock
+            language="bash"
+            showLineNumbers={false}
+            commandLine={true}
+            commandPrompt="~/web-app $"
+            code={`npx dexie-cloud create
 npx dexie-cloud whitelist http://localhost:3000
 npm install dexie@latest
 npm install dexie-cloud-addon`}
-        />
-        <CodeBlock
-          language="js"
-          showLineNumbers={true}
-          code={`import Dexie from "dexie";
+          />
+
+          <CodeBlock
+            language="js"
+            showLineNumbers={true}
+            code={`import Dexie from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
 const db = new Dexie('SyncedFriends', {addons: [dexieCloud]});
@@ -209,7 +217,8 @@ db.cloud.configure({
   databaseUrl: "https://<yourdatabase>.dexie.cloud",
   requireAuth: true // optional
 });`}
-        />
+          />
+        </Box>
       </TabPanel>
     </Box>
   )
