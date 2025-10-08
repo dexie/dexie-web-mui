@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: 'Typescript'
+title: "Typescript"
 ---
 
 This is a guide on how to use Dexie with Typescript using Dexie 4 - a little more lightweight than the old docs by utilizing new features in 4.0. Since Dexie 4 is practically backward compatible, you may also still follow [the old Typescript](Typescript-old) docs if your prefer to do so.
@@ -22,25 +22,25 @@ If you are storing plain data and just want the a minimal get-started code in a 
 ### db.ts
 
 ```ts
-import Dexie, { type EntityTable } from 'dexie';
+import Dexie, { type EntityTable } from "dexie"
 
 interface Friend {
-  id: number; // This prop will be used as primary key (see below)
-  name: string;
-  age: number;
+  id: number // This prop will be used as primary key (see below)
+  name: string
+  age: number
 }
 
-const db = new Dexie('FriendsDatabase') as Dexie & {
-  friends: EntityTable<Friend, 'id'>
-};
+const db = new Dexie("FriendsDatabase") as Dexie & {
+  friends: EntityTable<Friend, "id">
+}
 
 // Schema declaration:
 db.version(1).stores({
-  friends: '++id, name, age' // primary key "id" (for the runtime!)
-});
+  friends: "++id, name, age", // primary key "id" (for the runtime!)
+})
 
-export type { Friend };
-export { db };
+export type { Friend }
+export { db }
 ```
 
 _See [EntityTable](EntityTable)_
@@ -57,27 +57,27 @@ Here's an example of how to use mapped classes in Dexie 4. In this example, we s
 
 ```ts
 // db.ts
-import AppDB from './AppDB';
+import AppDB from "./AppDB"
 
-export const db = new AppDB();
+export const db = new AppDB()
 ```
 
 ### AppDB.ts
 
 ```ts
 // AppDB.ts
-import Dexie, { type EntityTable } from 'dexie';
-import Friend from './Friend';
+import Dexie, { type EntityTable } from "dexie"
+import Friend from "./Friend"
 
 export default class AppDB extends Dexie {
-  friends!: EntityTable<Friend, 'id'>;
+  friends!: EntityTable<Friend, "id">
 
   constructor() {
-    super('FriendsDB');
+    super("FriendsDB")
     this.version(1).stores({
-      friends: '++id, name, age'
-    });
-    this.friends.mapToClass(Friend);
+      friends: "++id, name, age",
+    })
+    this.friends.mapToClass(Friend)
   }
 }
 ```
@@ -87,18 +87,18 @@ export default class AppDB extends Dexie {
 ```ts
 // Friend.ts
 
-import { Entity } from 'dexie';
-import type AppDB from './AppDB';
+import { Entity } from "dexie"
+import type AppDB from "./AppDB"
 
 export default class Friend extends Entity<AppDB> {
-  id!: number;
-  name!: string;
-  age!: number;
+  id!: number
+  name!: string
+  age!: number
 
   // example method that access the DB:
   async birthday() {
     // this.db is inherited from Entity<AppDB>:
-    await this.db.friends.update(this.id, (friend) => ++friend.age);
+    await this.db.friends.update(this.id, (friend) => ++friend.age)
   }
 }
 ```
@@ -108,11 +108,11 @@ export default class Friend extends Entity<AppDB> {
 **React component**
 
 ```tsx
-import { db } from './db';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from "./db"
+import { useLiveQuery } from "dexie-react-hooks"
 
 function MyReactComponent() {
-  const friends = useLiveQuery(() => db.friends.toArray());
+  const friends = useLiveQuery(() => db.friends.toArray())
   return (
     <ul>
       {friends?.map((f) => (
@@ -121,25 +121,25 @@ function MyReactComponent() {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 ```
 
 **Plain Typescript**
 
 ```ts
-import { db } from './db';
+import { db } from "./db"
 
 async function addFriend(name: string, age: number) {
-  await db.friends.add({ name, age });
+  await db.friends.add({ name, age })
 }
 
 async function updateFriend(id: number, updates: Partial<Friend>) {
-  await db.friends.update(id, { ...updates });
+  await db.friends.update(id, { ...updates })
 }
 
 async function deleteFriend(id: number) {
-  await db.friends.delete(id);
+  await db.friends.delete(id)
 }
 ```
 
@@ -150,28 +150,28 @@ Synced tables have a few more properties that, similar to auto-generated primary
 ### AppDB.ts - Dexie Cloud version
 
 ```ts
-import Dexie from 'dexie';
-import dexieCloud, { type DexieCloudTable } from 'dexie-cloud-addon';
-import Friend from './Friend';
+import Dexie from "dexie"
+import dexieCloud, { type DexieCloudTable } from "dexie-cloud-addon"
+import Friend from "./Friend"
 
 export default class AppDB extends Dexie {
-  friends!: DexieCloudTable<Friend, 'id'>;
+  friends!: DexieCloudTable<Friend, "id">
 
   constructor() {
-    super('FriendsDB', {
-      addons: [dexieCloud]
-    });
+    super("FriendsDB", {
+      addons: [dexieCloud],
+    })
 
     this.version(1).stores({
-      friends: '@id, name, age'
-    });
+      friends: "@id, name, age",
+    })
 
-    this.friends.mapToClass(Friend);
+    this.friends.mapToClass(Friend)
 
     this.cloud.configure({
-      databaseUrl: 'https://xxxxxx.dexie.cloud'
+      databaseUrl: "https://xxxxxx.dexie.cloud",
       // see https://dexie.org/cloud/docs/db.cloud.configure()
-    });
+    })
   }
 }
 ```
@@ -179,14 +179,14 @@ export default class AppDB extends Dexie {
 ### Friend.ts - Dexie Cloud version
 
 ```ts
-import type AppDB from './AppDB';
+import type AppDB from "./AppDB"
 
 export default class Friend extends Entity<AppDB> {
-  id!: string; // Primary key is string
-  name!: string;
-  age!: number;
-  owner!: string; // Dexie Cloud specific property
-  realmId!: string; // Dexie Cloud specific property
+  id!: string // Primary key is string
+  name!: string
+  age!: number
+  owner!: string // Dexie Cloud specific property
+  realmId!: string // Dexie Cloud specific property
 }
 ```
 
@@ -197,12 +197,12 @@ The usage is almost identical to the plain Dexie version. But this example will 
 **React component**
 
 ```tsx
-import { db } from './db';
-import { useLiveQuery, usePermissions } from 'dexie-react-hooks';
-import type { Friend } from './Friend'; // ...where class Friend is defined (see earlier on this page).
+import { db } from "./db"
+import { useLiveQuery, usePermissions } from "dexie-react-hooks"
+import type { Friend } from "./Friend" // ...where class Friend is defined (see earlier on this page).
 
 function MyReactComponent() {
-  const friends = useLiveQuery(() => db.friends.toArray());
+  const friends = useLiveQuery(() => db.friends.toArray())
   return (
     <ul>
       {friends?.map((f) => (
@@ -211,11 +211,11 @@ function MyReactComponent() {
         </li>
       ))}
     </ul>
-  );
+  )
 }
 
 function FriendComponent({ friend }: { friend: Friend }) {
-  const can = usePermissions(friend); // https://dexie.org/docs/dexie-react-hooks/usePermissions()
+  const can = usePermissions(friend) // https://dexie.org/docs/dexie-react-hooks/usePermissions()
   // This 'can' instance can be used to check whether access control would permit the current user to
   // perform various actions. This information can be used to disable or hide fields and buttons.
   // (See also https://dexie.org/cloud/docs/access-control)
@@ -223,29 +223,29 @@ function FriendComponent({ friend }: { friend: Friend }) {
     <>
       Name: {friend.name} <br />
       Age: {friend.age} <br />
-      Can I edit name?: {can.update('name') ? 'Yes!' : 'No!'} <br />
-      Can I edit age?: {can.update('age') ? 'Yes!' : 'No!'} <br />
-      Can I delete this friend?: {can.delete() ? 'Yes!' : 'No!'} <br />
+      Can I edit name?: {can.update("name") ? "Yes!" : "No!"} <br />
+      Can I edit age?: {can.update("age") ? "Yes!" : "No!"} <br />
+      Can I delete this friend?: {can.delete() ? "Yes!" : "No!"} <br />
     </>
-  );
+  )
 }
 ```
 
 **Plain Typescript**
 
 ```ts
-import { db } from './db';
+import { db } from "./db"
 
 async function addFriend(name: string, age: number) {
   // Ok to leave out id, realmId and owner as they are all auto-generated:
-  await db.friends.add({ name, age });
+  await db.friends.add({ name, age })
 }
 
 async function updateFriend(id: string, updates: Partial<Friend>) {
-  await db.friends.update(id, { ...updates });
+  await db.friends.update(id, { ...updates })
 }
 
 async function deleteFriend(id: string) {
-  await db.friends.delete(id);
+  await db.friends.delete(id)
 }
 ```

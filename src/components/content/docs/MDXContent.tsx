@@ -9,9 +9,8 @@ import {
   Paper,
   Divider,
 } from "@mui/material"
-import dynamic from "next/dynamic"
 import parse, { domToReact, Element, DOMNode } from "html-react-parser"
-// import CodeBlock from "../../../components/content/shared/CodeBlock"
+import CodeBlock from "../../../components/content/shared/CodeBlock"
 
 interface MDXContentProps {
   source: string
@@ -245,11 +244,16 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                     background: "rgba(255, 255, 255, 0.1)",
                     borderRadius: 2,
                     border: "1px solid rgba(255, 255, 255, 0.15)",
-                    p: 3,
+                    pr: 2,
                     mt: 2,
+                    maxWidth: "1200px",
                   }}
                 >
-                  <pre>{codeString}</pre>
+                  <CodeBlock
+                    language={language}
+                    code={codeString}
+                    showLineNumbers={true}
+                  />
                 </Box>
               )
             } else {
