@@ -82,6 +82,10 @@ export default function Benefits({
             sx={{
               mb: 2,
               "& .MuiSvgIcon-root": { width: "2em", height: "2em" },
+              mt: {
+                xs: 4,
+                md: 0,
+              },
             }}
           >
             <SvgIcon

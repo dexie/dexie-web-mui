@@ -274,7 +274,7 @@ export default function HackathonWidget({
                   }}
                 >
                   {/* Content */}
-                  <Box sx={{ mb: 4 }}>
+                  <Box sx={{ mb: 4, position: "relative" }}>
                     <Typography
                       variant="overline"
                       sx={{
