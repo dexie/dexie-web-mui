@@ -1,6 +1,4 @@
-"use client"
-
-import React, { useMemo, useState, useEffect } from "react"
+import React from "react"
 import {
   Typography,
   Box,
@@ -13,8 +11,7 @@ import {
 } from "@mui/material"
 import dynamic from "next/dynamic"
 import parse, { domToReact, Element, DOMNode } from "html-react-parser"
-
-const CodeBlock = dynamic(() => import("../shared/CodeBlock"), { ssr: false })
+// import CodeBlock from "../../../components/content/shared/CodeBlock"
 
 interface MDXContentProps {
   source: string
@@ -248,15 +245,11 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                     background: "rgba(255, 255, 255, 0.1)",
                     borderRadius: 2,
                     border: "1px solid rgba(255, 255, 255, 0.15)",
-                    pr: 2,
+                    p: 3,
                     mt: 2,
                   }}
                 >
-                  <CodeBlock
-                    language={language}
-                    code={codeString}
-                    showLineNumbers={true}
-                  />
+                  <pre>{codeString}</pre>
                 </Box>
               )
             } else {
@@ -455,24 +448,9 @@ function parseHTMLToComponents(html: string): React.ReactNode {
 }
 
 export default function MDXContent({ source }: MDXContentProps) {
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
-
-  const content = useMemo(() => {
-    if (!isClient) return null
-    return parseHTMLToComponents(source)
-  }, [source, isClient])
-
-  if (!isClient) {
-    return <Box className="mdx-content" sx={{ maxWidth: "none" }} />
-  }
-
   return (
     <Box className="mdx-content" sx={{ maxWidth: "none" }}>
-      {content}
+      {parseHTMLToComponents(source)}
     </Box>
   )
 }
