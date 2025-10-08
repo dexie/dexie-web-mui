@@ -110,7 +110,7 @@ export default function TestimonialsWidget({
                   fontSize: {
                     xs: "2rem",
                     md: "2.5rem",
-                    lg: "calc(1.179rem + 2.5vw) !important",
+                    lg: "calc(4.179rem) !important",
                   },
                   lineHeight: 1.2,
                   mb: 2,
