@@ -10,6 +10,14 @@ import {
   Menu,
   MenuItem,
   Divider,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Collapse,
+  useMediaQuery,
 } from "@mui/material"
 import Link from "next/link"
 import Image from "next/image"
@@ -19,6 +27,9 @@ import LockIcon from "@mui/icons-material/Lock"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import LaunchIcon from "@mui/icons-material/Launch"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import MenuIcon from "@mui/icons-material/Menu"
+import CloseIcon from "@mui/icons-material/Close"
+import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import { formatNumber } from "../utils/formatNumber"
 
 export default function Navbar() {
@@ -29,8 +40,13 @@ export default function Navbar() {
   const [productMenuAnchor, setProductMenuAnchor] =
     useState<null | HTMLElement>(null)
   const [mounted, setMounted] = useState(false)
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false)
+  const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
+    null
+  )
   const theme = useTheme()
   const pathname = usePathname()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
   const supportMenuOpen = Boolean(supportMenuAnchor)
   const productMenuOpen = Boolean(productMenuAnchor)
@@ -49,6 +65,14 @@ export default function Navbar() {
 
   const handleProductMenuClose = () => {
     setProductMenuAnchor(null)
+  }
+
+  const handleMobileDrawerToggle = () => {
+    setMobileDrawerOpen(!mobileDrawerOpen)
+  }
+
+  const handleMobileMenuExpand = (menuName: string) => {
+    setExpandedMobileMenu(expandedMobileMenu === menuName ? null : menuName)
   }
 
   // Handle client-side mounting to prevent hydration mismatch
@@ -88,6 +112,203 @@ export default function Navbar() {
     fetchStars()
   }, [mounted])
 
+  // Mobile Drawer Component
+  const renderMobileDrawer = () => (
+    <Drawer
+      anchor="right"
+      open={mobileDrawerOpen}
+      onClose={handleMobileDrawerToggle}
+      sx={{
+        "& .MuiDrawer-paper": {
+          width: "100%",
+          backgroundColor: theme.palette.background.default,
+          color: theme.palette.text.primary,
+        },
+      }}
+    >
+      <Box
+        sx={{
+          p: 2,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <Image
+          src="/assets/images/dexie-logo.png"
+          alt="Dexie Logo"
+          width={80}
+          height={20}
+        />
+        <IconButton onClick={handleMobileDrawerToggle} color="inherit">
+          <CloseIcon />
+        </IconButton>
+      </Box>
+      <Divider />
+      <List sx={{ pt: 0 }}>
+        {menuItems.map((item) => {
+          const isActive =
+            pathname === item.href ||
+            (item.text === "Product" && pathname.startsWith("/product"))
+          const hasChildren = item.children && item.children.length > 0
+          const isExpanded = expandedMobileMenu === item.text
+
+          return (
+            <Box key={item.id}>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    if (hasChildren) {
+                      handleMobileMenuExpand(item.text)
+                    } else {
+                      setMobileDrawerOpen(false)
+                    }
+                  }}
+                  component={
+                    !hasChildren ? (item.external ? "a" : Link) : "div"
+                  }
+                  href={!hasChildren ? item.href : undefined}
+                  target={!hasChildren && item.external ? "_blank" : undefined}
+                  rel={
+                    !hasChildren && item.external
+                      ? "noopener noreferrer"
+                      : undefined
+                  }
+                  sx={{
+                    py: 2,
+                    px: 3,
+                    fontWeight: isActive ? 600 : 400,
+                    color: isActive
+                      ? theme.palette.primary.main
+                      : theme.palette.text.primary,
+                  }}
+                >
+                  <ListItemText
+                    primary={item.text}
+                    primaryTypographyProps={{
+                      fontSize: "18px",
+                      fontWeight: isActive ? 600 : 400,
+                      marginBottom: 0,
+                    }}
+                  />
+                  {hasChildren && (
+                    <Box sx={{ ml: 1, display: "flex", alignItems: "center" }}>
+                      {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                    </Box>
+                  )}
+                  {!hasChildren && item.external && (
+                    <LaunchIcon
+                      sx={{ fontSize: "16px", ml: 1, opacity: 0.7 }}
+                    />
+                  )}
+                </ListItemButton>
+              </ListItem>
+
+              {hasChildren && (
+                <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    {item.children!.map((child, index) => {
+                      if ("divider" in child && child.divider) {
+                        return (
+                          <Divider
+                            key={`divider-${index}`}
+                            sx={{ mx: 3, my: 1 }}
+                          />
+                        )
+                      }
+                      return (
+                        <ListItem key={index} disablePadding>
+                          <ListItemButton
+                            component={child.external ? "a" : Link}
+                            href={child.href}
+                            target={
+                              child.external
+                                ? child.target || "_blank"
+                                : undefined
+                            }
+                            rel={
+                              child.external ? "noopener noreferrer" : undefined
+                            }
+                            onClick={() => setMobileDrawerOpen(false)}
+                            sx={{ pl: 6, py: 1.5 }}
+                          >
+                            <ListItemText
+                              primary={child.text}
+                              primaryTypographyProps={{
+                                fontSize: "16px",
+                                color: theme.palette.text.secondary,
+                                marginBottom: 0,
+                              }}
+                            />
+                            {child.external && (
+                              <LaunchIcon
+                                sx={{ fontSize: "14px", ml: 1, opacity: 0.7 }}
+                              />
+                            )}
+                          </ListItemButton>
+                        </ListItem>
+                      )
+                    })}
+                  </List>
+                </Collapse>
+              )}
+            </Box>
+          )
+        })}
+
+        {/* GitHub Stars in mobile menu */}
+        <ListItem disablePadding>
+          <ListItemButton
+            component="a"
+            href="https://github.com/dexie/Dexie.js"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ py: 2, px: 3 }}
+          >
+            <GitHubIcon sx={{ mr: 2, fontSize: "20px" }} />
+            <ListItemText
+              primary={`GitHub (${formatNumber(stars)} stars)`}
+              primaryTypographyProps={{
+                fontSize: "16px",
+                marginBottom: 0,
+              }}
+            />
+            <LaunchIcon sx={{ fontSize: "14px", opacity: 0.7 }} />
+          </ListItemButton>
+        </ListItem>
+
+        {/* Sign In in mobile menu */}
+        <ListItem disablePadding sx={{ px: 3, py: 2 }}>
+          <Button
+            component="a"
+            href="https://manager.dexie.cloud"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="outlined"
+            fullWidth
+            sx={{
+              textTransform: "uppercase",
+              fontWeight: 400,
+              fontSize: "13px",
+              letterSpacing: "0.65px",
+              padding: "10px 20px",
+              borderRadius: "30px",
+              border: `1px solid ${theme.palette.secondary.main}`,
+              color: `${theme.palette.secondary.main} !important`,
+              "&:hover": {
+                backgroundColor: theme.palette.secondary.main,
+                color: `${theme.palette.background.default} !important`,
+              },
+            }}
+            startIcon={<LockIcon sx={{ height: "16px" }} />}
+          >
+            Sign In
+          </Button>
+        </ListItem>
+      </List>
+    </Drawer>
+  )
+
   return (
     <AppBar
       position="fixed"
@@ -126,10 +347,13 @@ export default function Navbar() {
           </Box>
         </Link>
 
-        {/* Navigation Menu - Center */}
+        {/* Spacer for mobile */}
+        <Box sx={{ flex: "1 1 auto", display: { xs: "block", md: "none" } }} />
+
+        {/* Navigation Menu - Center (Desktop only) */}
         <Box
           sx={{
-            display: "flex",
+            display: { xs: "none", md: "flex" },
             gap: 1,
             flex: "1 1 auto",
             justifyContent: "center",
@@ -375,8 +599,15 @@ export default function Navbar() {
           })}
         </Box>
 
-        {/* GitHub Stars Counter */}
-        <Box sx={{ flex: "0 0 auto", marginRight: 2, zoom: 0.8 }}>
+        {/* GitHub Stars Counter (Desktop only) */}
+        <Box
+          sx={{
+            flex: "0 0 auto",
+            marginRight: 2,
+            zoom: 0.8,
+            display: { xs: "none", md: "block" },
+          }}
+        >
           <Button
             component="a"
             href="https://github.com/dexie/Dexie.js"
@@ -402,8 +633,8 @@ export default function Navbar() {
           </Button>
         </Box>
 
-        {/* Sign In Button - Right */}
-        <Box sx={{ flex: "0 0 auto" }}>
+        {/* Sign In Button - Right (Desktop only) */}
+        <Box sx={{ flex: "0 0 auto", display: { xs: "none", md: "block" } }}>
           <Button
             component="a"
             href="https://manager.dexie.cloud"
@@ -450,7 +681,25 @@ export default function Navbar() {
             Sign In
           </Button>
         </Box>
+
+        {/* Mobile Menu Button */}
+        <Box sx={{ flex: "0 0 auto", display: { xs: "block", md: "none" } }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="end"
+            onClick={handleMobileDrawerToggle}
+            sx={{
+              color: theme.palette.text.primary,
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Box>
       </Toolbar>
+
+      {/* Mobile Drawer */}
+      {renderMobileDrawer()}
     </AppBar>
   )
 }
