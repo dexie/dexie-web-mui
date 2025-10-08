@@ -27,7 +27,7 @@ export default function CopyButton({ code }: CopyButtonProps) {
       size="small"
       sx={{
         position: "absolute",
-        top: "10px",
+        top: "0px",
         right: "0px",
         background: "rgba(255, 255, 255, 0.1)",
         border: "1px solid rgba(255, 255, 255, 0.2)",

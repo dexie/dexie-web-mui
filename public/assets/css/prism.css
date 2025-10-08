@@ -83,7 +83,6 @@ pre[class*='language-'] code[class*='language-'] {
  */
 
 .code-highlight {
-  float: left; /* 1 */
   min-width: 100%; /* 2 */
 }
 

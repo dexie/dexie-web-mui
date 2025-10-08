@@ -501,7 +501,13 @@ function CustomProductHero() {
             <Box sx={{ zoom: currentExample?.zoom ? currentExample?.zoom : 1 }}>
               {currentExample?.id === "sync" &&
                 currentExample.commandLineCode && (
-                  <>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 4,
+                    }}
+                  >
                     <CodeBlock
                       language="bash"
                       showLineNumbers={false}
@@ -514,7 +520,7 @@ function CustomProductHero() {
                       showLineNumbers={true}
                       code={currentExample?.code || frameworkExamples[0].code}
                     />
-                  </>
+                  </Box>
                 )}
               {currentExample?.id !== "sync" && (
                 <CodeBlock

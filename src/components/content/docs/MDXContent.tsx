@@ -244,7 +244,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                     background: "rgba(255, 255, 255, 0.1)",
                     borderRadius: 2,
                     border: "1px solid rgba(255, 255, 255, 0.15)",
-                    pr: 2,
+                    p: 3,
                     mt: 2,
                     maxWidth: "1200px",
                   }}

@@ -6,12 +6,10 @@ import "prismjs/components/prism-jsx"
 import "prismjs/components/prism-tsx"
 import "prismjs/components/prism-bash"
 import "prismjs/plugins/command-line/prism-command-line"
+import CopyButton from "./CopyButton"
 
 // Dynamiskt ladda CopyButton för att undvika hydraterings-problem
-const CopyButton = dynamic(() => import("./CopyButton"), {
-  ssr: false,
-  loading: () => null,
-})
+
 interface CodeBlockProps {
   code: string
   language?: string
@@ -34,19 +32,19 @@ function formatCommandLine(
 ): string {
   // Få rätt språk för Prism
   const prismLanguage = Prism.languages[language] || Prism.languages.javascript
-  
-  const lines = code.split("\n").filter(line => line.trim() !== "")
-  
+
+  const lines = code.split("\n").filter((line) => line.trim() !== "")
+
   return lines
     .map((line, index) => {
       const lineNumber = index + 1
       const highlighted = Prism.highlight(line, prismLanguage, language)
-      
+
       // Kolla om denna rad är en output-rad
-      const isOutputLine = Array.isArray(commandOutput) 
+      const isOutputLine = Array.isArray(commandOutput)
         ? commandOutput.includes(lineNumber)
         : false
-      
+
       if (isOutputLine) {
         // Output-rad utan prompt - bara visa som output
         return `<span class="command-line-prompt"><span data-prompt=""></span></span><span class="token output">${highlighted}</span>\n`
@@ -67,7 +65,7 @@ function formatCodeWithLineNumbers(
 ): string {
   // Få rätt språk för Prism
   const prismLanguage = Prism.languages[language] || Prism.languages.javascript
-  
+
   // Highlighta koden först med Prism
   const highlighted = Prism.highlight(code, prismLanguage, language)
 
@@ -160,7 +158,12 @@ export default function CodeBlock({
   let formattedContent: string
   if (commandLine) {
     // Hantera command-line formatering
-    formattedContent = formatCommandLine(code, language, commandPrompt, commandOutput)
+    formattedContent = formatCommandLine(
+      code,
+      language,
+      commandPrompt,
+      commandOutput
+    )
   } else if (
     showLineNumbers ||
     highlightLines.length > 0 ||
