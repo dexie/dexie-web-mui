@@ -14,6 +14,8 @@ import {
   Divider,
   SxProps,
   Theme,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material"
 import CheckIcon from "@mui/icons-material/Check"
 import ButtonWidget from "./shared/Button"
@@ -70,6 +72,8 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
   settings,
   sx,
 }) => {
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("lg"))
   const getMaxWidth = () => {
     switch (settings.containerWidth) {
       case "small":
@@ -89,12 +93,20 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
   ) => {
     let borderRadius = "0px"
 
-    if (totalPlans === 1) {
-      borderRadius = "20px"
-    } else if (index === 0) {
-      borderRadius = "20px 0px 0px 20px"
-    } else if (index === totalPlans - 1) {
-      borderRadius = "0px 20px 20px 0px"
+    if (isSmallScreen) {
+      if (index === 0 || index === 2) {
+        borderRadius = "20px 20px 0px 0px"
+      } else {
+        borderRadius = "0px 0px 20px 20px"
+      }
+    } else {
+      if (totalPlans === 1) {
+        borderRadius = "20px"
+      } else if (index === 0) {
+        borderRadius = "20px 0px 0px 20px"
+      } else if (index === totalPlans - 1) {
+        borderRadius = "0px 20px 20px 0px"
+      }
     }
 
     return (
@@ -103,13 +115,21 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
         sx={{
           flex: 1,
           display: "flex",
+          position: "relative",
           minWidth: 0,
           "@media (max-width: 960px)": {
             minWidth: "100%",
-            mb: 2,
+            mb: index == 1 ? 2 : 0,
           },
         }}
       >
+        <Box
+          sx={{
+            position: "absolute",
+          }}
+        >
+          {renderTabHeader("On-Premises")}
+        </Box>
         <Card
           sx={{
             backgroundColor: "#1a1a1a",
@@ -430,7 +450,13 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
         <Box sx={{ mb: 6 }}>
           {/* Cloud Section */}
           <Box sx={{ mb: 6 }}>
-            <Box sx={{ display: "flex", justifyContent: "stretch", mb: 0 }}>
+            <Box
+              sx={{
+                justifyContent: "stretch",
+                mb: 0,
+                display: { xs: "none", lg: "flex" },
+              }}
+            >
               {renderTabHeader("Cloud")}
               {renderTabHeader("On-Premises")}
             </Box>
