@@ -3,11 +3,9 @@ layout: docs
 title: "Get started with Dexie in React"
 ---
 
-<div style="opacity: 0.8; padding: 40px 0 40px 0">
-  <img src="/assets/images/React-icon.svg" style="width:75px;">
-  <span>+</span>
-  <img src="/assets/images/logo-dexie-black.svg" style="width: 200px;">    
-</div>
+  <img src="/assets/images/framework/React-icon.svg" style="width:75px;">
+<br/>
+<br/>
 
 Dexie v3.2 and later comes with reactivity built-in.
 
@@ -215,7 +213,7 @@ Notice two things in the above example:
 
 ```tsx
 export const App = () => (
-  <>
+  <div>
     <h1>My simple Dexie app</h1>
 
     <h2>Add Friend</h2>
@@ -223,7 +221,7 @@ export const App = () => (
 
     <h2>Friend List</h2>
     <FriendList minAge={18} maxAge={65} />
-  </>
+  </div>
 )
 ```
 

@@ -3,12 +3,9 @@ layout: docs
 title: "Get started with Dexie in Svelte"
 ---
 
-<div style="opacity: 0.8; padding: 40px 0 40px 0">
-  <img src="/assets/images/Svelte_Logo.svg" style="width:50px;margin: 0 10px 0 0">
-  <span>+</span>
-  <img src="/assets/images/logo-dexie-black.svg" style="width: 200px;">    
-</div>
-
+  <img src="/assets/images/framework/Svelte_Logo.svg" style="width:50px;margin: 0 10px 0 0">
+<br/>
+<br/>
 Dexie v4.x comes with the best Svelte- and Sveltekit support.
 
 In version 3.2 we've introduced **live queries** - queries that observe the result and make your component mirror the data in real time and in version 4.0.1-alpha.10 we improved the typing compability and SvelteKit support of liveQuery().

@@ -413,7 +413,31 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 {...convertProps(attribs || {})}
               />
             )
+          case "br":
+            return <br key={getKey()} {...convertProps(attribs || {})} />
           default:
+            // Check if it's a void element that should not have children
+            const voidElements = [
+              "area",
+              "base",
+              "col",
+              "embed",
+              "input",
+              "link",
+              "meta",
+              "param",
+              "source",
+              "track",
+              "wbr",
+            ]
+
+            if (voidElements.includes(name)) {
+              return React.createElement(name, {
+                key: getKey(),
+                ...convertProps(attribs || {}),
+              })
+            }
+
             return React.createElement(
               name,
               {
