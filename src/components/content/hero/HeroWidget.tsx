@@ -102,10 +102,27 @@ export default function HeroWidget({
         backgroundImage: `url(${background})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        height: height,
+        height: {
+          xs: "auto", // Auto height on small screens
+          md: height, // Fixed height on medium and larger screens
+        },
+        minHeight: {
+          xs: contentBottom ? "auto" : "100vh", // Auto height if contentBottom exists on small screens
+          md: "auto",
+        },
         display: "flex",
-        justifyContent: "center",
-        alignItems: getAlignItems(),
+        flexDirection: {
+          xs: "column", // Column layout on small screens to stack content
+          md: "row", // Default flex direction for larger screens
+        },
+        justifyContent: {
+          xs: "flex-start", // Start from top on small screens
+          md: "center",
+        },
+        alignItems: {
+          xs: "stretch", // Stretch to full width on small screens
+          md: getAlignItems(),
+        },
         position: "relative",
         "&::before": overlayStrength
           ? {
@@ -123,92 +140,192 @@ export default function HeroWidget({
     >
       <Box
         sx={{
-          maxWidth: getContainerMaxWidth(),
+          maxWidth: {
+            xs: "100%", // Full width on small screens
+            md: getContainerMaxWidth(),
+          },
           width: "100%",
-          padding: 4,
+          padding: {
+            xs: 2, // Less padding on small screens
+            md: 4,
+          },
+          paddingTop: {
+            xs: 8, // More top padding if no bottom content on small screens
+          },
           display: "flex",
-          justifyContent: contentRight ? "space-between" : getJustifyContent(),
-          alignItems: getAlignItems(),
+          flexDirection: "column",
+          justifyContent: {
+            xs: "center", // Space between content and bottom on small screens
+            md: contentRight ? "space-between" : getJustifyContent(),
+          },
+          alignItems: {
+            xs: "center", // Center align on small screens
+            md: getAlignItems(),
+          },
           position: "relative",
           zIndex: 2,
-          gap: contentRight ? 4 : 0, // Add gap between text and content when content exists
+          flex: 1, // Take up available space
+          minHeight: {
+            xs: "auto", // Full height if contentBottom exists
+            md: "auto",
+          },
         }}
       >
+        {/* Main content wrapper */}
         <Box
           sx={{
-            width: contentRight
-              ? `${100 - contentRightWidthPercentage}%`
-              : textWidth,
-            color: textColor,
-            textAlign:
-              textAlignment === "left" ||
-              textAlignment === "center" ||
-              textAlignment === "right"
-                ? textAlignment
-                : "left", // For space-* values, use left alignment within the text box
+            display: "flex",
+            flexDirection: {
+              xs: "column", // Always column on small screens
+              md: contentRight ? "row" : "column", // Row if contentRight exists on medium+ screens
+            },
+            justifyContent: {
+              xs: "center", // Center content on small screens
+              md: contentRight ? "space-between" : getJustifyContent(),
+            },
+            alignItems: {
+              xs: "center", // Center align on small screens
+              md: getAlignItems(),
+            },
+            gap: {
+              xs: 3, // Consistent gap on small screens
+              md: contentRight ? 4 : 0,
+            },
+            flex: 1, // Take up available space above contentBottom
+            width: "100%",
           }}
         >
-          {preHeading && (
-            <Typography
-              variant="overline"
-              component="div"
-              sx={{
-                color: "inherit",
-                fontSize: "14px",
-                fontWeight: 500,
-                mb: 2,
-              }}
-            >
-              {preHeading}
-            </Typography>
-          )}
-          <Typography variant="h1" sx={{ color: "inherit", fontSize: "60px" }}>
-            {heading}
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{ color: "inherit", fontSize: "23px", mt: 4, mb: 6 }}
-          >
-            {text}
-          </Typography>
-          <Box sx={{ mt: 2 }}>
-            {buttons.map((buttonProps, index) => (
-              <ButtonWidget
-                key={index}
-                {...buttonProps}
-                sx={{
-                  mr: 2,
-                }}
-              />
-            ))}
-          </Box>
-        </Box>
-        {contentRight && (
           <Box
             sx={{
-              width: `${contentRightWidthPercentage}%`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              width: {
+                xs: "100%", // Full width on small screens
+                md: contentRight
+                  ? `${100 - contentRightWidthPercentage}%`
+                  : textWidth,
+              },
+              color: textColor,
+              textAlign: {
+                xs: "center", // Center text on small screens
+                md:
+                  textAlignment === "left" ||
+                  textAlignment === "center" ||
+                  textAlignment === "right"
+                    ? textAlignment
+                    : "left", // For space-* values, use left alignment within the text box
+              },
             }}
           >
-            {contentRight}
+            {preHeading && (
+              <Typography
+                variant="overline"
+                component="div"
+                sx={{
+                  color: "inherit",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  mb: 2,
+                }}
+              >
+                {preHeading}
+              </Typography>
+            )}
+            <Typography
+              variant="h1"
+              sx={{
+                color: "inherit",
+                fontSize: {
+                  xs: "48px", // Smaller on mobile
+                  md: "60px",
+                },
+              }}
+            >
+              {heading}
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: "inherit",
+                fontSize: {
+                  xs: "18px", // Smaller on mobile
+                  md: "23px",
+                },
+                mt: {
+                  xs: 2, // Less margin on mobile
+                  md: 4,
+                },
+                mb: {
+                  xs: 4, // Less margin on mobile
+                  md: 6,
+                },
+              }}
+            >
+              {text}
+            </Typography>
+            <Box sx={{ mt: 2 }}>
+              {buttons.map((buttonProps, index) => (
+                <ButtonWidget
+                  key={index}
+                  {...buttonProps}
+                  sx={{
+                    mr: 2,
+                  }}
+                />
+              ))}
+            </Box>
           </Box>
-        )}
+          {contentRight && (
+            <Box
+              sx={{
+                width: {
+                  xs: "100%", // Full width on small screens
+                  md: `${contentRightWidthPercentage}%`,
+                },
+                padding: {
+                  xs: 4, // Padding around contentRight on small screens
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {contentRight}
+            </Box>
+          )}
+        </Box>
       </Box>
+      {/* Content bottom - flows naturally on small screens, absolute on larger */}
       {contentBottom && (
         <Box
           sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
+            position: {
+              xs: "relative", // Natural flow on small screens
+              md: "absolute", // Absolute positioning on larger screens
+            },
+            bottom: {
+              xs: "auto", // No bottom positioning on small screens
+              md: 0,
+            },
+            left: {
+              xs: "auto",
+              md: 0,
+            },
+            right: {
+              xs: "auto",
+              md: 0,
+            },
             width: "100%",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: 4,
+            padding: {
+              xs: 2, // Less padding on small screens
+              md: 4,
+            },
             zIndex: 2,
+            mt: {
+              xs: 4, // Add margin top on small screens to separate from main content
+              md: 0,
+            },
           }}
         >
           {contentBottom}

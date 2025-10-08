@@ -76,7 +76,10 @@ export default function Brands({ sx }: BrandProps) {
           variant="h4"
           component="h2"
           sx={{
-            fontSize: "1.2rem",
+            fontSize: {
+              xs: "1rem",
+              md: "1.2rem",
+            },
             fontWeight: 400,
             textTransform: "uppercase",
             letterSpacing: "2px",
