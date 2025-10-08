@@ -244,7 +244,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                   <CodeBlock
                     language={language}
                     code={codeString}
-                    showLineNumbers={true}
+                    showLineNumbers={false}
                   />
                 </Box>
               )
