@@ -65,6 +65,7 @@ export default function HeroContent() {
             letterSpacing: "1px",
             border: "none",
             minHeight: "auto",
+            mb: 2,
             "& .MuiTabs-indicator": {
               display: "none",
             },

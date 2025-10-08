@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic"
 import * as Prism from "prismjs"
 import "prismjs/components/prism-javascript"
 import "prismjs/components/prism-typescript"
@@ -5,7 +6,12 @@ import "prismjs/components/prism-jsx"
 import "prismjs/components/prism-tsx"
 import "prismjs/components/prism-bash"
 import "prismjs/plugins/command-line/prism-command-line"
-import CopyButton from "./CopyButton"
+
+// Dynamiskt ladda CopyButton för att undvika hydraterings-problem
+const CopyButton = dynamic(() => import("./CopyButton"), {
+  ssr: false,
+  loading: () => null,
+})
 interface CodeBlockProps {
   code: string
   language?: string
@@ -22,16 +28,16 @@ interface CodeBlockProps {
 
 function formatCodeWithLineNumbers(
   code: string,
+  language: string,
   showLineNumbers: boolean,
   highlightLines: number[],
   strikethroughLines: number[]
 ): string {
+  // Få rätt språk för Prism
+  const prismLanguage = Prism.languages[language] || Prism.languages.javascript
+  
   // Highlighta koden först med Prism
-  const highlighted = Prism.highlight(
-    code,
-    Prism.languages.javascript,
-    "javascript"
-  )
+  const highlighted = Prism.highlight(code, prismLanguage, language)
 
   const lines = highlighted.split("\n")
   // Ta bort sista tomma raden om den finns
@@ -107,8 +113,9 @@ export default function CodeBlock({
     }
   }
 
+  // Använd custom class-namn för att undvika Prism.js auto-detektion
   const preClasses = [
-    `language-${language}`,
+    `prism-${language}`, // Använd 'prism-' istället för 'language-' för att undvika auto-processing
     className,
     commandLine ? "command-line" : "",
   ]
@@ -126,6 +133,7 @@ export default function CodeBlock({
   ) {
     formattedContent = formatCodeWithLineNumbers(
       code,
+      language,
       showLineNumbers,
       highlightLines,
       strikethroughLines
@@ -134,7 +142,7 @@ export default function CodeBlock({
     formattedContent = Prism.highlight(code, prismLanguage, language)
   }
 
-  const codeClasses = [`language-${language}`, "code-highlight"].join(" ")
+  const codeClasses = [`prism-${language}`, "code-highlight"].join(" ")
 
   return (
     <div className="codeblock-container" style={{ position: "relative" }}>
