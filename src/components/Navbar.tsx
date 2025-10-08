@@ -109,14 +109,22 @@ export default function Navbar() {
         }}
       >
         {/* Logo/Brand - Left */}
-        <Box sx={{ flex: "0 0 auto" }}>
-          <Image
-            src="/assets/images/dexie-logo.png"
-            alt="Dexie Logo"
-            width={80}
-            height={20}
-          />
-        </Box>
+        <Link
+          href="/"
+          style={{
+            textDecoration: "none",
+            opacity: 1,
+          }}
+        >
+          <Box sx={{ flex: "0 0 auto" }}>
+            <Image
+              src="/assets/images/dexie-logo.png"
+              alt="Dexie Logo"
+              width={80}
+              height={20}
+            />
+          </Box>
+        </Link>
 
         {/* Navigation Menu - Center */}
         <Box
