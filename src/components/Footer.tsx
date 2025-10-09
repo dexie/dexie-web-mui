@@ -365,14 +365,17 @@ const Footer = () => {
               <Box
                 sx={{
                   width: "100%",
-                  height: "-webkit-fill-available",
+                  height: {
+                    xs: "300px",
+                    md: "-webkit-fill-available",
+                  },
                   overflow: "hidden",
                 }}
               >
                 <iframe
                   src="https://www.google.com/maps/embed/v1/search?key=AIzaSyDmOtclVWnqNu30_6OQ_NFVOhdOa6NFOA4&q=Störtloppsvägen+14+Hägersten+Sweden|Oxtorget+4+Växjö+Sweden&center=57.5,16&zoom=5&maptype=satellite"
                   width="100%"
-                  height="90%"
+                  height="100%"
                   style={{ border: 0, borderRadius: "8px" }}
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"

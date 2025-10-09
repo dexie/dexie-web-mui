@@ -59,7 +59,7 @@ export default function Benefits({
       key={item.id}
       sx={{
         width: { xs: "100%", md: "33.333%", lg: "25%" },
-        px: 2,
+        px: { xs: 0, sm: 2 },
         mb: { xs: 4, sm: 0 },
         display: "flex",
         alignItems: "stretch",
@@ -70,7 +70,10 @@ export default function Benefits({
           backgroundColor: "transparent",
           border: "none",
           boxShadow: "none",
-          borderLeft: `1px solid ${textColor}`,
+          borderLeft: {
+            xs: "none",
+            md: `1px solid ${textColor}`,
+          },
           borderRadius: 0,
           width: "100%",
           pl: 3,
