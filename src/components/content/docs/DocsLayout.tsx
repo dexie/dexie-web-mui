@@ -1,7 +1,8 @@
-import React from "react"
+"use client"
+
+import React, { useState } from "react"
 import Link from "next/link"
 import Sidebar from "./Sidebar"
-import { generateNavigation } from "@/utils/mdx"
 import {
   Box,
   Container,
@@ -9,39 +10,120 @@ import {
   Typography,
   Divider,
   Link as MuiLink,
+  Drawer,
+  IconButton,
+  AppBar,
+  Toolbar,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material"
+import MenuIcon from "@mui/icons-material/Menu"
+import MenuOpenIcon from "@mui/icons-material/MenuOpen"
+interface NavItem {
+  title: string
+  slug: string
+  layout?: string
+}
+
+interface NavStructure {
+  [key: string]: NavItem | NavStructure
+}
 
 interface DocsLayoutProps {
   children: React.ReactNode
   currentSlug?: string
   pageTitle?: string
+  navigation?: NavStructure
 }
 
 const DocsLayout: React.FC<DocsLayoutProps> = ({
   children,
   currentSlug,
   pageTitle,
+  navigation = {},
 }) => {
-  const navigation = generateNavigation()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen)
+  }
+
+  const drawerWidth = 300
 
   return (
     <Container maxWidth={false} sx={{ padding: 0, pt: "100px" }}>
+      {/* Mobile AppBar with hamburger menu */}
+      <Box
+        sx={{
+          display: { xs: "block", md: "none" },
+          position: "fixed",
+          width: "auto",
+          right: 40,
+          top: "14px", // Below main navigation
+          zIndex: 1200,
+        }}
+      >
+        <MenuOpenIcon onClick={handleDrawerToggle} sx={{ mr: 2 }} />
+      </Box>
+
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
-        <Sidebar
-          navigation={navigation}
-          currentSlug={currentSlug}
-          basePath="/docs"
-        />
+        {/* Mobile Drawer */}
+        <Drawer
+          anchor="right"
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+              top: "0px", // Below both navbars
+              backgroundColor: "black",
+              backdropFilter: "blur(10px)",
+            },
+          }}
+        >
+          <Box sx={{ p: 2 }}>
+            <Sidebar
+              navigation={navigation}
+              currentSlug={currentSlug}
+              basePath="/docs"
+              onNavigate={() => setMobileOpen(false)}
+            />
+          </Box>
+        </Drawer>
+        <Box
+          sx={{
+            display: { xs: "none", md: "block" },
+            width: drawerWidth,
+            flexShrink: 0,
+            p: 2,
+          }}
+        >
+          <Sidebar
+            navigation={navigation}
+            currentSlug={currentSlug}
+            basePath="/docs"
+          />
+        </Box>
 
         <Box
           component="main"
           sx={{
-            paddingTop: 3,
+            paddingTop: {
+              sx: 8,
+              md: 3, // Extra space for mobile toolbar
+            },
             paddingBottom: 2,
             marginBottom: 3,
             flex: 1,
-            paddingLeft: { md: 4 },
-            paddingRight: { md: 4 },
+            paddingLeft: { xs: 2, md: 4 },
+            paddingRight: { xs: 2, md: 4 },
+            width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
           }}
         >
           <Box

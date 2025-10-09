@@ -1,5 +1,10 @@
 import { notFound } from "next/navigation"
-import { getAllDocs, getDocBySlug, serializeMarkdown } from "@/utils/mdx"
+import {
+  getAllDocs,
+  getDocBySlug,
+  serializeMarkdown,
+  generateNavigation,
+} from "@/utils/mdx"
 
 import DocsLayout from "@/components/content/docs/DocsLayout"
 import MDXContent from "@/components/content/docs/MDXContent"
@@ -31,9 +36,14 @@ export default async function DocPage({ params }: DocPageProps) {
   }
 
   const mdxContent = await serializeMarkdown(doc.content)
+  const navigation = generateNavigation()
 
   return (
-    <DocsLayout currentSlug={slugString} pageTitle={doc.metadata.title}>
+    <DocsLayout
+      navigation={navigation}
+      currentSlug={slugString}
+      pageTitle={doc.metadata.title}
+    >
       <Box component="article">
         <Box component="header" sx={{ mb: 5 }}>
           <Typography variant="h1" component="h1" sx={{ mb: 3 }}>

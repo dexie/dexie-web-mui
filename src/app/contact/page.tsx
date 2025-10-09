@@ -340,7 +340,16 @@ export default function ContactPage() {
               Join our Discord community
             </Button>
           </Box>
-          <Box sx={{ flex: 1, textAlign: "center" }}>
+          <Box
+            sx={{
+              flex: 1,
+              textAlign: "center",
+              display: {
+                xs: "none",
+                md: "block",
+              },
+            }}
+          >
             <img
               src="/assets/images/support.png"
               alt="Support"

@@ -3,6 +3,7 @@ import {
   getAllCloudDocs,
   getCloudDocBySlug,
   serializeMarkdown,
+  generateCloudNavigation,
 } from "@/utils/mdx"
 
 import CloudDocsLayout from "@/components/content/docs/CloudDocsLayout"
@@ -37,9 +38,14 @@ export default async function CloudDocPage({ params }: CloudDocPageProps) {
   }
 
   const mdxContent = await serializeMarkdown(doc.content)
+  const navigation = generateCloudNavigation()
 
   return (
-    <CloudDocsLayout currentSlug={slugString} pageTitle={doc.metadata.title}>
+    <CloudDocsLayout
+      navigation={navigation}
+      currentSlug={slugString}
+      pageTitle={doc.metadata.title}
+    >
       <Box component="article">
         <Box component="header" sx={{ mb: 5 }}>
           <Typography variant="h1" component="h1" sx={{ mb: 3 }}>

@@ -1,7 +1,8 @@
-import React from "react"
+"use client"
+
+import React, { useState } from "react"
 import Link from "next/link"
 import Sidebar from "./Sidebar"
-import { generateCloudNavigation } from "@/utils/mdx"
 import {
   Box,
   Container,
@@ -9,44 +10,138 @@ import {
   Typography,
   Divider,
   Link as MuiLink,
+  Drawer,
+  IconButton,
+  AppBar,
+  Toolbar,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material"
+import MenuIcon from "@mui/icons-material/Menu"
+
+interface NavItem {
+  title: string
+  slug: string
+  layout?: string
+}
+
+interface NavStructure {
+  [key: string]: NavItem | NavStructure
+}
 
 interface CloudDocsLayoutProps {
   children: React.ReactNode
   currentSlug?: string
   pageTitle?: string
+  navigation?: NavStructure
 }
 
 const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
   children,
   currentSlug,
   pageTitle,
+  navigation = {},
 }) => {
-  const navigation = generateCloudNavigation()
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen)
+  }
 
   // Remove docs/ prefix from currentSlug for navigation matching
   const navSlug = currentSlug?.startsWith("docs/")
     ? currentSlug.replace("docs/", "")
     : currentSlug
 
+  const drawerWidth = 300
+
   return (
     <Container maxWidth={false} sx={{ padding: 0, pt: "100px" }}>
+      {/* Mobile AppBar with hamburger menu */}
+      {isMobile && (
+        <AppBar
+          position="fixed"
+          sx={{
+            top: "80px", // Below main navigation
+            zIndex: theme.zIndex.drawer + 1,
+            backgroundColor: "rgba(0, 0, 0, 0.9)",
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          <Toolbar sx={{ minHeight: "48px !important" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2 }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              Cloud Documentation
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      )}
+
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
-        <Sidebar
-          navigation={navigation}
-          currentSlug={navSlug}
-          basePath="/cloud/docs"
-        />
+        {/* Mobile Drawer */}
+        {isMobile ? (
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                top: "128px", // Below both navbars
+                backgroundColor: "rgba(33, 37, 41, 0.95)",
+                backdropFilter: "blur(10px)",
+              },
+            }}
+          >
+            <Box sx={{ p: 2 }}>
+              <Sidebar
+                navigation={navigation}
+                currentSlug={navSlug}
+                basePath="/cloud/docs"
+                onNavigate={() => setMobileOpen(false)}
+              />
+            </Box>
+          </Drawer>
+        ) : (
+          <Box
+            sx={{
+              width: drawerWidth,
+              flexShrink: 0,
+              p: 2,
+            }}
+          >
+            <Sidebar
+              navigation={navigation}
+              currentSlug={navSlug}
+              basePath="/cloud/docs"
+            />
+          </Box>
+        )}
 
         <Box
           component="main"
           sx={{
-            paddingTop: 3,
+            paddingTop: isMobile ? 8 : 3, // Extra space for mobile toolbar
             paddingBottom: 2,
             marginBottom: 3,
             flex: 1,
-            paddingLeft: { md: 4 },
-            paddingRight: { md: 4 },
+            paddingLeft: { xs: 2, md: 4 },
+            paddingRight: { xs: 2, md: 4 },
+            width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
           }}
         >
           <Box

@@ -28,6 +28,7 @@ interface SidebarProps {
   navigation: NavStructure
   currentSlug?: string
   basePath?: string // Add basePath prop
+  onNavigate?: () => void // Add optional onNavigate prop for mobile
 }
 
 const isNavItem = (item: NavItem | NavStructure): item is NavItem => {
@@ -69,6 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   navigation,
   currentSlug,
   basePath = "/docs",
+  onNavigate,
 }) => {
   const [searchText, setSearchText] = useState("")
 
@@ -94,17 +96,21 @@ const Sidebar: React.FC<SidebarProps> = ({
           sx={{
             backgroundColor: isActive ? "rgba(255,255,255,0.1)" : "transparent",
             borderRadius: "6px",
+            p: { xs: 1, md: 2 },
           }}
         >
           <Link
             href={`${basePath}/${item.slug}`}
+            onClick={onNavigate}
             style={{
               fontWeight: 700,
-              maxWidth: "250px",
+              maxWidth: "100%",
               overflow: "hidden",
               whiteSpace: "nowrap",
               textDecoration: "none",
               color: isActive ? "#c77dff" : "inherit",
+              display: "block",
+              width: "100%",
             }}
             title={item.title}
           >
@@ -118,11 +124,18 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     // It's a NavStructure (folder)
     return (
-      <Box key={key}>
-        <Typography variant="overline">
+      <Box key={key} sx={{ mb: { xs: 1, md: 2 } }}>
+        <Typography
+          variant="overline"
+          sx={{
+            fontSize: { xs: "0.75rem", md: "0.875rem" },
+            fontWeight: 600,
+            letterSpacing: "0.5px",
+          }}
+        >
           {key.charAt(0).toUpperCase() + key.slice(1)}
         </Typography>
-        <List>
+        <List sx={{ py: { xs: 0.5, md: 1 } }}>
           {Object.entries(item).map(([subKey, subItem]) =>
             renderNavItem(subKey, subItem, level + 1)
           )}
@@ -132,9 +145,13 @@ const Sidebar: React.FC<SidebarProps> = ({
   }
 
   return (
-    <Box>
+    <Box sx={{ width: "100%", maxWidth: { xs: "100%", md: "300px" } }}>
       <Box mb={2}>
-        <Typography variant="h5" mb={2}>
+        <Typography
+          variant="h5"
+          mb={2}
+          sx={{ fontSize: { xs: "1.25rem", md: "1.5rem" } }}
+        >
           Documentation
         </Typography>
         <TextField
@@ -178,8 +195,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             ),
           }}
           sx={{
-            minWidth: "270px !important",
-
+            width: "100%",
+            minWidth: { xs: "250px", md: "270px" },
             "& .MuiOutlinedInput-root": {
               borderRadius: "8px",
               backgroundColor: "rgba(255, 255, 255, 0.05)",

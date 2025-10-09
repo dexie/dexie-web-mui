@@ -10,7 +10,6 @@ import {
 } from "@mui/material"
 import { DocumentSource, getAllDocuments, Doc } from "@/utils/mdx"
 import MDXContent from "./MDXContent"
-import { MDXRemoteSerializeResult } from "next-mdx-remote"
 
 interface DocsHomePageProps {
   source: DocumentSource
@@ -33,7 +32,7 @@ interface DocsHomePageProps {
     apiPath: string
   }
   useSimpleList?: boolean
-  indexContent?: MDXRemoteSerializeResult // Serialized MDX content from index.md
+  indexContent?: string // Serialized HTML content from index.md
 }
 
 const DocsHomePage: React.FC<DocsHomePageProps> = ({

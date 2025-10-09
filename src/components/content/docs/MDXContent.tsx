@@ -239,6 +239,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                     border: "1px solid rgba(255, 255, 255, 0.1)",
                     p: 3,
                     mt: 2,
+                    overflow: "auto",
                   }}
                 >
                   <CodeBlock
