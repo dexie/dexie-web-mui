@@ -117,19 +117,12 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
           display: "flex",
           position: "relative",
           minWidth: 0,
-          "@media (max-width: 960px)": {
-            minWidth: "100%",
-            mb: index == 1 ? 2 : 0,
+          mt: {
+            xs: index == 0 ? 4 : index == 2 ? 8 : 0,
+            sm: 0,
           },
         }}
       >
-        <Box
-          sx={{
-            position: "absolute",
-          }}
-        >
-          {renderTabHeader("On-Premises")}
-        </Box>
         <Card
           sx={{
             backgroundColor: "#1a1a1a",
@@ -139,6 +132,8 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
             display: "flex",
             flexDirection: "column",
             position: "relative",
+            overflow: "visible",
+
             ...(plan.isPopular && {
               "&::before": {
                 content: '""',
@@ -155,6 +150,24 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
             }),
           }}
         >
+          {[0, 2].includes(index) && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: "-54px",
+                minWidth: "70%",
+                left: "calc(50% - 8px)",
+                transform: "translateX(-50%)",
+                textAlign: "center",
+                zIndex: 1,
+                zoom: 0.8,
+                whiteSpace: "nowrap",
+                display: { xs: "block", sm: "none" },
+              }}
+            >
+              {renderTabHeader(index == 0 ? "Cloud" : "On-Premises")}
+            </Box>
+          )}
           <CardContent
             sx={{
               padding: "24px",
@@ -377,7 +390,10 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
     return (
       <Box
         sx={{
-          width: "40%",
+          width: {
+            xs: "100%",
+            sm: "40%",
+          },
           padding: "12px 16px",
           fontWeight: "bold",
           backgroundColor: "#2d2d2d",
@@ -418,7 +434,7 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
             variant="h1"
             component="h1"
             sx={{
-              fontSize: { xs: "10vw", md: "3.5rem" },
+              fontSize: { xs: "9vw", md: "3.5rem" },
               fontWeight: 500,
               mb: 4,
               lineHeight: 1.2,

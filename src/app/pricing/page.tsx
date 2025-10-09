@@ -586,10 +586,10 @@ export default function PricingPage() {
             "Fully managed cloud solution for seamless scaling and automatic hosting, or host everything yourself for full control over your backend and infrastructure.",
           typewriterStrings: [
             "full backend control",
-            "IndexedDB superpowers",
+            "IndexedDB simplified",
             "local-first by design",
             "source code available",
-            "no backend complexity",
+            "server-free coding",
             "zero server costs",
           ],
         }}
