@@ -9,6 +9,23 @@ import remarkGfm from "remark-gfm"
 // Document source types
 export type DocumentSource = "docs" | "roadmap" | "cloud"
 
+// Breadcrumb navigation types
+export interface BreadcrumbItem {
+  label: string
+  href: string
+}
+
+// Documentation category types for navigation
+export interface DocCategory {
+  name: string
+  title: string
+  pages: {
+    slug: string[]
+    metadata: DocMetadata
+  }[]
+  subcategories: DocCategory[]
+}
+
 // Helper function to get directory path based on source
 function getSourceDirectory(source: DocumentSource): string {
   return path.join(process.cwd(), source)

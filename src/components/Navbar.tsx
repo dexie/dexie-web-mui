@@ -46,7 +46,6 @@ export default function Navbar() {
   )
   const theme = useTheme()
   const pathname = usePathname()
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"))
 
   const supportMenuOpen = Boolean(supportMenuAnchor)
   const productMenuOpen = Boolean(productMenuAnchor)
