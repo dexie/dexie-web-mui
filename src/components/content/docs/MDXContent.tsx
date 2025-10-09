@@ -5,7 +5,6 @@ import {
   Link,
   List,
   ListItem,
-  ListItemText,
   Paper,
   Divider,
 } from "@mui/material"
@@ -17,9 +16,9 @@ interface MDXContentProps {
 }
 
 // Convert HTML attributes to MUI props
-function convertProps(props: Record<string, any>) {
+function convertProps(props: Record<string, string | undefined>) {
   const { style, className, class: classAttr, ...rest } = props
-  const converted: Record<string, any> = { ...rest }
+  const converted: Record<string, unknown> = { ...rest }
 
   // Handle both className and class attributes (class gets converted to className)
   const finalClassName = className || classAttr

@@ -16,7 +16,6 @@ import {
 } from "@mui/material"
 import CheckIcon from "@mui/icons-material/Check"
 import LaunchIcon from "@mui/icons-material/Launch"
-import Image from "next/image"
 
 interface HackathonWinner {
   id: number

@@ -2,8 +2,7 @@
 
 import React from "react"
 import Image from "next/image"
-import { Box, Container, Typography, Grid, SxProps } from "@mui/material"
-import { link } from "fs"
+import { Box, Container, Typography, SxProps } from "@mui/material"
 import Link from "next/link"
 
 interface BrandProps {

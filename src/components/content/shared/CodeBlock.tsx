@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic"
 import * as Prism from "prismjs"
 import "prismjs/components/prism-javascript"
 import "prismjs/components/prism-typescript"

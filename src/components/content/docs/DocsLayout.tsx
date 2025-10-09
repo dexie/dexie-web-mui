@@ -11,13 +11,7 @@ import {
   Divider,
   Link as MuiLink,
   Drawer,
-  IconButton,
-  AppBar,
-  Toolbar,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material"
-import MenuIcon from "@mui/icons-material/Menu"
 import MenuOpenIcon from "@mui/icons-material/MenuOpen"
 interface NavItem {
   title: string

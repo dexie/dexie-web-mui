@@ -1,6 +1,5 @@
 import { Box, Typography } from "@mui/material"
 import ButtonWidget, { ButtonWidgetProps } from "../shared/Button"
-import TypeWriter from "../shared/TypeWriter"
 import { HeroWidgetSettings } from "@/types/widgets"
 
 interface HeroWidgetProps {

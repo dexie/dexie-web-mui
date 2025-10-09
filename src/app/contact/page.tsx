@@ -2,7 +2,6 @@ import {
   Box,
   Container,
   Typography,
-  Card,
   CardContent,
   Button,
   Paper,

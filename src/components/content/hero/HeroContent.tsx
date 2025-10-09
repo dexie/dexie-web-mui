@@ -1,6 +1,6 @@
 "use client"
 
-import { Box, Tabs, Tab, Divider } from "@mui/material"
+import { Box, Tabs, Tab } from "@mui/material"
 import { useState } from "react"
 import CodeBlock from "@/components/content/shared/CodeBlock"
 
