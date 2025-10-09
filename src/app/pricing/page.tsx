@@ -584,7 +584,14 @@ export default function PricingPage() {
           sectionTitle: "Cloud and on-premises with",
           sectionSubtitle:
             "Fully managed cloud solution for seamless scaling and automatic hosting, or host everything yourself for full control over your backend and infrastructure.",
-          typewriterStrings: ["full backend control"],
+          typewriterStrings: [
+            "full backend control",
+            "IndexedDB superpowers",
+            "local-first by design",
+            "source code available",
+            "no backend complexity",
+            "zero server costs",
+          ],
         }}
         sx={{
           paddingTop: "200px !important",

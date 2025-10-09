@@ -400,7 +400,7 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
       sx={{
         backgroundColor: settings.backgroundColor || "#000000",
         color: settings.textColor || "#ffffff",
-        py: { xs: 6, md: 10 },
+        py: { xs: 3, md: 10 },
         ...sx,
       }}
     >
@@ -418,7 +418,7 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
             variant="h1"
             component="h1"
             sx={{
-              fontSize: { xs: "2rem", md: "3.5rem" },
+              fontSize: { xs: "10vw", md: "3.5rem" },
               fontWeight: 500,
               mb: 4,
               lineHeight: 1.2,

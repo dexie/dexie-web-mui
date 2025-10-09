@@ -234,7 +234,7 @@ export default function HeroWidget({
               sx={{
                 color: "inherit",
                 fontSize: {
-                  xs: "48px", // Smaller on mobile
+                  xs: "10vw", // Smaller on mobile
                   md: "60px",
                 },
               }}
