@@ -3,13 +3,21 @@
 import { useState } from "react"
 import Button from "@mui/material/Button"
 import ContentCopyIcon from "@mui/icons-material/ContentCopy"
+import { useTheme } from "@mui/material/styles"
+import { useMediaQuery } from "@mui/material"
 
 interface CopyButtonProps {
   code: string
 }
 
 export default function CopyButton({ code }: CopyButtonProps) {
+  const theme = useTheme()
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"))
   const [copied, setCopied] = useState(false)
+
+  if (isSmallScreen) {
+    return null // Don't render the button on small screens
+  }
 
   const copyToClipboard = async () => {
     try {
@@ -20,6 +28,8 @@ export default function CopyButton({ code }: CopyButtonProps) {
       console.error("Failed to copy text: ", err)
     }
   }
+
+  if (isSmallScreen) return null
 
   return (
     <Button

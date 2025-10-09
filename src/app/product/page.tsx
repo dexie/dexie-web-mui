@@ -294,12 +294,17 @@ await db.tasks.add({
 const CustomHeroSection = styled(Box)(({ theme }) => ({
   background: 'url("/assets/images/dexie-bg.jpg") center/cover no-repeat',
   color: "white",
-  padding: theme.spacing(12, 0),
+  padding: theme.spacing(6, 0),
   position: "relative",
   overflow: "hidden",
   display: "flex",
   alignItems: "center",
-  height: "90vh",
+  minHeight: "100vh",
+  [theme.breakpoints.up("md")]: {
+    padding: theme.spacing(12, 0),
+    height: "90vh",
+    minHeight: "auto",
+  },
   "&::before": {
     content: '""',
     position: "absolute",
@@ -318,20 +323,26 @@ const CustomHeroSection = styled(Box)(({ theme }) => ({
 }))
 
 const FrameworkCard = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(2),
-  margin: theme.spacing(1),
+  padding: theme.spacing(1.5, 1),
+  margin: theme.spacing(0.5),
   backgroundColor: "rgba(255, 255, 255, 0.05)",
   backdropFilter: "blur(10px)",
   border: "1px solid rgba(255, 255, 255, 0.1)",
-  borderRadius: theme.spacing(2),
+  borderRadius: theme.spacing(1.5),
   cursor: "pointer",
   transition: "all 0.3s ease",
-  minWidth: 80,
+  minWidth: 70,
   textAlign: "center",
   "&:hover, &.active": {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderColor: theme.palette.primary.light,
     boxShadow: `0 8px 24px rgba(0, 0, 0, 0.3)`,
+  },
+  [theme.breakpoints.up("md")]: {
+    padding: theme.spacing(2),
+    margin: theme.spacing(1),
+    minWidth: 80,
+    borderRadius: theme.spacing(2),
   },
 }))
 
@@ -345,25 +356,37 @@ function CustomProductHero() {
     <CustomHeroSection>
       <Box
         sx={{
-          maxWidth: "1400px",
+          maxWidth: {
+            xs: "100%",
+            sm: "1400px",
+          },
           margin: "0 auto",
-          px: 3,
-          py: 18,
+          px: { xs: 2, md: 3 },
+          py: { xs: 8, md: 18 },
+          paddingTop: { xs: 12, md: 18 }, // Extra top padding on mobile for header
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
-          gap: 6,
-          alignItems: "flex-start",
+          gap: { xs: 4, md: 6 },
+          alignItems: { xs: "center", md: "flex-start" },
+          minHeight: { xs: "100vh", md: "auto" },
         }}
       >
         {/* Left side - Hero text */}
-        <Box sx={{ flex: 1, maxWidth: { md: "50%" } }}>
+        <Box
+          sx={{
+            flex: 1,
+            maxWidth: { xs: "100%", md: "50%" },
+            textAlign: { xs: "center", md: "left" },
+            width: "100%",
+          }}
+        >
           <Typography
             variant="h1"
             component="h1"
             sx={{
               fontWeight: 500,
-              fontSize: { xs: "2.5rem", md: "60px" },
-              lineHeight: "72px",
+              fontSize: { xs: "8vw", sm: "2.5rem", md: "60px" },
+              lineHeight: { xs: 1.2, md: "72px" },
               mb: 3,
             }}
           >
@@ -388,8 +411,9 @@ function CustomProductHero() {
             sx={{
               fontWeight: 300,
               opacity: 0.9,
-              mb: 4,
+              mb: { xs: 3, md: 4 },
               lineHeight: 1.4,
+              fontSize: { xs: "1.1rem", sm: "1.3rem", md: "1.5rem" },
             }}
           >
             Works with any JavaScript framework. Start local, add sync when
@@ -397,20 +421,27 @@ function CustomProductHero() {
             intuitive code.
           </Typography>
 
-          <br />
-          <br />
+          <Box sx={{ mb: { xs: 2, md: 4 } }} />
 
           {/* Framework logos */}
-          <Typography variant="h6" sx={{ mb: 2, opacity: 0.8 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              mb: 2,
+              opacity: 0.8,
+              fontSize: { xs: "1rem", md: "1.25rem" },
+            }}
+          >
             Works with your favorite framework:
           </Typography>
           <Box
             sx={{
               display: "flex",
               flexWrap: "wrap",
-              gap: 1,
+              gap: { xs: 0.5, md: 1 },
               alignItems: "center",
-              zoom: 0.9,
+              justifyContent: { xs: "center", md: "flex-start" },
+              zoom: { xs: 0.6, md: 0.9 },
             }}
           >
             {frameworkExamples
@@ -483,9 +514,28 @@ function CustomProductHero() {
         </Box>
 
         {/* Right side - Code example */}
-        <Box sx={{ flex: 1, mt: -5, maxWidth: { md: "50%" } }}>
-          <Box sx={{ position: "sticky", top: 20 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+        <Box
+          sx={{
+            flex: 1,
+            mt: { xs: 2, md: -5 },
+            maxWidth: { xs: "100%", md: "50%" },
+            width: "100%",
+          }}
+        >
+          <Box
+            sx={{
+              position: { xs: "static", md: "sticky" },
+              top: 20,
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                mb: 2,
+                justifyContent: { xs: "center", md: "flex-start" },
+              }}
+            >
               <Image
                 src={currentExample?.logo || frameworkExamples[0].logo}
                 alt={currentExample?.name || frameworkExamples[0].name}
@@ -493,12 +543,31 @@ function CustomProductHero() {
                 height={24}
                 style={{ marginRight: 8 }}
               />
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 0 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  mb: 0,
+                  fontSize: { xs: "1rem", md: "1.25rem" },
+                }}
+              >
                 {currentExample?.name} Example
               </Typography>
             </Box>
 
-            <Box sx={{ zoom: currentExample?.zoom ? currentExample?.zoom : 1 }}>
+            <Box
+              sx={{
+                zoom: {
+                  xs: currentExample?.zoom
+                    ? currentExample?.zoom - 0.2
+                    : 1 - 0.2,
+                  sm: currentExample?.zoom ? currentExample?.zoom : 1,
+                },
+                "& .MuiBox-root": {
+                  fontSize: { xs: "0.8rem", md: "1rem" },
+                },
+              }}
+            >
               {currentExample?.id === "sync" &&
                 currentExample.commandLineCode && (
                   <Box
@@ -533,7 +602,13 @@ function CustomProductHero() {
 
             <Typography
               variant="body2"
-              sx={{ mt: 2, opacity: 0.8, fontStyle: "italic" }}
+              sx={{
+                mt: 2,
+                opacity: 0.8,
+                fontStyle: "italic",
+                textAlign: { xs: "center", md: "left" },
+                fontSize: { xs: "0.85rem", md: "0.9rem" },
+              }}
             >
               {currentExample?.description}
             </Typography>
@@ -719,7 +794,11 @@ export default function ProductPage() {
             }}
           >
             {/* Step 1: Declare your database */}
-            <Box>
+            <Box
+              sx={{
+                maxWidth: "calc(100% - 48px)",
+              }}
+            >
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h5"
@@ -769,7 +848,11 @@ db.version(1).stores({
             </Box>
 
             {/* Step 2: Run some queries */}
-            <Box>
+            <Box
+              sx={{
+                maxWidth: "calc(100% - 48px)",
+              }}
+            >
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h5"
@@ -825,7 +908,11 @@ await db.friends.add({
             </Box>
 
             {/* Step 3: Live Queries */}
-            <Box>
+            <Box
+              sx={{
+                maxWidth: "calc(100% - 48px)",
+              }}
+            >
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h5"
@@ -889,7 +976,11 @@ function FriendList() {
             </Box>
 
             {/* Step 4: Sync */}
-            <Box>
+            <Box
+              sx={{
+                maxWidth: "calc(100% - 48px)",
+              }}
+            >
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h5"

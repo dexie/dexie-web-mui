@@ -14,15 +14,19 @@ function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props
 
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
+      sx={{
+        maxWidth: { xs: "calc(100% - 32px)", md: "100%" }, // Prevent overflow due to padding
+        overflowX: { xs: "auto", md: "hidden" },
+      }}
     >
       {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
+    </Box>
   )
 }
 

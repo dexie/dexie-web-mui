@@ -280,8 +280,12 @@ export default function HeroWidget({
                   xs: "100%", // Full width on small screens
                   md: `${contentRightWidthPercentage}%`,
                 },
+                zoom: {
+                  xs: "0.8",
+                  sm: 1,
+                },
                 padding: {
-                  xs: 4, // Padding around contentRight on small screens
+                  xs: 2, // Padding around contentRight on small screens
                 },
                 display: "flex",
                 alignItems: "center",
