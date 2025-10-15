@@ -451,6 +451,7 @@ export default function CustomProductHero() {
                 "& .MuiBox-root": {
                   fontSize: { xs: "0.8rem", md: "1rem" },
                 },
+                overflowX: "auto",
               }}
             >
               {currentExample?.id === "sync" &&
