@@ -10,6 +10,7 @@ import {
 } from "@mui/material"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dexie.org"),
   title: "Contact Dexie.js Team - Support, Sales & Technical Help",
   description:
     "Get help with Dexie.js and Dexie Cloud. Technical support, sales inquiries, bug reports, and community support. Discord community, GitHub issues, and professional support available.",

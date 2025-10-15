@@ -16,6 +16,7 @@ interface SEOConfig {
 
 export function generateSEOMetadata(config: SEOConfig): Metadata {
   return {
+    metadataBase: new URL("https://dexie.org"),
     title: config.title,
     description: config.description,
     keywords: config.keywords,

@@ -3,6 +3,7 @@ import HeroWidget from "@/components/content/hero/HeroWidget"
 import HeroContent from "@/components/content/hero/HeroContent"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dexie.org"),
   title:
     "Dexie.js - Offline-First Database for JavaScript | IndexedDB Simplified",
   description:

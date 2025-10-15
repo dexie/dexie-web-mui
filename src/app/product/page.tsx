@@ -2,6 +2,7 @@ import React from "react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dexie.org"),
   title: "Dexie.js Features - IndexedDB Wrapper & Dexie Cloud Sync Platform",
   description:
     "Discover Dexie.js features: Easy IndexedDB wrapper, reactive queries, and Dexie Cloud for real-time sync. Build offline-first apps with React, Vue, Angular, Svelte. Local-first development made simple with authentication and collaboration.",

@@ -8,6 +8,7 @@ import {
 } from "@/utils/mdx"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dexie.org"),
   title:
     "Dexie.js Documentation - Complete Guide to IndexedDB & Offline-First Development",
   description:

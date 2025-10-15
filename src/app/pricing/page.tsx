@@ -3,6 +3,7 @@ import CallToActionWidget from "@/components/content/CallToActionWidget"
 import FAQWidget from "@/components/content/FAQWidget"
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dexie.org"),
   title: "Dexie Cloud Pricing - Free Offline-First Database with Sync Plans",
   description:
     "Dexie Cloud pricing: Start free with 3 users and 100MB storage. Production plans from $0.12/user/month. On-premises options available. No backend setup required for offline-first apps with real-time sync.",
