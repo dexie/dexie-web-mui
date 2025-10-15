@@ -1,3 +1,5 @@
+export const dynamic = "force-static"
+
 export function GET(): Response {
   const robotsTxt = `# https://www.robotstxt.org/robotstxt.html
 User-agent: *

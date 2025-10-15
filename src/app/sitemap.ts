@@ -1,6 +1,8 @@
 import { MetadataRoute } from "next"
 import { getAllDocs, getAllCloudDocs } from "@/utils/mdx"
 
+export const dynamic = "force-static"
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://dexie.org"
 
