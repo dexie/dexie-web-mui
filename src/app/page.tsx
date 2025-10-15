@@ -514,7 +514,7 @@ export default function Home() {
   return (
     <>
       <HeroWidget
-        preHeading={"Zero-config & no backend skills needed - DAVID WAS HERE"}
+        preHeading={"Zero-config & no backend skills needed"}
         heading={
           <>
             Build fast, scale big <br />
