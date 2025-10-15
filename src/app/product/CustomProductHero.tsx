@@ -326,7 +326,7 @@ export default function CustomProductHero() {
               gap: { xs: 0.5, md: 1 },
               alignItems: "center",
               justifyContent: { xs: "center", md: "flex-start" },
-              zoom: { xs: 0.6, md: 0.9 },
+              zoom: { xs: 0.5, md: 0.9 },
             }}
           >
             {frameworkExamples
