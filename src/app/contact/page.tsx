@@ -10,6 +10,7 @@ import {
 import EmailIcon from "@mui/icons-material/Email"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import LaunchIcon from "@mui/icons-material/Launch"
+import Image from "next/image"
 import PersonIcon from "@mui/icons-material/Person"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
 import ContactForm from "@/components/content/ContactForm"
@@ -349,9 +350,11 @@ export default function ContactPage() {
               },
             }}
           >
-            <img
+            <Image
               src="/assets/images/support.png"
               alt="Support"
+              width={250}
+              height={250}
               style={{ maxWidth: "250px", height: "auto", opacity: 0.8 }}
             />
           </Box>

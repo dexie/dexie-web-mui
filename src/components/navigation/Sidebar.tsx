@@ -22,7 +22,17 @@ import {
 } from "@mui/icons-material"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { DocCategory } from "../../utils/mdx"
+// Type definition
+interface DocCategory {
+  title: string
+  pages: Array<{
+    slug: string[]
+    metadata: {
+      title: string
+    }
+  }>
+  subcategories: DocCategory[]
+}
 
 interface SidebarProps {
   navigation: DocCategory[]
@@ -112,7 +122,7 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
           {/* Subcategories */}
           {category.subcategories.map((subcategory) => (
             <CategoryItem
-              key={subcategory.name}
+              key={subcategory.title}
               category={subcategory}
               basePath={basePath}
               currentPath={currentPath}
@@ -143,7 +153,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ navigation, basePath }) => {
       <List disablePadding>
         {navigation.map((category) => (
           <CategoryItem
-            key={category.name}
+            key={category.title}
             category={category}
             basePath={basePath}
             currentPath={currentPath}

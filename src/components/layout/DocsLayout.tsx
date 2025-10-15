@@ -2,13 +2,24 @@ import React from "react"
 import { Box, Container, Typography } from "@mui/material"
 import { Sidebar } from "../navigation/Sidebar"
 import { BreadcrumbNavigation } from "../navigation/BreadcrumbNavigation"
-import { DocCategory, BreadcrumbItem } from "../../utils/mdx"
+// Type definitions
+interface BreadcrumbItem {
+  label: string
+  href: string
+}
+
+interface DocCategory {
+  name: string
+  items: Array<{
+    title: string
+    slug: string
+  }>
+}
 
 interface DocsLayoutProps {
   children: React.ReactNode
   navigation: DocCategory[]
   basePath: string
-  title: string
   breadcrumbs?: BreadcrumbItem[]
   pageTitle?: string
 }
@@ -17,7 +28,6 @@ export const DocsLayout: React.FC<DocsLayoutProps> = ({
   children,
   navigation,
   basePath,
-  title,
   breadcrumbs = [],
   pageTitle,
 }) => {

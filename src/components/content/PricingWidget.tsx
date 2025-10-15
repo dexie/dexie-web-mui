@@ -68,7 +68,7 @@ export interface PricingWidgetProps {
 
 const PricingWidget: React.FC<PricingWidgetProps> = ({
   cloudPlans,
-  onPremisesPlans,
+  // onPremisesPlans,
   settings,
   sx,
 }) => {
