@@ -208,15 +208,16 @@ const CustomHeroSection = styled(Box)(({ theme }) => ({
 }))
 
 const FrameworkCard = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(1.5, 1),
-  margin: theme.spacing(0.5),
+  padding: theme.spacing(1, 0.5),
+  margin: 0,
   backgroundColor: "rgba(255, 255, 255, 0.05)",
   backdropFilter: "blur(10px)",
   border: "1px solid rgba(255, 255, 255, 0.1)",
-  borderRadius: theme.spacing(1.5),
+  borderRadius: theme.spacing(1),
   cursor: "pointer",
   transition: "all 0.3s ease",
-  minWidth: 70,
+  minWidth: 50,
+  flexShrink: 0,
   textAlign: "center",
   "&:hover, &.active": {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -322,11 +323,14 @@ export default function CustomProductHero() {
           <Box
             sx={{
               display: "flex",
-              flexWrap: "wrap",
-              gap: { xs: 0.5, md: 1 },
+              flexWrap: "nowrap",
+              gap: { xs: 0.3, md: 1 },
               alignItems: "center",
               justifyContent: { xs: "center", md: "flex-start" },
-              zoom: { xs: 0.4, md: 0.9 },
+              overflowX: { xs: "auto", md: "visible" },
+              width: "100%",
+              minWidth: 0,
+              zoom: { xs: 0.6, md: 0.9 },
             }}
           >
             {frameworkExamples
@@ -337,17 +341,28 @@ export default function CustomProductHero() {
                   className={selectedFramework === framework.id ? "active" : ""}
                   onClick={() => setSelectedFramework(framework.id)}
                 >
-                  <Box sx={{ mb: 1 }}>
+                  <Box sx={{ mb: { xs: 0.5, md: 1 } }}>
                     <Image
                       src={framework.logo}
                       alt={framework.name}
-                      width={32}
-                      height={32}
+                      width={24}
+                      height={24}
+                      style={{
+                        width: "auto",
+                        height: "auto",
+                        maxWidth: "24px",
+                        maxHeight: "24px",
+                      }}
                     />
                   </Box>
                   <Typography
                     variant="caption"
-                    sx={{ color: "white", fontWeight: 500 }}
+                    sx={{
+                      color: "white",
+                      fontWeight: 500,
+                      fontSize: { xs: "0.6rem", md: "0.75rem" },
+                      lineHeight: 1,
+                    }}
                   >
                     {framework.name}
                   </Typography>
@@ -359,11 +374,17 @@ export default function CustomProductHero() {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                mx: 2,
+                mx: { xs: 1, md: 2 },
                 opacity: 0.6,
+                flexShrink: 0,
               }}
             >
-              <ArrowForwardIcon sx={{ fontSize: 24, color: "white" }} />
+              <ArrowForwardIcon
+                sx={{
+                  fontSize: { xs: 16, md: 24 },
+                  color: "white",
+                }}
+              />
             </Box>
 
             {/* Cloud functionality */}
@@ -378,17 +399,28 @@ export default function CustomProductHero() {
                     }
                     onClick={() => setSelectedFramework(framework.id)}
                   >
-                    <Box sx={{ mb: 1 }}>
+                    <Box sx={{ mb: { xs: 0.5, md: 1 } }}>
                       <Image
                         src={framework.logo}
                         alt={framework.name}
-                        width={32}
-                        height={32}
+                        width={24}
+                        height={24}
+                        style={{
+                          width: "auto",
+                          height: "auto",
+                          maxWidth: "24px",
+                          maxHeight: "24px",
+                        }}
                       />
                     </Box>
                     <Typography
                       variant="caption"
-                      sx={{ color: "white", fontWeight: 500 }}
+                      sx={{
+                        color: "white",
+                        fontWeight: 500,
+                        fontSize: { xs: "0.6rem", md: "0.75rem" },
+                        lineHeight: 1,
+                      }}
                     >
                       {framework.name}
                     </Typography>
@@ -451,7 +483,7 @@ export default function CustomProductHero() {
                 "& .MuiBox-root": {
                   fontSize: { xs: "0.8rem", md: "1rem" },
                 },
-                overflowX: "auto",
+                overflowX: { xs: "auto", md: "hidden" },
               }}
             >
               {currentExample?.id === "sync" &&
