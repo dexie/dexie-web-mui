@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import {
   Box,
   Container,
@@ -7,6 +8,49 @@ import {
   Paper,
   Divider,
 } from "@mui/material"
+
+export const metadata: Metadata = {
+  title: "Contact Dexie.js Team - Support, Sales & Technical Help",
+  description: "Get help with Dexie.js and Dexie Cloud. Technical support, sales inquiries, bug reports, and community support. Discord community, GitHub issues, and professional support available.",
+  keywords: [
+    "dexie.js support",
+    "dexie cloud support", 
+    "javascript database help",
+    "indexeddb support",
+    "offline database support",
+    "dexie technical support",
+    "offline first help",
+    "database sync support",
+    "react offline help",
+    "vue offline support",
+    "angular database support",
+    "progressive web app help",
+    "client database support",
+    "browser storage help"
+  ],
+  openGraph: {
+    title: "Contact Dexie.js Team - Get Support & Technical Help",
+    description: "Multiple support channels available: Discord community, GitHub issues, technical support, and professional services for Dexie.js and Dexie Cloud.",
+    url: 'https://dexie.org/contact',
+    images: [
+      {
+        url: '/assets/images/dexie-contact-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Contact Dexie.js Team',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact Dexie.js Team - Support & Help',
+    description: 'Get technical support, join our Discord community, or contact our team for Dexie.js and Dexie Cloud help.',
+    images: ['/assets/images/dexie-contact-og.jpg'],
+  },
+  alternates: {
+    canonical: 'https://dexie.org/contact',
+  },
+}
 import EmailIcon from "@mui/icons-material/Email"
 import GitHubIcon from "@mui/icons-material/GitHub"
 import LaunchIcon from "@mui/icons-material/Launch"

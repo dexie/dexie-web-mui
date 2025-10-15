@@ -1,5 +1,53 @@
+import type { Metadata } from "next"
 import HeroWidget from "@/components/content/hero/HeroWidget"
 import HeroContent from "@/components/content/hero/HeroContent"
+
+export const metadata: Metadata = {
+  title: "Dexie.js - Offline-First Database for JavaScript | IndexedDB Simplified",
+  description: "Build fast, offline-first web applications with Dexie.js. The easiest IndexedDB wrapper with real-time sync, authentication, and collaboration. Works with React, Vue, Angular, and any framework. Start local, scale global with zero backend setup.",
+  keywords: [
+    "dexie.js",
+    "offline first database", 
+    "indexeddb wrapper",
+    "javascript database",
+    "browser database sync",
+    "local first database",
+    "react offline database",
+    "vue offline storage", 
+    "pwa database",
+    "offline sync javascript",
+    "client side database",
+    "real time collaboration",
+    "progressive web app database",
+    "offline storage solution",
+    "browser indexeddb",
+    "javascript offline sync",
+    "local storage alternative",
+    "offline first development"
+  ],
+  openGraph: {
+    title: "Dexie.js - Build Offline-First Apps with IndexedDB Made Simple",
+    description: "Zero backend setup required. Build fast, offline-first web apps with real-time sync, authentication, and collaboration. Works with any JavaScript framework.",
+    url: 'https://dexie.org',
+    images: [
+      {
+        url: '/assets/images/dexie-hero-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Dexie.js - Offline-First Database Dashboard',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dexie.js - Offline-First Database for JavaScript',
+    description: 'Zero backend setup. Build offline-first apps with real-time sync, auth, and collaboration. Works with React, Vue, Angular.',
+    images: ['/assets/images/dexie-hero-og.jpg'],
+  },
+  alternates: {
+    canonical: 'https://dexie.org',
+  },
+}
 import Brands from "@/components/content/hero/Brands"
 import Benefits, {
   BenefitItem,

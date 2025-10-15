@@ -1,6 +1,54 @@
 "use client"
 
 import React, { useState } from "react"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Dexie.js Features - IndexedDB Wrapper & Dexie Cloud Sync Platform",
+  description: "Discover Dexie.js features: Easy IndexedDB wrapper, reactive queries, and Dexie Cloud for real-time sync. Build offline-first apps with React, Vue, Angular, Svelte. Local-first development made simple with authentication and collaboration.",
+  keywords: [
+    "dexie.js features",
+    "indexeddb wrapper benefits", 
+    "dexie cloud sync",
+    "offline first framework",
+    "javascript database features",
+    "react offline database",
+    "vue offline database",
+    "angular offline storage",
+    "svelte offline database",
+    "local first development",
+    "browser database sync",
+    "real time database sync",
+    "offline collaboration",
+    "indexeddb react hooks",
+    "javascript client database",
+    "progressive web app storage",
+    "offline first architecture",
+    "browser storage solution"
+  ],
+  openGraph: {
+    title: "Dexie.js Features - The Smarter Way to Use IndexedDB", 
+    description: "Easy IndexedDB wrapper with reactive queries + Dexie Cloud for real-time sync. Works with any JavaScript framework. Local-first development simplified.",
+    url: 'https://dexie.org/product',
+    images: [
+      {
+        url: '/assets/images/dexie-features-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Dexie.js Features - IndexedDB and Cloud Sync',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dexie.js Features - IndexedDB Wrapper & Cloud Sync',
+    description: 'Easy IndexedDB wrapper + Cloud sync. Works with React, Vue, Angular, Svelte. Local-first development made simple.',
+    images: ['/assets/images/dexie-features-og.jpg'],
+  },
+  alternates: {
+    canonical: 'https://dexie.org/product',
+  },
+}
 import { Box, Typography, Button, Divider } from "@mui/material"
 import { styled } from "@mui/material/styles"
 import CodeIcon from "@mui/icons-material/Code"

@@ -1,5 +1,52 @@
+import type { Metadata } from "next"
 import CallToActionWidget from "@/components/content/CallToActionWidget"
 import FAQWidget from "@/components/content/FAQWidget"
+
+export const metadata: Metadata = {
+  title: "Dexie Cloud Pricing - Free Offline-First Database with Sync Plans",
+  description: "Dexie Cloud pricing: Start free with 3 users and 100MB storage. Production plans from $0.12/user/month. On-premises options available. No backend setup required for offline-first apps with real-time sync.",
+  keywords: [
+    "dexie cloud pricing",
+    "offline database pricing",
+    "dexie.js cost",
+    "offline first database cost",
+    "indexeddb sync pricing", 
+    "database sync pricing",
+    "offline sync cost",
+    "real time sync pricing",
+    "javascript database pricing",
+    "browser database cost",
+    "local first pricing",
+    "offline collaboration pricing",
+    "pwa database pricing",
+    "client database hosting",
+    "offline storage pricing",
+    "database as a service pricing",
+    "offline first hosting"
+  ],
+  openGraph: {
+    title: "Dexie Cloud Pricing - Start Free, Scale as Needed",
+    description: "Free tier: 3 users, 100MB storage. Production plans from $0.12/user/month. On-premises available. Perfect for offline-first applications.",
+    url: 'https://dexie.org/pricing',
+    images: [
+      {
+        url: '/assets/images/dexie-pricing-og.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Dexie Cloud Pricing Plans',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dexie Cloud Pricing - Free Tier Available',
+    description: 'Start free with 3 users. Production plans from $0.12/user/month. On-premises options for full control.',
+    images: ['/assets/images/dexie-pricing-og.jpg'],
+  },
+  alternates: {
+    canonical: 'https://dexie.org/pricing',
+  },
+}
 import PricingWidget, {
   type PricingPlan,
 } from "@/components/content/PricingWidget"
