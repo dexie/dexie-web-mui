@@ -27,6 +27,7 @@ const roboto = Roboto({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://dexie.org"),
   title: {
     default:
       "Dexie.js - The IndexedDB Wrapper for JavaScript | Offline-First Database",
