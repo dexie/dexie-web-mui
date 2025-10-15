@@ -22,7 +22,7 @@ Sitemap: https://dexie.org/sitemap.xml`
 
   return new Response(robotsTxt, {
     headers: {
-      'Content-Type': 'text/plain',
+      "Content-Type": "text/plain",
     },
   })
 }

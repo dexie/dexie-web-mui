@@ -8,18 +8,20 @@ import {
 } from "@/utils/mdx"
 
 export const metadata: Metadata = {
-  title: "Dexie.js Documentation - Complete Guide to IndexedDB & Offline-First Development",
-  description: "Complete Dexie.js documentation: IndexedDB tutorials, API reference, offline-first patterns, and Dexie Cloud sync guides. Learn to build fast, offline web applications with React, Vue, Angular, and more.",
+  title:
+    "Dexie.js Documentation - Complete Guide to IndexedDB & Offline-First Development",
+  description:
+    "Complete Dexie.js documentation: IndexedDB tutorials, API reference, offline-first patterns, and Dexie Cloud sync guides. Learn to build fast, offline web applications with React, Vue, Angular, and more.",
   keywords: [
     "dexie.js documentation",
     "indexeddb tutorial",
-    "offline first tutorial", 
+    "offline first tutorial",
     "dexie api reference",
     "javascript database tutorial",
     "browser database guide",
     "offline sync tutorial",
     "react offline tutorial",
-    "vue offline guide", 
+    "vue offline guide",
     "angular offline storage",
     "progressive web app tutorial",
     "local first development guide",
@@ -27,29 +29,31 @@ export const metadata: Metadata = {
     "indexeddb wrapper guide",
     "offline storage tutorial",
     "real time sync guide",
-    "collaborative apps tutorial"
+    "collaborative apps tutorial",
   ],
   openGraph: {
     title: "Dexie.js Documentation - Master Offline-First Development",
-    description: "Complete tutorials and API reference for building offline-first web applications with IndexedDB and real-time sync.",
-    url: 'https://dexie.org/docs',
+    description:
+      "Complete tutorials and API reference for building offline-first web applications with IndexedDB and real-time sync.",
+    url: "https://dexie.org/docs",
     images: [
       {
-        url: '/assets/images/dexie-docs-og.jpg',
+        url: "/assets/images/dexie-docs-og.jpg",
         width: 1200,
         height: 630,
-        alt: 'Dexie.js Documentation',
+        alt: "Dexie.js Documentation",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Dexie.js Documentation - Complete Guide',
-    description: 'Master offline-first development with complete tutorials and API reference for IndexedDB and sync.',
-    images: ['/assets/images/dexie-docs-og.jpg'],
+    card: "summary_large_image",
+    title: "Dexie.js Documentation - Complete Guide",
+    description:
+      "Master offline-first development with complete tutorials and API reference for IndexedDB and sync.",
+    images: ["/assets/images/dexie-docs-og.jpg"],
   },
   alternates: {
-    canonical: 'https://dexie.org/docs',
+    canonical: "https://dexie.org/docs",
   },
 }
 

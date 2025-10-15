@@ -1,14 +1,13 @@
-"use client"
-
-import React, { useState } from "react"
+import React from "react"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Dexie.js Features - IndexedDB Wrapper & Dexie Cloud Sync Platform",
-  description: "Discover Dexie.js features: Easy IndexedDB wrapper, reactive queries, and Dexie Cloud for real-time sync. Build offline-first apps with React, Vue, Angular, Svelte. Local-first development made simple with authentication and collaboration.",
+  description:
+    "Discover Dexie.js features: Easy IndexedDB wrapper, reactive queries, and Dexie Cloud for real-time sync. Build offline-first apps with React, Vue, Angular, Svelte. Local-first development made simple with authentication and collaboration.",
   keywords: [
     "dexie.js features",
-    "indexeddb wrapper benefits", 
+    "indexeddb wrapper benefits",
     "dexie cloud sync",
     "offline first framework",
     "javascript database features",
@@ -24,45 +23,46 @@ export const metadata: Metadata = {
     "javascript client database",
     "progressive web app storage",
     "offline first architecture",
-    "browser storage solution"
+    "browser storage solution",
   ],
   openGraph: {
-    title: "Dexie.js Features - The Smarter Way to Use IndexedDB", 
-    description: "Easy IndexedDB wrapper with reactive queries + Dexie Cloud for real-time sync. Works with any JavaScript framework. Local-first development simplified.",
-    url: 'https://dexie.org/product',
+    title: "Dexie.js Features - The Smarter Way to Use IndexedDB",
+    description:
+      "Easy IndexedDB wrapper with reactive queries + Dexie Cloud for real-time sync. Works with any JavaScript framework. Local-first development simplified.",
+    url: "https://dexie.org/product",
     images: [
       {
-        url: '/assets/images/dexie-features-og.jpg',
+        url: "/assets/images/dexie-features-og.jpg",
         width: 1200,
         height: 630,
-        alt: 'Dexie.js Features - IndexedDB and Cloud Sync',
+        alt: "Dexie.js Features - IndexedDB and Cloud Sync",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Dexie.js Features - IndexedDB Wrapper & Cloud Sync',
-    description: 'Easy IndexedDB wrapper + Cloud sync. Works with React, Vue, Angular, Svelte. Local-first development made simple.',
-    images: ['/assets/images/dexie-features-og.jpg'],
+    card: "summary_large_image",
+    title: "Dexie.js Features - IndexedDB Wrapper & Cloud Sync",
+    description:
+      "Easy IndexedDB wrapper + Cloud sync. Works with React, Vue, Angular, Svelte. Local-first development made simple.",
+    images: ["/assets/images/dexie-features-og.jpg"],
   },
   alternates: {
-    canonical: 'https://dexie.org/product',
+    canonical: "https://dexie.org/product",
   },
 }
+
 import { Box, Typography, Button, Divider } from "@mui/material"
-import { styled } from "@mui/material/styles"
 import CodeIcon from "@mui/icons-material/Code"
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
-import Image from "next/image"
-import TypeWriter from "@/components/content/shared/TypeWriter"
-import CodeBlock from "@/components/content/shared/CodeBlock"
+import CustomProductHero from "./CustomProductHero"
 import Benefits, {
   BenefitItem,
 } from "@/components/content/Benefits/BenefitsWidget"
 import CallToActionWidget from "@/components/content/CallToActionWidget"
 import BlogPostsWidget from "@/components/content/BlogPostsWidget"
 import { blogPostsData } from "../page"
+import CodeBlock from "@/components/content/shared/CodeBlock"
 
 // Why Dexie.js? - Benefits data
 const dexieJsBenefits: BenefitItem[] = [
@@ -171,506 +171,10 @@ const dexieCloudBenefits: BenefitItem[] = [
   },
 ]
 
-// Framework examples showcasing Dexie.js support
-const frameworkExamples = [
-  {
-    id: "react",
-    name: "React",
-    logo: "/assets/images/icons/react-svgrepo-com.svg",
-    code: `import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "./db";
-
-export function TaskList() {
-  const tasks = useLiveQuery(
-    () => db.tasks.orderBy("created").toArray()
-  );
-
-  return (
-    <ul>
-      {tasks?.map(task => 
-        <li key={task.id}>{task.title}</li>
-      )}
-    </ul>
-  );
-}`,
-    description: "Perfect integration with React hooks and state management",
-  },
-  {
-    id: "vue",
-    name: "Vue",
-    logo: "/assets/images/icons/vue-svgrepo-com.svg",
-    zoom: 0.85,
-    code: `<template>
-  <div>
-    <h2>Tasks</h2>
-    <ul>
-      <li v-for="task in tasks" :key="task.id">
-        {{ task.title }}
-      </li>
-    </ul>
-  </div>
-</template>
-
-<script>
-import { liveQuery } from "dexie";
-import { useObservable } from "@vueuse/rxjs";
-import { db } from "./db";
-
-export default {
-  setup() {
-    return {
-      tasks: useObservable(
-        liveQuery(() => db.tasks.orderBy("created").toArray())
-      )
-    };
-  }
-};
-</script>`,
-    description: "Reactive data binding with Vue's composition API",
-  },
-  {
-    id: "svelte",
-    name: "Svelte",
-    logo: "/assets/images/icons/svelte-svgrepo-com.svg",
-    code: `<script>
-  import { liveQuery } from "dexie";
-  import { db } from "./db";
-  
-  let tasks = liveQuery(
-    () => db.tasks.orderBy("created").toArray()
-  );
-</script>
-
-<div>
-  <h2>Tasks</h2>
-  <ul>
-    {#each ($tasks || []) as task (task.id)}
-      <li>{task.title}</li>
-    {/each}
-  </ul>
-</div>`,
-    description: "Effortless reactivity with Svelte's reactive statements",
-  },
-  {
-    id: "angular",
-    name: "Angular",
-    logo: "/assets/images/icons/angular-svgrepo-com.svg",
-    zoom: 0.9,
-    code: `import { Component } from '@angular/core';
-import { liveQuery } from 'dexie';
-import { db } from './db';
-
-@Component({
-  selector: 'task-list',
-  template: \`
-    <h2>Tasks</h2>
-    <ul>
-      <li *ngFor="let task of tasks$ | async">
-        {{ task.title }}
-      </li>
-    </ul>
-  \`
-})
-export class TaskListComponent {
-  tasks$ = liveQuery(() => listTasks());
-}
-
-async function listTasks() {
-  return await db.tasks.orderBy("created").toArray();
-}`,
-    description:
-      "Seamless integration with Angular's reactive forms and observables",
-  },
-  {
-    id: "vanilla",
-    name: "Vanilla JS",
-    logo: "/assets/images/icons/javascript-svgrepo-com.svg",
-    code: `import { liveQuery } from "dexie";
-import { db } from "./db";
-
-// Subscribe to live updates
-const subscription = liveQuery(
-  () => db.tasks.orderBy("created").toArray()
-).subscribe(tasks => {
-  // Update DOM when data changes
-  const taskList = document.getElementById('task-list');
-  taskList.innerHTML = tasks
-    .map(task => \`<li>\${task.title}</li>\`)
-    .join('');
-});
-
-// Clean up when done
-// subscription.unsubscribe();`,
-    description:
-      "Pure JavaScript with reactive queries - no framework required",
-  },
-  {
-    id: "sync",
-    name: "Dexie Cloud",
-    logo: "/assets/favicon/favicon-white.svg",
-    zoom: 0.85,
-    commandLineCode: `npx dexie-cloud create
-npx dexie-cloud whitelist http://localhost:3000
-npm install dexie@latest
-npm install dexie-cloud-addon`,
-    code: `import Dexie from "dexie";
-import dexieCloud from "dexie-cloud-addon";
-
-const db = new Dexie('SyncedTasks', {addons: [dexieCloud]});
-
-db.version(1).stores({
-  tasks: '@id, title, created' // '@' = auto-generated global ID
-});
-
-// Connect your dexie-cloud database:
-db.cloud.configure({
-  databaseUrl: "https://<yourdatabase>.dexie.cloud",
-  requireAuth: true // optional
-});
-
-// Now your tasks sync automatically!
-await db.tasks.add({
-  title: "Synced task",
-  created: new Date()
-});`,
-    description:
-      "Real-time sync and collaboration - start local, add sync when ready",
-  },
-]
-
-// Styled components for the new hero
-const CustomHeroSection = styled(Box)(({ theme }) => ({
-  background: 'url("/assets/images/dexie-bg.jpg") center/cover no-repeat',
-  color: "white",
-  padding: theme.spacing(6, 0),
-  position: "relative",
-  overflow: "hidden",
-  display: "flex",
-  alignItems: "center",
-  minHeight: "100vh",
-  [theme.breakpoints.up("md")]: {
-    padding: theme.spacing(12, 0),
-    height: "90vh",
-    minHeight: "auto",
-  },
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: "linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)",
-    opacity: 0.9,
-    zIndex: 1,
-  },
-  "> *": {
-    position: "relative",
-    zIndex: 2,
-  },
-}))
-
-const FrameworkCard = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(1.5, 1),
-  margin: theme.spacing(0.5),
-  backgroundColor: "rgba(255, 255, 255, 0.05)",
-  backdropFilter: "blur(10px)",
-  border: "1px solid rgba(255, 255, 255, 0.1)",
-  borderRadius: theme.spacing(1.5),
-  cursor: "pointer",
-  transition: "all 0.3s ease",
-  minWidth: 70,
-  textAlign: "center",
-  "&:hover, &.active": {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderColor: theme.palette.primary.light,
-    boxShadow: `0 8px 24px rgba(0, 0, 0, 0.3)`,
-  },
-  [theme.breakpoints.up("md")]: {
-    padding: theme.spacing(2),
-    margin: theme.spacing(1),
-    minWidth: 80,
-    borderRadius: theme.spacing(2),
-  },
-}))
-
-function CustomProductHero() {
-  const [selectedFramework, setSelectedFramework] = useState("react")
-  const currentExample = frameworkExamples.find(
-    (f) => f.id === selectedFramework
-  )
-
-  return (
-    <CustomHeroSection>
-      <Box
-        sx={{
-          maxWidth: {
-            xs: "100%",
-            sm: "1400px",
-          },
-          margin: "0 auto",
-          px: { xs: 2, md: 3 },
-          py: { xs: 8, md: 18 },
-          paddingTop: { xs: 12, md: 18 }, // Extra top padding on mobile for header
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          gap: { xs: 4, md: 6 },
-          alignItems: { xs: "center", md: "flex-start" },
-          minHeight: { xs: "100vh", md: "auto" },
-        }}
-      >
-        {/* Left side - Hero text */}
-        <Box
-          sx={{
-            flex: 1,
-            maxWidth: { xs: "100%", md: "50%" },
-            textAlign: { xs: "center", md: "left" },
-            width: "100%",
-          }}
-        >
-          <Typography
-            variant="h1"
-            component="h1"
-            sx={{
-              fontWeight: 500,
-              fontSize: { xs: "8vw", sm: "2.5rem", md: "60px" },
-              lineHeight: { xs: 1.2, md: "72px" },
-              mb: 3,
-            }}
-          >
-            The smarter way to use
-            <br />
-            <TypeWriter
-              colorClass=""
-              strings={[
-                "IndexedDB",
-                "Browser Storage",
-                "Local Databases",
-                "Offline Data",
-                "Sync & Collaboration",
-                "Authentication",
-              ]}
-              breakRows={false}
-            />
-          </Typography>
-
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 300,
-              opacity: 0.9,
-              mb: { xs: 3, md: 4 },
-              lineHeight: 1.4,
-              fontSize: { xs: "1.1rem", sm: "1.3rem", md: "1.5rem" },
-            }}
-          >
-            Works with any JavaScript framework. Start local, add sync when
-            ready. No complicated setup, no learning curve - just natural,
-            intuitive code.
-          </Typography>
-
-          <Box sx={{ mb: { xs: 2, md: 4 } }} />
-
-          {/* Framework logos */}
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 2,
-              opacity: 0.8,
-              fontSize: { xs: "1rem", md: "1.25rem" },
-            }}
-          >
-            Works with your favorite framework:
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: { xs: 0.5, md: 1 },
-              alignItems: "center",
-              justifyContent: { xs: "center", md: "flex-start" },
-              zoom: { xs: 0.6, md: 0.9 },
-            }}
-          >
-            {frameworkExamples
-              .filter((f) => f.id !== "sync")
-              .map((framework) => (
-                <FrameworkCard
-                  key={framework.id}
-                  className={selectedFramework === framework.id ? "active" : ""}
-                  onClick={() => setSelectedFramework(framework.id)}
-                >
-                  <Box sx={{ mb: 1 }}>
-                    <Image
-                      src={framework.logo}
-                      alt={framework.name}
-                      width={32}
-                      height={32}
-                    />
-                  </Box>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: "white", fontWeight: 500 }}
-                  >
-                    {framework.name}
-                  </Typography>
-                </FrameworkCard>
-              ))}
-
-            {/* Progression indicator */}
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                mx: 2,
-                opacity: 0.6,
-              }}
-            >
-              <ArrowForwardIcon sx={{ fontSize: 24, color: "white" }} />
-            </Box>
-
-            {/* Cloud functionality */}
-            <Box>
-              {frameworkExamples
-                .filter((f) => f.id === "sync")
-                .map((framework) => (
-                  <FrameworkCard
-                    key={framework.id}
-                    className={
-                      selectedFramework === framework.id ? "active" : ""
-                    }
-                    onClick={() => setSelectedFramework(framework.id)}
-                  >
-                    <Box sx={{ mb: 1 }}>
-                      <Image
-                        src={framework.logo}
-                        alt={framework.name}
-                        width={32}
-                        height={32}
-                      />
-                    </Box>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: "white", fontWeight: 500 }}
-                    >
-                      {framework.name}
-                    </Typography>
-                  </FrameworkCard>
-                ))}
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Right side - Code example */}
-        <Box
-          sx={{
-            flex: 1,
-            mt: { xs: 2, md: -5 },
-            maxWidth: { xs: "100%", md: "50%" },
-            width: "100%",
-          }}
-        >
-          <Box
-            sx={{
-              position: { xs: "static", md: "sticky" },
-              top: 20,
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                mb: 2,
-                justifyContent: { xs: "center", md: "flex-start" },
-              }}
-            >
-              <Image
-                src={currentExample?.logo || frameworkExamples[0].logo}
-                alt={currentExample?.name || frameworkExamples[0].name}
-                width={24}
-                height={24}
-                style={{ marginRight: 8 }}
-              />
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 600,
-                  mb: 0,
-                  fontSize: { xs: "1rem", md: "1.25rem" },
-                }}
-              >
-                {currentExample?.name} Example
-              </Typography>
-            </Box>
-
-            <Box
-              sx={{
-                zoom: {
-                  xs: currentExample?.zoom
-                    ? currentExample?.zoom - 0.2
-                    : 1 - 0.2,
-                  sm: currentExample?.zoom ? currentExample?.zoom : 1,
-                },
-                "& .MuiBox-root": {
-                  fontSize: { xs: "0.8rem", md: "1rem" },
-                },
-              }}
-            >
-              {currentExample?.id === "sync" &&
-                currentExample.commandLineCode && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 4,
-                    }}
-                  >
-                    <CodeBlock
-                      language="bash"
-                      showLineNumbers={false}
-                      commandLine={true}
-                      commandPrompt="~/web-app $"
-                      code={currentExample.commandLineCode}
-                    />
-                    <CodeBlock
-                      language="javascript"
-                      showLineNumbers={true}
-                      code={currentExample?.code || frameworkExamples[0].code}
-                    />
-                  </Box>
-                )}
-              {currentExample?.id !== "sync" && (
-                <CodeBlock
-                  language="javascript"
-                  showLineNumbers={true}
-                  code={currentExample?.code || frameworkExamples[0].code}
-                />
-              )}
-            </Box>
-
-            <Typography
-              variant="body2"
-              sx={{
-                mt: 2,
-                opacity: 0.8,
-                fontStyle: "italic",
-                textAlign: { xs: "center", md: "left" },
-                fontSize: { xs: "0.85rem", md: "0.9rem" },
-              }}
-            >
-              {currentExample?.description}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-    </CustomHeroSection>
-  )
-}
-
 export default function ProductPage() {
   return (
     <>
-      {/* Custom Product Hero with Framework Examples - Keep as requested */}
+      {/* Custom Product Hero with Framework Examples */}
       <CustomProductHero />
 
       {/* Why Dexie.js? Benefits Section */}
@@ -701,7 +205,7 @@ export default function ProductPage() {
 
       <Divider />
 
-      {/* Key Benefits Section - Inspired by dexie.org */}
+      {/* Key Benefits Section */}
       <Box
         sx={{
           color: "#dee2e6",
@@ -809,7 +313,8 @@ export default function ProductPage() {
       </Box>
 
       <Divider />
-      {/* 4-Step Rocket: From Local to Sync */}
+
+      {/* 4-Step Guide */}
       <Box
         sx={{
           color: "#dee2e6",
@@ -842,11 +347,7 @@ export default function ProductPage() {
             }}
           >
             {/* Step 1: Declare your database */}
-            <Box
-              sx={{
-                maxWidth: "calc(100% - 48px)",
-              }}
-            >
+            <Box>
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h5"
@@ -877,11 +378,7 @@ export default function ProductPage() {
                   Declare your database
                 </Typography>
               </Box>
-              <Box
-                sx={{
-                  zoom: 0.8,
-                }}
-              >
+              <Box sx={{ zoom: 0.8 }}>
                 <CodeBlock
                   language="javascript"
                   showLineNumbers={true}
@@ -896,11 +393,7 @@ db.version(1).stores({
             </Box>
 
             {/* Step 2: Run some queries */}
-            <Box
-              sx={{
-                maxWidth: "calc(100% - 48px)",
-              }}
-            >
+            <Box>
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h5"
@@ -931,11 +424,7 @@ db.version(1).stores({
                   Then run some queries
                 </Typography>
               </Box>
-              <Box
-                sx={{
-                  zoom: 0.8,
-                }}
-              >
+              <Box sx={{ zoom: 0.8 }}>
                 <CodeBlock
                   language="javascript"
                   showLineNumbers={true}
@@ -956,11 +445,7 @@ await db.friends.add({
             </Box>
 
             {/* Step 3: Live Queries */}
-            <Box
-              sx={{
-                maxWidth: "calc(100% - 48px)",
-              }}
-            >
+            <Box>
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h5"
@@ -991,11 +476,7 @@ await db.friends.add({
                   Live Queries
                 </Typography>
               </Box>
-              <Box
-                sx={{
-                  zoom: 0.8,
-                }}
-              >
+              <Box sx={{ zoom: 0.8 }}>
                 <CodeBlock
                   language="javascript"
                   showLineNumbers={true}
@@ -1024,11 +505,7 @@ function FriendList() {
             </Box>
 
             {/* Step 4: Sync */}
-            <Box
-              sx={{
-                maxWidth: "calc(100% - 48px)",
-              }}
-            >
+            <Box>
               <Box sx={{ mb: 3 }}>
                 <Typography
                   variant="h5"
@@ -1059,12 +536,7 @@ function FriendList() {
                   Sync
                 </Typography>
               </Box>
-
-              <Box
-                sx={{
-                  zoom: 0.8,
-                }}
-              >
+              <Box sx={{ zoom: 0.8 }}>
                 <CodeBlock
                   language="javascript"
                   showLineNumbers={true}
@@ -1101,34 +573,22 @@ db.cloud.configure({
                 mb: 4,
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography variant="body2">Local Storage</Typography>
-              </Box>
+              <Typography variant="body2">Local Storage</Typography>
               <ArrowForwardIcon sx={{ color: "#666" }} />
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography variant="body2">Queries</Typography>
-              </Box>
+              <Typography variant="body2">Queries</Typography>
               <ArrowForwardIcon sx={{ color: "#666" }} />
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography variant="body2">Reactivity</Typography>
-              </Box>
+              <Typography variant="body2">Reactivity</Typography>
               <ArrowForwardIcon sx={{ color: "#666" }} />
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography variant="body2">Global Sync</Typography>
-              </Box>
+              <Typography variant="body2">Global Sync</Typography>
             </Box>
 
-            {/* Call to action buttons */}
             <Box sx={{ mt: 4 }}>
               <Button
                 variant="contained"
                 size="large"
                 startIcon={<PlayArrowIcon />}
                 color="secondary"
-                sx={{
-                  mr: 2,
-                  mb: 2,
-                }}
+                sx={{ mr: 2, mb: 2 }}
                 href="https://jsfiddle.net/dfahlander/3tf5r0cu"
                 target="_blank"
               >
@@ -1139,9 +599,7 @@ db.cloud.configure({
                 size="large"
                 startIcon={<CodeIcon />}
                 color="secondary"
-                sx={{
-                  mb: 2,
-                }}
+                sx={{ mb: 2 }}
                 href="/docs/Tutorial"
               >
                 Follow Tutorial
@@ -1150,6 +608,7 @@ db.cloud.configure({
           </Box>
         </Box>
       </Box>
+
       <Divider />
 
       {/* Getting Started Guides */}
@@ -1170,99 +629,6 @@ db.cloud.configure({
         backgroundColor="#000000"
         containerWidth="big"
       />
-
-      <Divider />
-
-      {/* FAQ Section - Simple content section */}
-      <Box
-        sx={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          px: 3,
-          py: 8,
-          backgroundColor: "#000000",
-          color: "#dee2e6",
-        }}
-      >
-        <Typography
-          variant="h3"
-          component="h2"
-          gutterBottom
-          textAlign="center"
-          sx={{ mb: 6 }}
-        >
-          Frequently Asked Questions
-        </Typography>
-
-        <Box
-          sx={{
-            display: "grid",
-            gap: 4,
-            gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-          }}
-        >
-          <Box>
-            <Typography variant="h5" gutterBottom sx={{ color: "#ffffff" }}>
-              Do I need to rewrite my Dexie code for Cloud?
-            </Typography>
-            <Typography variant="body1" paragraph>
-              No – you configure dexie-cloud-addon and continue using your
-              tables/queries. Sync is handled under the hood.
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography variant="h5" gutterBottom sx={{ color: "#ffffff" }}>
-              How do I avoid conflicts?
-            </Typography>
-            <Typography variant="body1" paragraph>
-              Use string-based stable IDs (@id/GUID), avoid ++id. Follow our
-              &quot;Best Practices&quot; guide for conflict-free sync.
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography variant="h5" gutterBottom sx={{ color: "#ffffff" }}>
-              Do I need a service worker?
-            </Typography>
-            <Typography variant="body1" paragraph>
-              No, but PWA/SW improves the experience when offline and during
-              reconnection. Dexie Cloud works with or without.
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography variant="h5" gutterBottom sx={{ color: "#ffffff" }}>
-              Is Cloud suitable for public catalog search?
-            </Typography>
-            <Typography variant="body1" paragraph>
-              Cloud excels for personally created data + selective sharing;
-              enormous public catalogs are a less ideal match.
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography variant="h5" gutterBottom sx={{ color: "#ffffff" }}>
-              When do I need Dexie Cloud vs. just Dexie.js?
-            </Typography>
-            <Typography variant="body1" paragraph>
-              Use only Dexie.js for fully local apps. Add Cloud when you want
-              multi-device sync, collaboration, authentication, or secure
-              sharing.
-            </Typography>
-          </Box>
-
-          <Box>
-            <Typography variant="h5" gutterBottom sx={{ color: "#ffffff" }}>
-              What&apos;s the deployment model?
-            </Typography>
-            <Typography variant="body1" paragraph>
-              SaaS for simplicity, or self-hosted (Node.js + PostgreSQL) when
-              you need full infrastructure control.
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
     </>
   )
 }

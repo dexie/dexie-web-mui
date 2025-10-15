@@ -28,13 +28,15 @@ const roboto = Roboto({
 
 export const metadata: Metadata = {
   title: {
-    default: "Dexie.js - The IndexedDB Wrapper for JavaScript | Offline-First Database",
-    template: "%s | Dexie.js - Offline-First Database for JavaScript"
+    default:
+      "Dexie.js - The IndexedDB Wrapper for JavaScript | Offline-First Database",
+    template: "%s | Dexie.js - Offline-First Database for JavaScript",
   },
-  description: "Dexie.js is the easiest way to use IndexedDB. Build offline-first web apps with real-time sync, authentication, and collaboration. Works with React, Vue, Angular, and any JavaScript framework.",
+  description:
+    "Dexie.js is the easiest way to use IndexedDB. Build offline-first web apps with real-time sync, authentication, and collaboration. Works with React, Vue, Angular, and any JavaScript framework.",
   keywords: [
     "dexie",
-    "dexie.js", 
+    "dexie.js",
     "indexeddb",
     "offline first database",
     "javascript database",
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
     "offline storage",
     "real time sync",
     "collaborative apps",
-    "progressive web app"
+    "progressive web app",
   ],
   authors: [{ name: "David Fahlander" }, { name: "Dexie.js Team" }],
   creator: "David Fahlander",
@@ -61,39 +63,42 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
   openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    url: 'https://dexie.org',
-    siteName: 'Dexie.js',
-    title: 'Dexie.js - The IndexedDB Wrapper for JavaScript | Offline-First Database',
-    description: 'Build offline-first web apps with Dexie.js. Easy IndexedDB wrapper with real-time sync, authentication, and collaboration. Works with React, Vue, Angular.',
+    type: "website",
+    locale: "en_US",
+    url: "https://dexie.org",
+    siteName: "Dexie.js",
+    title:
+      "Dexie.js - The IndexedDB Wrapper for JavaScript | Offline-First Database",
+    description:
+      "Build offline-first web apps with Dexie.js. Easy IndexedDB wrapper with real-time sync, authentication, and collaboration. Works with React, Vue, Angular.",
     images: [
       {
-        url: '/assets/images/dexie-og-image.jpg',
+        url: "/assets/images/dexie-og-image.jpg",
         width: 1200,
         height: 630,
-        alt: 'Dexie.js - Offline-First Database for JavaScript',
+        alt: "Dexie.js - Offline-First Database for JavaScript",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    site: '@dexiejs',
-    creator: '@dfahlander',
-    title: 'Dexie.js - The IndexedDB Wrapper for JavaScript',
-    description: 'Build offline-first web apps with Dexie.js. Easy IndexedDB wrapper with real-time sync and collaboration.',
-    images: ['/assets/images/dexie-og-image.jpg'],
+    card: "summary_large_image",
+    site: "@dexiejs",
+    creator: "@dfahlander",
+    title: "Dexie.js - The IndexedDB Wrapper for JavaScript",
+    description:
+      "Build offline-first web apps with Dexie.js. Easy IndexedDB wrapper with real-time sync and collaboration.",
+    images: ["/assets/images/dexie-og-image.jpg"],
   },
   alternates: {
-    canonical: 'https://dexie.org',
+    canonical: "https://dexie.org",
   },
-  category: 'technology',
+  category: "technology",
 }
 
 export default function RootLayout({
@@ -102,68 +107,69 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    name: 'Dexie.js',
-    description: 'IndexedDB wrapper library for offline-first web applications with real-time sync capabilities',
-    url: 'https://dexie.org',
-    applicationCategory: 'DeveloperApplication',
-    operatingSystem: 'Web Browser',
-    programmingLanguage: 'JavaScript',
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Dexie.js",
+    description:
+      "IndexedDB wrapper library for offline-first web applications with real-time sync capabilities",
+    url: "https://dexie.org",
+    applicationCategory: "DeveloperApplication",
+    operatingSystem: "Web Browser",
+    programmingLanguage: "JavaScript",
     author: {
-      '@type': 'Person',
-      name: 'David Fahlander',
-      url: 'https://github.com/dfahlander'
+      "@type": "Person",
+      name: "David Fahlander",
+      url: "https://github.com/dfahlander",
     },
     publisher: {
-      '@type': 'Organization',
-      name: 'Awarica AB',
+      "@type": "Organization",
+      name: "Awarica AB",
       address: {
-        '@type': 'PostalAddress',
-        addressCountry: 'SE',
-        addressLocality: 'Stockholm'
-      }
+        "@type": "PostalAddress",
+        addressCountry: "SE",
+        addressLocality: "Stockholm",
+      },
     },
-    softwareVersion: '4.0',
-    downloadUrl: 'https://www.npmjs.com/package/dexie',
-    license: 'https://github.com/dexie/Dexie.js/blob/master/LICENSE',
-    codeRepository: 'https://github.com/dexie/Dexie.js',
-    installUrl: 'https://www.npmjs.com/package/dexie',
-    screenshot: 'https://dexie.org/assets/images/dexie-hero-og.jpg',
+    softwareVersion: "4.0",
+    downloadUrl: "https://www.npmjs.com/package/dexie",
+    license: "https://github.com/dexie/Dexie.js/blob/master/LICENSE",
+    codeRepository: "https://github.com/dexie/Dexie.js",
+    installUrl: "https://www.npmjs.com/package/dexie",
+    screenshot: "https://dexie.org/assets/images/dexie-hero-og.jpg",
     offers: [
       {
-        '@type': 'Offer',
-        name: 'Dexie.js Open Source',
-        price: '0',
-        priceCurrency: 'USD',
-        description: 'Free IndexedDB wrapper library'
+        "@type": "Offer",
+        name: "Dexie.js Open Source",
+        price: "0",
+        priceCurrency: "USD",
+        description: "Free IndexedDB wrapper library",
       },
       {
-        '@type': 'Offer', 
-        name: 'Dexie Cloud Free',
-        price: '0',
-        priceCurrency: 'USD',
-        description: 'Free tier with 3 production users and 100MB storage'
+        "@type": "Offer",
+        name: "Dexie Cloud Free",
+        price: "0",
+        priceCurrency: "USD",
+        description: "Free tier with 3 production users and 100MB storage",
       },
       {
-        '@type': 'Offer',
-        name: 'Dexie Cloud Production',
-        price: '0.12',
-        priceCurrency: 'USD',
-        description: 'Production tier starting at $0.12 per user per month'
-      }
+        "@type": "Offer",
+        name: "Dexie Cloud Production",
+        price: "0.12",
+        priceCurrency: "USD",
+        description: "Production tier starting at $0.12 per user per month",
+      },
     ],
     featureList: [
-      'Offline-first database',
-      'IndexedDB wrapper', 
-      'Real-time synchronization',
-      'Authentication system',
-      'Collaborative features',
-      'React integration',
-      'Vue.js support',
-      'Angular compatibility',
-      'Progressive Web App support'
-    ]
+      "Offline-first database",
+      "IndexedDB wrapper",
+      "Real-time synchronization",
+      "Authentication system",
+      "Collaborative features",
+      "React integration",
+      "Vue.js support",
+      "Angular compatibility",
+      "Progressive Web App support",
+    ],
   }
 
   return (

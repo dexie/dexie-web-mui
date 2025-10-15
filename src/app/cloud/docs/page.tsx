@@ -8,50 +8,53 @@ import {
 } from "@/utils/mdx"
 
 export const metadata = {
-  title: "Dexie Cloud Documentation - Offline-First Sync, Auth & Collaboration Platform",
+  title:
+    "Dexie Cloud Documentation - Offline-First Sync, Auth & Collaboration Platform",
   description:
     "Complete Dexie Cloud documentation: real-time sync, authentication, access control, and collaborative features for offline-first applications. No backend required - start building with IndexedDB sync today.",
   keywords: [
     "dexie cloud documentation",
     "offline first sync",
-    "real time database sync", 
+    "real time database sync",
     "offline sync platform",
     "database synchronization",
     "offline first auth",
     "collaborative offline apps",
     "indexeddb sync",
     "javascript sync database",
-    "browser database sync", 
+    "browser database sync",
     "local first sync",
     "offline collaboration",
     "real time collaboration",
     "offline auth platform",
     "sync authentication",
     "database access control",
-    "offline permissions"
+    "offline permissions",
   ],
   openGraph: {
     title: "Dexie Cloud Documentation - Master Offline-First Sync & Auth",
-    description: "Complete guide to real-time sync, authentication, and collaboration for offline-first applications. No backend setup required.",
-    url: 'https://dexie.org/cloud/docs',
-    type: 'website',
+    description:
+      "Complete guide to real-time sync, authentication, and collaboration for offline-first applications. No backend setup required.",
+    url: "https://dexie.org/cloud/docs",
+    type: "website",
     images: [
       {
-        url: '/assets/images/dexie-cloud-docs-og.jpg',
+        url: "/assets/images/dexie-cloud-docs-og.jpg",
         width: 1200,
         height: 630,
-        alt: 'Dexie Cloud Documentation',
+        alt: "Dexie Cloud Documentation",
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Dexie Cloud Docs - Offline-First Sync & Auth',
-    description: 'Master real-time sync, auth, and collaboration for offline-first apps. Complete documentation and tutorials.',
-    images: ['/assets/images/dexie-cloud-docs-og.jpg'],
+    card: "summary_large_image",
+    title: "Dexie Cloud Docs - Offline-First Sync & Auth",
+    description:
+      "Master real-time sync, auth, and collaboration for offline-first apps. Complete documentation and tutorials.",
+    images: ["/assets/images/dexie-cloud-docs-og.jpg"],
   },
   alternates: {
-    canonical: 'https://dexie.org/cloud/docs',
+    canonical: "https://dexie.org/cloud/docs",
   },
 }
 
