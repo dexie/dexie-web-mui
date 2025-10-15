@@ -33,6 +33,7 @@ database objects (rows) on their own properties of the objects.
 
 ### Rich-text & code editors
 
+- TipTap - Widely used rich-text editor with Y.js integration
 - ProseMirror (base binding y-prosemirror) – the core binding that many others sit on.
 - Remirror – first-class Yjs extension (@remirror/extension-yjs)
 - Slate – via slate-yjs (actively maintained).
@@ -57,7 +58,9 @@ database objects (rows) on their own properties of the objects.
 ## Getting Started
 
 - [Learn about Y.js](https://learn.yjs.dev/)
-- [Read the y-dexie README on npm](https://www.npmjs.com/package/y-dexie).
+- [Read the y-dexie README](https://github.com/dexie/Dexie.js/tree/master/addons/y-dexie#readme).
+- [The useDocument() hook](/docs/dexie-react-hooks/useDocument()) (for React users)
+- [Try our sample application](https://github.com/dexie/dexie-cloud-starter)
 
 ## Sample Applications
 
