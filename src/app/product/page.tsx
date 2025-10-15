@@ -379,7 +379,7 @@ export default function ProductPage() {
                   Declare your database
                 </Typography>
               </Box>
-              <Box sx={{ zoom: 0.8 }}>
+              <Box sx={{ zoom: 0.8, overflow: "auto" }}>
                 <CodeBlock
                   language="javascript"
                   showLineNumbers={true}
@@ -425,7 +425,7 @@ db.version(1).stores({
                   Then run some queries
                 </Typography>
               </Box>
-              <Box sx={{ zoom: 0.8 }}>
+              <Box sx={{ zoom: 0.8, overflow: "auto" }}>
                 <CodeBlock
                   language="javascript"
                   showLineNumbers={true}
@@ -477,7 +477,7 @@ await db.friends.add({
                   Live Queries
                 </Typography>
               </Box>
-              <Box sx={{ zoom: 0.8 }}>
+              <Box sx={{ zoom: 0.8, overflow: "auto" }}>
                 <CodeBlock
                   language="javascript"
                   showLineNumbers={true}
@@ -537,7 +537,7 @@ function FriendList() {
                   Sync
                 </Typography>
               </Box>
-              <Box sx={{ zoom: 0.8 }}>
+              <Box sx={{ zoom: 0.8, overflow: "auto" }}>
                 <CodeBlock
                   language="javascript"
                   showLineNumbers={true}
