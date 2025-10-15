@@ -537,7 +537,7 @@ const PricingWidget: React.FC<PricingWidgetProps> = ({
             custom solution?{" "}
             <Box
               component="a"
-              href="#contact"
+              href="/contact"
               sx={{
                 color: "#c77dff",
                 textDecoration: "none",
