@@ -9,11 +9,14 @@ interface BreadcrumbItem {
 }
 
 interface DocCategory {
-  name: string
-  items: Array<{
-    title: string
-    slug: string
+  title: string
+  pages: Array<{
+    slug: string[]
+    metadata: {
+      title: string
+    }
   }>
+  subcategories: DocCategory[]
 }
 
 interface DocsLayoutProps {

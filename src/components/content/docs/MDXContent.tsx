@@ -16,9 +16,14 @@ interface MDXContentProps {
 }
 
 // Convert HTML attributes to MUI props
-function convertProps(props: Record<string, string | undefined>) {
+function convertProps(
+  props: Record<string, string | number | boolean | undefined>
+) {
   const { style, className, class: classAttr, ...rest } = props
-  const converted: Record<string, unknown> = { ...rest }
+  const converted: Record<
+    string,
+    string | number | boolean | object | undefined
+  > = { ...rest }
 
   // Handle both className and class attributes (class gets converted to className)
   const finalClassName = className || classAttr
@@ -26,7 +31,7 @@ function convertProps(props: Record<string, string | undefined>) {
     converted.className = finalClassName
   }
 
-  if (style) {
+  if (typeof style === "string") {
     converted.sx = parseStyleString(style)
   }
 
