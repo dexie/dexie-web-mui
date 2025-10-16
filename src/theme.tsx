@@ -194,6 +194,7 @@ const theme = createTheme({
           fontWeight: 400,
           lineHeight: 1.5,
           margin: 0,
+          paddingRight: "0 !important",
         },
         "h1, h2, h3, h4, h5, h6": {
           marginTop: 0,
@@ -249,6 +250,7 @@ const theme = createTheme({
           backgroundColor: "#212529",
           color: "#dee2e6",
           borderColor: "#495057",
+          paddingRight: "0 !important",
         },
       },
     },
