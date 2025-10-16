@@ -324,7 +324,7 @@ export default function CustomProductHero() {
             sx={{
               display: "flex",
               flexWrap: "nowrap",
-              gap: { xs: 0.3, md: 1 },
+              gap: { xs: 0.8, md: 1 },
               alignItems: "center",
               justifyContent: { xs: "center", md: "flex-start" },
               overflowX: { xs: "auto", md: "visible" },
