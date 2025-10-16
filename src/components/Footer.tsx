@@ -58,7 +58,7 @@ const Footer = () => {
               gridTemplateColumns: {
                 xs: "1fr",
                 md: "1fr 1fr",
-                lg: "1fr 1fr 1fr",
+                lg: "1fr 1fr ",
               },
               gap: 6,
             }}
@@ -196,162 +196,8 @@ const Footer = () => {
               </Box>
             </Box>
 
-            {/* Contact Form */}
-            <Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontWeight: 500,
-                  mb: 3,
-                  color: "#ffffff",
-                }}
-              >
-                Get in Touch
-              </Typography>
-              <Box
-                component="form"
-                onSubmit={handleSubmit}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                }}
-              >
-                <TextField
-                  name="name"
-                  placeholder="Enter your name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                  variant="outlined"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: alpha("#ffffff", 0.05),
-                      "& fieldset": {
-                        borderColor: alpha("#dee2e6", 0.3),
-                      },
-                      "&:hover fieldset": {
-                        borderColor: alpha("#dee2e6", 0.5),
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: theme.palette.primary.main,
-                      },
-                    },
-                    "& .MuiInputBase-input": {
-                      color: "#dee2e6",
-                      "&::placeholder": {
-                        color: alpha("#dee2e6", 0.7),
-                        opacity: 1,
-                      },
-                    },
-                  }}
-                />
-                <TextField
-                  name="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                  variant="outlined"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: alpha("#ffffff", 0.05),
-                      "& fieldset": {
-                        borderColor: alpha("#dee2e6", 0.3),
-                      },
-                      "&:hover fieldset": {
-                        borderColor: alpha("#dee2e6", 0.5),
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: theme.palette.primary.main,
-                      },
-                    },
-                    "& .MuiInputBase-input": {
-                      color: "#dee2e6",
-                      "&::placeholder": {
-                        color: alpha("#dee2e6", 0.7),
-                        opacity: 1,
-                      },
-                    },
-                  }}
-                />
-                <TextField
-                  name="message"
-                  placeholder="Enter your message"
-                  value={formData.message}
-                  onChange={handleInputChange}
-                  required
-                  fullWidth
-                  multiline
-                  rows={4}
-                  variant="outlined"
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      backgroundColor: alpha("#ffffff", 0.05),
-                      "& fieldset": {
-                        borderColor: alpha("#dee2e6", 0.3),
-                      },
-                      "&:hover fieldset": {
-                        borderColor: alpha("#dee2e6", 0.5),
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: theme.palette.primary.main,
-                      },
-                    },
-                    "& .MuiInputBase-input": {
-                      color: "#dee2e6",
-                      "&::placeholder": {
-                        color: alpha("#dee2e6", 0.7),
-                        opacity: 1,
-                      },
-                    },
-                  }}
-                />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  sx={{
-                    mt: 1,
-                    textTransform: "none",
-                    fontWeight: 600,
-                  }}
-                >
-                  Send Message
-                </Button>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: alpha("#dee2e6", 0.7),
-                    textAlign: "center",
-                    mt: 1,
-                  }}
-                >
-                  All fields are required. By sending the form you agree to the{" "}
-                  <Link
-                    href="/terms"
-                    sx={{ color: theme.palette.primary.main }}
-                  >
-                    Terms & Conditions
-                  </Link>{" "}
-                  and{" "}
-                  <Link
-                    href="/privacy"
-                    sx={{ color: theme.palette.primary.main }}
-                  >
-                    Privacy Policy
-                  </Link>
-                  .
-                </Typography>
-              </Box>
-            </Box>
-
             {/* Map Section */}
-            <Box sx={{ gridColumn: { xs: "1", lg: "3" } }}>
+            <Box>
               <Typography
                 variant="h6"
                 sx={{
@@ -370,6 +216,7 @@ const Footer = () => {
                     md: "-webkit-fill-available",
                   },
                   overflow: "hidden",
+                  pb: 5,
                 }}
               >
                 <iframe

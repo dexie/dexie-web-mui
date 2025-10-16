@@ -504,30 +504,7 @@ export default function ContactPage() {
           </Box>
         </Container>
       </Box>
-
-      {/* Contact Form Section */}
-      <Box id="contact-form" sx={{ py: 8 }}>
-        <Container maxWidth="md">
-          <Typography
-            variant="h2"
-            textAlign="center"
-            sx={{ mb: 2, fontSize: { xs: "2rem", md: "2.5rem" } }}
-          >
-            Send us a message
-          </Typography>
-          <Typography
-            variant="body1"
-            textAlign="center"
-            color="text.secondary"
-            sx={{ mb: 6 }}
-          >
-            Have a general question or want to discuss your project? Fill out
-            the form below and we&apos;ll get back to you.
-          </Typography>
-          <ContactForm />
-        </Container>
-      </Box>
-
+      <Divider />
       {/* Company & Author Info */}
       <Box sx={{ py: 8 }}>
         <Container maxWidth="lg">
