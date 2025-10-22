@@ -5,7 +5,7 @@ title: 'Tutorial'
 
 [Getting started](/docs/Tutorial/Getting-started)
 
-[Getting started with Dexie-Cloud](./Dexie-Cloud)
+[Getting started with Dexie Cloud](./Dexie-Cloud)
 
 [Samples](/docs/Samples)
 
