@@ -141,10 +141,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
               href &&
               (href.startsWith("http://") ||
                 href.startsWith("https://") ||
-                href.startsWith("//") ||
-                (!href.startsWith("/") &&
-                  !href.startsWith("#") &&
-                  !href.startsWith("?")))
+                href.startsWith("//"))
 
             const linkProps = isExternal
               ? {
