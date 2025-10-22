@@ -56,18 +56,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     }))
 
-    // Hämta alla cloud docs
-    const cloudDocs = getAllCloudDocs()
-    const cloudDocRoutes: MetadataRoute.Sitemap = cloudDocs
-      .filter((doc) => doc.metadata.slug.startsWith("docs/"))
-      .map((doc) => ({
-        url: `${baseUrl}/cloud/docs/${doc.metadata.slug.replace("docs/", "")}`,
-        lastModified: new Date(),
-        changeFrequency: "monthly" as const,
-        priority: 0.8,
-      }))
-
-    return [...staticRoutes, ...docRoutes, ...cloudDocRoutes]
+    return [...staticRoutes, ...docRoutes]
   } catch (error) {
     console.error("Error generating sitemap:", error)
     return staticRoutes
