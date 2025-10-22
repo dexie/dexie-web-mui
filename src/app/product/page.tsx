@@ -33,10 +33,10 @@ export const metadata: Metadata = {
     url: "https://dexie.org/product",
     images: [
       {
-        url: "/assets/images/dexie-features-og.jpg",
+        url: "/assets/images/og-images/og-base.png",
         width: 1200,
         height: 630,
-        alt: "Dexie.js Features - IndexedDB and Cloud Sync",
+        alt: "Build synced offline-first apps with Dexie",
       },
     ],
   },
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     title: "Dexie.js Features - IndexedDB Wrapper & Cloud Sync",
     description:
       "Easy IndexedDB wrapper + Cloud sync. Works with React, Vue, Angular, Svelte. Local-first development made simple.",
-    images: ["/assets/images/dexie-features-og.jpg"],
+    images: ["/assets/images/og-images/og-base.png"],
   },
   alternates: {
     canonical: "https://dexie.org/product",

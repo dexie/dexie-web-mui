@@ -37,10 +37,10 @@ export const metadata: Metadata = {
     url: "https://dexie.org/contact",
     images: [
       {
-        url: "/assets/images/dexie-contact-og.jpg",
+        url: "/assets/images/og-images/og-base.png",
         width: 1200,
         height: 630,
-        alt: "Contact Dexie.js Team",
+        alt: "Build synced offline-first apps with Dexie",
       },
     ],
   },
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     title: "Contact Dexie.js Team - Support & Help",
     description:
       "Get technical support, join our Discord community, or contact our team for Dexie.js and Dexie Cloud help.",
-    images: ["/assets/images/dexie-contact-og.jpg"],
+    images: ["/assets/images/og-images/og-base.png"],
   },
   alternates: {
     canonical: "https://dexie.org/contact",

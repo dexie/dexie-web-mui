@@ -39,10 +39,10 @@ export const metadata = {
     type: "website",
     images: [
       {
-        url: "/assets/images/dexie-cloud-docs-og.jpg",
+        url: "/assets/images/og-images/og-base.png",
         width: 1200,
         height: 630,
-        alt: "Dexie Cloud Documentation",
+        alt: "Build synced offline-first apps with Dexie",
       },
     ],
   },
@@ -51,7 +51,7 @@ export const metadata = {
     title: "Dexie Cloud Docs - Offline-First Sync & Auth",
     description:
       "Master real-time sync, auth, and collaboration for offline-first apps. Complete documentation and tutorials.",
-    images: ["/assets/images/dexie-cloud-docs-og.jpg"],
+    images: ["/assets/images/og-images/og-base.png"],
   },
   alternates: {
     canonical: "https://dexie.org/cloud/docs",

@@ -39,10 +39,10 @@ export const metadata: Metadata = {
     url: "https://dexie.org/docs",
     images: [
       {
-        url: "/assets/images/dexie-docs-og.jpg",
+        url: "/assets/images/og-images/og-base.png",
         width: 1200,
         height: 630,
-        alt: "Dexie.js Documentation",
+        alt: "Build synced offline-first apps with Dexie",
       },
     ],
   },
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title: "Dexie.js Documentation - Complete Guide",
     description:
       "Master offline-first development with complete tutorials and API reference for IndexedDB and sync.",
-    images: ["/assets/images/dexie-docs-og.jpg"],
+    images: ["/assets/images/og-images/og-base.png"],
   },
   alternates: {
     canonical: "https://dexie.org/docs",

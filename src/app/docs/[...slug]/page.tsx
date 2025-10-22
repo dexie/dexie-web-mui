@@ -208,10 +208,10 @@ export async function generateMetadata({ params }: DocPageProps) {
       type: "article",
       images: [
         {
-          url: "/assets/images/dexie-docs-og.jpg",
+          url: "/assets/images/og-images/og-base.png",
           width: 1200,
           height: 630,
-          alt: `${doc.metadata.title} - Dexie.js Documentation`,
+          alt: "Build synced offline-first apps with Dexie",
         },
       ],
     },
@@ -219,7 +219,7 @@ export async function generateMetadata({ params }: DocPageProps) {
       card: "summary_large_image",
       title: `${doc.metadata.title} - Dexie.js Docs`,
       description,
-      images: ["/assets/images/dexie-docs-og.jpg"],
+      images: ["/assets/images/og-images/og-base.png"],
     },
     alternates: {
       canonical: `https://dexie.org/docs/${slugString}`,

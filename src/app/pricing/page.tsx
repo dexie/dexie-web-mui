@@ -33,10 +33,10 @@ export const metadata: Metadata = {
     url: "https://dexie.org/pricing",
     images: [
       {
-        url: "/assets/images/dexie-pricing-og.jpg",
+        url: "/assets/images/og-images/og-base.png",
         width: 1200,
         height: 630,
-        alt: "Dexie Cloud Pricing Plans",
+        alt: "Build synced offline-first apps with Dexie",
       },
     ],
   },
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     title: "Dexie Cloud Pricing - Free Tier Available",
     description:
       "Start free with 3 users. Production plans from $0.12/user/month. On-premises options for full control.",
-    images: ["/assets/images/dexie-pricing-og.jpg"],
+    images: ["/assets/images/og-images/og-base.png"],
   },
   alternates: {
     canonical: "https://dexie.org/pricing",

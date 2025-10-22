@@ -35,10 +35,10 @@ export const metadata: Metadata = {
     url: "https://dexie.org",
     images: [
       {
-        url: "/assets/images/dexie-hero-og.jpg",
+        url: "/assets/images/og-images/og-base.png",
         width: 1200,
         height: 630,
-        alt: "Dexie.js - Offline-First Database Dashboard",
+        alt: "Build synced offline-first apps with Dexie",
       },
     ],
   },
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     title: "Dexie.js - Offline-First Database for JavaScript",
     description:
       "Zero backend setup. Build offline-first apps with real-time sync, auth, and collaboration. Works with React, Vue, Angular.",
-    images: ["/assets/images/dexie-hero-og.jpg"],
+    images: ["/assets/images/og-images/og-base.png"],
   },
   alternates: {
     canonical: "https://dexie.org",
