@@ -348,7 +348,7 @@ export default function PreferredPartnersWidget({
                 robust offline-first solutions.
               </Typography>
               <Button
-                href="#contact"
+                href="/contact"
                 variant="outlined"
                 sx={{
                   borderColor: "#c77dff",
