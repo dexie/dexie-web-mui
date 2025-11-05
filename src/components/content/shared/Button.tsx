@@ -23,6 +23,7 @@ export interface ButtonWidgetProps {
   variant: "outlined" | "text" | "contained"
   icon?: ReactNode
   sx?: SxProps
+  onClick?: (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void
 }
 
 export default function ButtonWidget({
@@ -33,15 +34,17 @@ export default function ButtonWidget({
   variant,
   icon,
   sx,
+  onClick,
 }: ButtonWidgetProps) {
   return (
-    <Link href={linkProps.url} target={linkProps.target}>
+    <Link href={linkProps.url} target={linkProps.target} passHref>
       <Button
         color={color}
         size={size}
         variant={variant}
         sx={sx}
         startIcon={icon}
+        onClick={onClick}
       >
         {text}
       </Button>
