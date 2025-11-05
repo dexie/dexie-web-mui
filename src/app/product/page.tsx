@@ -321,6 +321,7 @@ export default function ProductPage() {
           color: "#dee2e6",
           py: 8,
         }}
+        id="from-local-to-global"
       >
         <Box sx={{ maxWidth: "1400px", margin: "0 auto", px: 3 }}>
           <Typography
