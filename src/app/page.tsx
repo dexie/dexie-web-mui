@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import HeroWidget from "@/components/content/hero/HeroWidget"
 import HeroContent from "@/components/content/hero/HeroContent"
+import CustomVideoPreview from "@/components/content/CustomVideoPreview"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dexie.org"),
@@ -512,7 +513,7 @@ const featureScreenshotSlides = [
 
 export default function Home() {
   return (
-    <>
+    <div>
       <HeroWidget
         preHeading={"Zero-config & no backend skills needed"}
         heading={
@@ -550,7 +551,7 @@ export default function Home() {
           {
             text: "Get Started",
             link: {
-              url: "/get-started",
+              url: "/product#from-local-to-global",
               querystring: "",
               title: "Get Started",
               target: "_self",
@@ -563,7 +564,7 @@ export default function Home() {
             text: "How it works?",
             icon: <PlayArrowIcon />,
             link: {
-              url: "/how-it-works",
+              url: "#how-it-works-video",
               querystring: "",
               title: "How it works",
               target: "_self",
@@ -611,13 +612,22 @@ export default function Home() {
         backgroundColor="#000000"
         containerWidth="big"
       />
-      <CallToActionWidget
-        text="The power of Dexie lies in turning complex data problems into simple scalable solutions. Reduce time to market and deliver offline-first, real-time apps faster than ever."
-        buttonText="CONTACT US"
-        textColor="#dee2e6"
-        backgroundColor="#000000"
-        containerWidth="big"
-      />
+      {/* Video Block: How it works */}
+      <div
+        id="how-it-works-video"
+        style={{
+          background: "#000",
+          color: "#dee2e6",
+          padding: "64px 0",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ fontSize: "2.5rem", marginBottom: 16 }}>
+          How Dexie Works
+        </h2>
+        <CustomVideoPreview />
+      </div>
+
       <Divider />
       <HackathonWidget
         sectionCaption="DGH25"
@@ -638,6 +648,6 @@ export default function Home() {
         backgroundColor="#000000"
         containerWidth="big"
       />
-    </>
+    </div>
   )
 }
