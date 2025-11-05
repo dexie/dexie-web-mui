@@ -1,3 +1,5 @@
+"use client"
+
 import { Box, Typography } from "@mui/material"
 import ButtonWidget, { ButtonWidgetProps } from "../shared/Button"
 import { HeroWidgetSettings } from "@/types/widgets"
@@ -33,6 +35,26 @@ export default function HeroWidget({
     verticalTextAlignment = "center",
   } = {},
 }: HeroWidgetProps) {
+  // Smooth scroll for 'How it works?' button
+  const handleButtonClick = (
+    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>,
+    button: ButtonWidgetProps
+  ) => {
+    if (button.link.url === "#how-it-works-video") {
+      e.preventDefault()
+      const el = document.getElementById("how-it-works-video")
+      if (el) {
+        const rect = el.getBoundingClientRect()
+        window.scrollTo({
+          top: window.scrollY + rect.top - 32,
+          behavior: "smooth",
+        })
+      }
+    }
+    if (button.onClick) {
+      button.onClick(e)
+    }
+  }
   // Container width mapping
   const getContainerMaxWidth = () => {
     switch (containerWidth) {
@@ -265,9 +287,8 @@ export default function HeroWidget({
                 <ButtonWidget
                   key={index}
                   {...buttonProps}
-                  sx={{
-                    mr: 2,
-                  }}
+                  sx={{ mr: 2 }}
+                  onClick={(e) => handleButtonClick(e, buttonProps)}
                 />
               ))}
             </Box>

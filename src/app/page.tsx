@@ -69,7 +69,7 @@ import HackathonWidget from "@/components/content/HackathonWidget"
 import FeatureScreenshotWidget from "@/components/content/FeatureScreenshotWidget"
 import TypeWriter from "@/components/content/shared/TypeWriter"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
-import { Divider } from "@mui/material"
+import { Box, Divider, Typography } from "@mui/material"
 
 const dexieBenefitsData: BenefitItem[] = [
   {
@@ -613,20 +613,28 @@ export default function Home() {
         containerWidth="big"
       />
       {/* Video Block: How it works */}
-      <div
+      <Box
         id="how-it-works-video"
-        style={{
+        sx={{
           background: "#000",
           color: "#dee2e6",
           padding: "64px 0",
           textAlign: "center",
         }}
       >
-        <h2 style={{ fontSize: "2.5rem", marginBottom: 16 }}>
-          How Dexie Works
-        </h2>
+        <Typography
+          variant="h1"
+          component={"h2"}
+          sx={{
+            fontSize: { xs: "2.5rem", md: "56px" },
+            fontWeight: "500 !important",
+            mb: 2,
+          }}
+        >
+          How Dexie works
+        </Typography>
         <CustomVideoPreview />
-      </div>
+      </Box>
 
       <Divider />
       <HackathonWidget
