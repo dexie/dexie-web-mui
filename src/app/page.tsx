@@ -6,9 +6,9 @@ import CustomVideoPreview from "@/components/content/CustomVideoPreview"
 export const metadata: Metadata = {
   metadataBase: new URL("https://dexie.org"),
   title:
-    "Dexie.js - Offline-First Database for JavaScript | IndexedDB Simplified",
+    "Dexie.js - Offline-First Database with Cloud Sync, Collaboration & Real-Time Updates",
   description:
-    "Build fast, offline-first web applications with Dexie.js. The easiest IndexedDB wrapper with real-time sync, authentication, and collaboration. Works with React, Vue, Angular, and any framework. Start local, scale global with zero backend setup.",
+    "Build fast, offline-first web applications with Dexie. Effortless cloud sync, real-time collaboration, authentication, and secure storage. Works with React, Vue, Angular, Svelte, and more. Start local, scale global—no backend required.",
   keywords: [
     "dexie.js",
     "offline first database",
