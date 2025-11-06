@@ -129,7 +129,7 @@ export default function HeroWidget({
         },
         minHeight: {
           xs: contentBottom ? "auto" : "100vh", // Auto height if contentBottom exists on small screens
-          md: "auto",
+          md: "800px",
         },
         display: "flex",
         flexDirection: {
