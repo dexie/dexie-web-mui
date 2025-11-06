@@ -310,21 +310,22 @@ export default function ContactPage() {
     <Box>
       <Box
         sx={{
-          flex: 1,
+          width: "100%",
           display: "flex",
-          minWidth: "100%",
-          flexDirection: "column",
-          padding: { xs: 3, md: 6, lg: 12, xl: 40 },
-          paddingTop: "200px !important",
-          paddingBottom: "100px !important",
+          justifyContent: "center",
           background:
             "linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/assets/images/dexie-bg.jpg')",
           backgroundPosition: "center",
           backgroundSize: "cover",
+          padding: { xs: 3, md: 6, lg: 12, xl: 40 },
+          paddingTop: "200px !important",
+          paddingBottom: "100px !important",
         }}
       >
         <Box
           sx={{
+            width: "100%",
+            maxWidth: { xs: "100%", md: "1200px" },
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
