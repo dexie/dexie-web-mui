@@ -148,7 +148,7 @@ const subscription = liveQuery(
     zoom: 0.85,
     commandLineCode: `npx dexie-cloud create
 npx dexie-cloud whitelist http://localhost:3000
-npm install dexie@latest
+npm install dexie
 npm install dexie-cloud-addon`,
     code: `import Dexie from "dexie";
 import dexieCloud from "dexie-cloud-addon";

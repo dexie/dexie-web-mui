@@ -200,7 +200,7 @@ await db.friends.add({
             commandPrompt="~/web-app $"
             code={`npx dexie-cloud create
 npx dexie-cloud whitelist http://localhost:3000
-npm install dexie@latest
+npm install dexie
 npm install dexie-cloud-addon`}
           />
 
