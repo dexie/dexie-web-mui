@@ -19,7 +19,7 @@ title: Docs Home
 
 ---
 
-[![Click to download](/assets/images/docs/download-button.png)](docs/download){:width="200px"}
+[![Click to download](/assets/images/docs/download-button.png)](docs/Download){:width="200px"}
 
 ---
 
