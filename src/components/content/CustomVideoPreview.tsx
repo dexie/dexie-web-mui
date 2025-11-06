@@ -77,7 +77,7 @@ export default function CustomVideoPreview() {
           <iframe
             width="100%"
             height="100%"
-            src="https://www.youtube.com/embed/5sLvrGhRR8g?si=rZtzu_ShXHqGNIan&autoplay=1"
+            src="https://www.youtube.com/embed/olRRMmuP3YI?si=cMwe1q7ChJlvTvwM&autoplay=1"
             title="Dexie How it Works"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
