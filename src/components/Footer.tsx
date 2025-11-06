@@ -386,17 +386,11 @@ const Footer = () => {
               }}
             >
               Read{" "}
-              <Link
-                href="/cloud/terms"
-                sx={{ color: theme.palette.primary.main }}
-              >
+              <Link href="/terms" sx={{ color: theme.palette.primary.main }}>
                 Terms & Conditions
               </Link>{" "}
               and{" "}
-              <Link
-                href="/cloud/privacy"
-                sx={{ color: theme.palette.primary.main }}
-              >
+              <Link href="/privacy" sx={{ color: theme.palette.primary.main }}>
                 Privacy Policy
               </Link>
               .
