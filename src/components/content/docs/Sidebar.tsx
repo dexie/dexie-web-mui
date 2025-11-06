@@ -93,31 +93,32 @@ const Sidebar: React.FC<SidebarProps> = ({
       return (
         <ListItem
           key={key}
+          component={Link}
+          href={`${basePath}/${item.slug}`}
+          title={item.title}
+          onClick={onNavigate}
           sx={{
+            color: isActive ? "#c77dff" : "inherit",
             backgroundColor: isActive ? "rgba(255,255,255,0.1)" : "transparent",
             borderRadius: "6px",
             p: { xs: 1, md: 2 },
           }}
         >
-          <Link
-            href={`${basePath}/${item.slug}`}
-            onClick={onNavigate}
-            style={{
+          <Box
+            sx={{
               fontWeight: 700,
               maxWidth: "100%",
               overflow: "hidden",
               whiteSpace: "nowrap",
               textDecoration: "none",
-              color: isActive ? "#c77dff" : "inherit",
               display: "block",
               width: "100%",
             }}
-            title={item.title}
           >
             {item.title.length > 28
               ? `...${item.title.slice(-26)}`
               : item.title}
-          </Link>
+          </Box>
         </ListItem>
       )
     }
