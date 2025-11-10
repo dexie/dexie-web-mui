@@ -600,7 +600,7 @@ export default function Home() {
           backgroundColor: "#000000",
           containerWidth: "big",
           sectionTitle: "Dexie is trusted by",
-          sectionSubtitle: "1,000,000+ developers.",
+          sectionSubtitle: "100,000+ developers.",
         }}
       />
       <Divider />
