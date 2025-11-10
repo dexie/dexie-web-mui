@@ -37,7 +37,7 @@ interface ScreenshotSlide {
 interface FeatureScreenshotWidgetProps {
   sectionCaption?: string
   sectionTitle?: string
-  description?: string
+  description?: string | React.ReactNode
   slides: ScreenshotSlide[]
   textColor?: string
   backgroundColor?: string
