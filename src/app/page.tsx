@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import HeroWidget from "@/components/content/hero/HeroWidget"
 import HeroContent from "@/components/content/hero/HeroContent"
 import CustomVideoPreview from "@/components/content/CustomVideoPreview"
+import AdsClickIcon from "@mui/icons-material/AdsClick"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dexie.org"),
@@ -550,15 +551,17 @@ export default function Home() {
         buttons={[
           {
             text: "Get Started",
+            icon: <AdsClickIcon />,
             link: {
               url: "/product#from-local-to-global",
               querystring: "",
               title: "Get Started",
               target: "_self",
             },
-            color: "primary",
+            color: "secondary",
             size: "large",
-            variant: "contained",
+            variant: "outlined",
+            sx: { borderRadius: "32px" },
           },
           {
             text: "How it works?",

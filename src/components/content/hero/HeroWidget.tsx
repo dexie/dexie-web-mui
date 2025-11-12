@@ -286,8 +286,8 @@ export default function HeroWidget({
               {buttons.map((buttonProps, index) => (
                 <ButtonWidget
                   key={index}
-                  {...buttonProps}
                   sx={{ mr: 2 }}
+                  {...buttonProps}
                   onClick={(e) => handleButtonClick(e, buttonProps)}
                 />
               ))}

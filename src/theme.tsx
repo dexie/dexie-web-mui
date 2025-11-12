@@ -285,6 +285,15 @@ const theme = createTheme({
               backgroundColor: "rgba(88, 101, 242, 0.1)",
             },
           },
+          // Secondary color variants
+          "&.MuiButton-outlinedSecondary": {
+            color: "#c77dff",
+            borderColor: "#c77dff",
+            "&:hover": {
+              backgroundColor: "rgba(199, 125, 255, 0.1)",
+              borderColor: "#e0b3ff",
+            },
+          },
         },
         text: {
           textTransform: "none",
