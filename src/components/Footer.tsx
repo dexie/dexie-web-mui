@@ -148,7 +148,7 @@ const Footer = () => {
                 </Typography>
 
                 <Link
-                  href="https://discord.com/channels/1328303736363421747/1339957860657926204"
+                  href="https://discord.gg/huhre7MHBF"
                   target="_blank"
                   rel="noopener noreferrer"
                   sx={{
