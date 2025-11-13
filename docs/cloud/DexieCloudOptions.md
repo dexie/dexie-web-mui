@@ -17,6 +17,8 @@ export interface DexieCloudOptions {
   // worker and import "dexie-cloud-addon/dist/modern/service-worker.min.js" from it.
   tryUseServiceWorker?: boolean;
 
+  // test comment
+
   // Optional customization of periodic sync.
   // See https://developer.mozilla.org/en-US/docs/Web/API/PeriodicSyncManager/register
   periodicSync?: {
