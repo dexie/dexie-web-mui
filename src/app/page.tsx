@@ -3,6 +3,7 @@ import HeroWidget from "@/components/content/hero/HeroWidget"
 import HeroContent from "@/components/content/hero/HeroContent"
 import CustomVideoPreview from "@/components/content/CustomVideoPreview"
 import AdsClickIcon from "@mui/icons-material/AdsClick"
+import BlogFeedWidget from "@/components/content/BlogFeedWidget"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dexie.org"),
@@ -675,6 +676,16 @@ export default function Home() {
         textColor="#dee2e6"
         backgroundColor="#000000"
         containerWidth="big"
+      />
+      <Divider />
+      <BlogFeedWidget
+        count={6}
+        variant="grid"
+        size="medium"
+        showAuthor={true}
+        showCategories={true}
+        showDate={true}
+        title="Latest from our blog"
       />
     </div>
   )
