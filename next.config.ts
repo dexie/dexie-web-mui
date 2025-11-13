@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         destination: "/product",
         permanent: false,
       },
+      {
+        source: "/docs/cloud",
+        destination: "/docs/cloud/index",
+        permanent: false,
+      },
     ]
   },
 }
