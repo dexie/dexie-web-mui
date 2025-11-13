@@ -75,36 +75,44 @@ jobs:
           if [ -f "$patch_file" ]; then
             original_file=$(basename "$patch_file" .patch | tr '_' '/')
             
-            echo "Attempting to apply patch for: $original_file"
+            # Transform docs/cloud/ paths to cloud/docs/ in target repo
+            if [[ "$original_file" == docs/cloud/* ]]; then
+              target_file="cloud/docs/${original_file#docs/cloud/}"
+              echo "Transforming path: $original_file -> $target_file"
+            else
+              target_file="$original_file"
+            fi
             
-            if [ -f "$original_file" ]; then
+            echo "Attempting to apply patch for: $original_file (target: $target_file)"
+            
+            if [ -f "$target_file" ]; then
               if git apply --check "$patch_file" 2>/dev/null; then
                 git apply "$patch_file"
-                git add "$original_file"
-                APPLIED_PATCHES+=("$original_file")
-                echo "✓ Patch applied for: $original_file"
+                git add "$target_file"
+                APPLIED_PATCHES+=("$target_file")
+                echo "✓ Patch applied for: $target_file"
               else
-                echo "✗ Patch could not be applied for: $original_file"
-                FAILED_PATCHES+=("$original_file")
+                echo "✗ Patch could not be applied for: $target_file"
+                FAILED_PATCHES+=("$target_file")
                 
                 if git apply --3way "$patch_file" 2>/dev/null; then
-                  git add "$original_file"
-                  APPLIED_PATCHES+=("$original_file (3-way merge)")
-                  echo "✓ 3-way merge succeeded for: $original_file"
+                  git add "$target_file"
+                  APPLIED_PATCHES+=("$target_file (3-way merge)")
+                  echo "✓ 3-way merge succeeded for: $target_file"
                 else
-                  echo "✗ 3-way merge also failed for: $original_file"
+                  echo "✗ 3-way merge also failed for: $target_file"
                 fi
               fi
             else
-              echo "⚠ Target file does not exist: $original_file"
-              mkdir -p "$(dirname "$original_file")"
+              echo "⚠ Target file does not exist: $target_file"
+              mkdir -p "$(dirname "$target_file")"
               if git apply "$patch_file" 2>/dev/null; then
-                git add "$original_file"
-                APPLIED_PATCHES+=("$original_file (new file)")
-                echo "✓ New file created: $original_file"
+                git add "$target_file"
+                APPLIED_PATCHES+=("$target_file (new file)")
+                echo "✓ New file created: $target_file"
               else
-                echo "✗ Could not create new file: $original_file"
-                FAILED_PATCHES+=("$original_file")
+                echo "✗ Could not create new file: $target_file"
+                FAILED_PATCHES+=("$target_file")
               fi
             fi
           fi
