@@ -39,7 +39,8 @@ jobs:
         while IFS= read -r file; do
           if [ -n "$file" ]; then
             echo "Creating patch for: $file"
-            git diff HEAD~1 HEAD -- "$file" > "patches/${file//\//_}.patch"
+            # Create patch with minimal context (1 line) and ignore whitespace
+            git diff -U1 --ignore-space-change HEAD~1 HEAD -- "$file" > "patches/${file//\//_}.patch"
             
             if [ -s "patches/${file//\//_}.patch" ]; then
               echo "Patch created for $file"
@@ -86,21 +87,30 @@ jobs:
             echo "Attempting to apply patch for: $original_file (target: $target_file)"
             
             if [ -f "$target_file" ]; then
-              if git apply --check "$patch_file" 2>/dev/null; then
-                git apply "$patch_file"
+              # Try with minimal context and ignore whitespace
+              if git apply --unidiff-zero --ignore-whitespace "$patch_file" 2>/dev/null; then
                 git add "$target_file"
                 APPLIED_PATCHES+=("$target_file")
                 echo "✓ Patch applied for: $target_file"
               else
-                echo "✗ Patch could not be applied for: $target_file"
-                FAILED_PATCHES+=("$target_file")
+                echo "⚠ Standard patch failed, trying 3-way merge..."
                 
-                if git apply --3way "$patch_file" 2>/dev/null; then
+                if git apply --3way --ignore-whitespace "$patch_file" 2>/dev/null; then
                   git add "$target_file"
                   APPLIED_PATCHES+=("$target_file (3-way merge)")
                   echo "✓ 3-way merge succeeded for: $target_file"
                 else
-                  echo "✗ 3-way merge also failed for: $target_file"
+                  echo "⚠ 3-way merge failed, trying with fuzz factor..."
+                  
+                  # Try using patch command with fuzz factor as last resort
+                  if patch -p1 --fuzz=3 "$target_file" < "$patch_file" 2>/dev/null; then
+                    git add "$target_file"
+                    APPLIED_PATCHES+=("$target_file (fuzzy match)")
+                    echo "✓ Fuzzy patch succeeded for: $target_file"
+                  else
+                    echo "✗ All patch methods failed for: $target_file"
+                    FAILED_PATCHES+=("$target_file")
+                  fi
                 fi
               fi
             else

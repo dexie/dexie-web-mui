@@ -17,8 +17,6 @@ export interface DexieCloudOptions {
   // worker and import "dexie-cloud-addon/dist/modern/service-worker.min.js" from it.
   tryUseServiceWorker?: boolean;
 
-  // test comment
-
   // Optional customization of periodic sync.
   // See https://developer.mozilla.org/en-US/docs/Web/API/PeriodicSyncManager/register
   periodicSync?: {
@@ -50,6 +48,8 @@ export interface DexieCloudOptions {
   // instead, it will use the exact name that is specified in the Dexie constructor,
   // without a suffix.
   nameSuffix?: boolean;
+
+  // test comment 2
 
   // Disable websocket connection - don't listen to remote changes - effectively disabling eager sync from remote to local.
   disableWebSocket?: boolean;
