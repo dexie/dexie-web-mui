@@ -121,6 +121,7 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
           sx={{
             display: "flex",
             flexDirection: "column",
+            opacity: 0.2,
           }}
         >
           <Box

@@ -679,7 +679,7 @@ export default function Home() {
       />
       <Divider />
       <BlogFeedWidget
-        count={6}
+        count={3}
         variant="grid"
         size="medium"
         showAuthor={true}
