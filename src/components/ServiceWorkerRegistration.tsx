@@ -4,13 +4,20 @@ import { useEffect } from 'react'
 
 export default function ServiceWorkerRegistration() {
   useEffect(() => {
+    console.log('ServiceWorker check:', {
+      hasNavigator: 'serviceWorker' in navigator,
+      nodeEnv: process.env.NODE_ENV,
+      hostname: typeof window !== 'undefined' ? window.location.hostname : 'undefined'
+    })
+    
     // Only register service worker in production
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
-      // Register service worker
+      console.log('Attempting to register service worker...')
+      // Register service worker as ES module
       navigator.serviceWorker
-        .register('/sw.js')
+        .register('/sw.js', { type: 'module' })
         .then((registration) => {
-          console.log('Service Worker registered:', registration.scope)
+          console.log('Service Worker (ESM) registered:', registration.scope)
           
           // Listen for updates
           registration.addEventListener('updatefound', () => {
@@ -33,42 +40,8 @@ export default function ServiceWorkerRegistration() {
         .catch((error) => {
           console.error('Service Worker registration failed:', error)
         })
-
-      // Listen for messages from service worker
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'CACHE_CLEARED') {
-          console.log('Cache cleared by service worker')
-        }
-      })
-
-      // Function to manually clear cache
-      window.clearCache = () => {
-        if (navigator.serviceWorker.controller) {
-          const messageChannel = new MessageChannel()
-          
-          messageChannel.port1.onmessage = (event) => {
-            if (event.data.success) {
-              console.log('Cache manually cleared')
-              // Reload page to get latest version
-              window.location.reload()
-            }
-          }
-          
-          navigator.serviceWorker.controller.postMessage(
-            { type: 'CLEAR_CACHE' },
-            [messageChannel.port2]
-          )
-        }
-      }
     }
   }, [])
 
   return null // This component renders nothing
-}
-
-// TypeScript declaration for window.clearCache
-declare global {
-  interface Window {
-    clearCache: () => void
-  }
 }
