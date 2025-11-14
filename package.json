@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build --turbopack && node scripts/generate-offline-manifest.mjs",
     "start": "next start",
     "lint": "eslint",
     "predeploy": "npm run build && echo 'preview2.dexie.org' > out/CNAME",
