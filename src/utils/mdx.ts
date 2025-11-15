@@ -110,8 +110,24 @@ export function getDocumentBySlug(
       filePath = path.join(sourceDirectory, `${slug}.md`)
     }
 
+    // If the exact file doesn't exist, try looking for index.md in the directory
     if (!fs.existsSync(filePath)) {
-      return null
+      // Try directory/index.md pattern
+      const indexPath =
+        source === "cloud" && slug.startsWith("docs/")
+          ? path.join(
+              sourceDirectory,
+              "docs",
+              slug.replace("docs/", ""),
+              "index.md"
+            )
+          : path.join(sourceDirectory, slug, "index.md")
+
+      if (fs.existsSync(indexPath)) {
+        filePath = indexPath
+      } else {
+        return null
+      }
     }
 
     const fileContents = fs.readFileSync(filePath, "utf8")
