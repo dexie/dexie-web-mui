@@ -174,8 +174,7 @@ const cloudPlans = [
     buttonLink: {
       url: "/docs/Tutorial/Dexie-Cloud",
       querystring: "",
-      title: "Start for Free",
-      target: "_blank",
+      title: "Start for Free"
     },
     sectionTitle: "Get started with:",
     features: [
