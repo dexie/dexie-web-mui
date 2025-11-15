@@ -7,6 +7,7 @@ import theme from "../theme"
 import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration"
+import OfflineStatusIndicator from "../components/OfflineStatusIndicator"
 import "./globals.css"
 import "../../public/assets/css/prism.css"
 
@@ -186,6 +187,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ServiceWorkerRegistration />
+        <OfflineStatusIndicator />
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
