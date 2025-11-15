@@ -172,7 +172,7 @@ const cloudPlans = [
     priceNote: "per month",
     buttonText: "Start for Free",
     buttonLink: {
-      url: "/docs/Tutorial/Dexie-Cloud",
+      url: "/docs/cloud/quickstart",
       querystring: "",
       title: "Start for Free"
     },
