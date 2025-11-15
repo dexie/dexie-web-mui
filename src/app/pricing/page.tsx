@@ -201,11 +201,11 @@ const cloudPlans = [
     subtitle: "For scalable production applications.",
     price: "$0.12",
     priceNote: "per user / month",
-    buttonText: "Start for Free",
+    buttonText: "Buy Now",
     buttonLink: {
-      url: "#contact",
+      url: "https://buy.stripe.com/14k9CEgSne5D1BS8ww",
       querystring: "",
-      title: "Start for Free",
+      title: "Buy Now",
       target: "_self",
     },
     isPopular: true,
@@ -237,7 +237,7 @@ const cloudPlans = [
     priceNote: "forever",
     buttonText: "Buy now",
     buttonLink: {
-      url: "#contact",
+      url: "https://buy.stripe.com/8wM8yAfOjf9HbcsfZ0",
       querystring: "",
       title: "Buy now",
       target: "_self",
@@ -262,7 +262,7 @@ const cloudPlans = [
     priceNote: "forever",
     buttonText: "Buy now",
     buttonLink: {
-      url: "#contact",
+      url: "https://buy.stripe.com/8wM8yAfOjf9HbcsfZ0",
       querystring: "",
       title: "Buy now",
       target: "_self",
