@@ -8,6 +8,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Link,
 } from "@mui/material"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import CodeBlock from "./shared/CodeBlock"
@@ -51,12 +52,80 @@ const FAQWidget: React.FC<FAQWidgetProps> = ({ items, settings }) => {
     }
   }
 
+  const renderTextWithLinks = (text: string) => {
+    // Regex to find /docs links - matches /docs followed by any characters until whitespace or end
+    const linkRegex = /(\/docs[^\s]*)/g
+    const parts = []
+    let lastIndex = 0
+    let match
+
+    while ((match = linkRegex.exec(text)) !== null) {
+      // Add text before link
+      if (match.index > lastIndex) {
+        parts.push({
+          type: "text",
+          content: text.slice(lastIndex, match.index),
+        })
+      }
+
+      // Add link
+      parts.push({
+        type: "link",
+        href: match[1],
+        content: match[1],
+      })
+
+      lastIndex = match.index + match[0].length
+    }
+
+    // Add remaining text
+    if (lastIndex < text.length) {
+      parts.push({
+        type: "text",
+        content: text.slice(lastIndex),
+      })
+    }
+
+    // If no links found, return just the text
+    if (parts.length === 0) {
+      return text
+    }
+
+    return (
+      <>
+        {parts.map((part, index) => {
+          if (part.type === "text") {
+            return part.content
+          } else if (part.type === "link") {
+            return (
+              <Link
+                key={index}
+                href={part.href}
+                sx={{
+                  color: "inherit",
+                  textDecoration: "underline",
+                  "&:hover": {
+                    opacity: 0.7,
+                  },
+                }}
+              >
+                {part.content}
+              </Link>
+            )
+          }
+          return null
+        })}
+      </>
+    )
+  }
+
   const renderAnswer = (answer: string) => {
     // Check if answer contains code blocks
     const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g
     const parts = []
     let lastIndex = 0
     let match
+    answer = answer.split('\n\n').map(block => block.split('\n').join(' ')).join('\n\n') // Normalize new lines for consistent parsing
 
     while ((match = codeBlockRegex.exec(answer)) !== null) {
       // Add text before code block
@@ -97,7 +166,7 @@ const FAQWidget: React.FC<FAQWidgetProps> = ({ items, settings }) => {
             whiteSpace: "pre-line",
           }}
         >
-          {answer}
+          {renderTextWithLinks(answer)}
         </Typography>
       )
     }
@@ -118,7 +187,7 @@ const FAQWidget: React.FC<FAQWidgetProps> = ({ items, settings }) => {
                   mb: part.content.trim() ? 1 : 0,
                 }}
               >
-                {part.content}
+                {renderTextWithLinks(part.content)}
               </Typography>
             )
           } else if (part.type === "code") {

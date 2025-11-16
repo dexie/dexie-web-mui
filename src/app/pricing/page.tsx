@@ -140,7 +140,12 @@ const faqData = [
     id: 12,
     question: "Replaceable Authentication",
     answer:
-      "To replace the default OTP authentication with your own authentication of choice, you'll need a backend-for-frontend (BFF) server side app to serve your client application. The server-side app needs to serve a dedicated token endpoint for dexie-cloud client that integrates with your authentication solution. See this guide on how it can be accomplished.",
+      `To replace the default OTP authentication with your own authentication of choice,
+      you'll need a backend-for-frontend (BFF) server side app to serve your client application.
+      The server-side app needs to serve a dedicated token endpoint for dexie-cloud client that
+      integrates with your authentication solution. See
+      /docs/cloud/db.cloud.configure()#example-integrate-custom-authentication
+      on how it can be accomplished.`,
   },
   {
     id: 13,
