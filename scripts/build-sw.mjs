@@ -11,7 +11,7 @@ const root = path.dirname(__dirname)
 async function buildServiceWorker() {
   try {
     await build({
-      entryPoints: [path.join(root, 'src/sw/index.ts')],
+      entryPoints: [path.join(root, 'src/sw/sw.ts')],
       bundle: true,
       outfile: path.join(root, 'public/sw.js'),
       format: 'esm',
