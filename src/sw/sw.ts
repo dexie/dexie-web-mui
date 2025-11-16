@@ -188,44 +188,61 @@ async function cacheFirst(event: FetchEvent) {
 }
 
 async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
+  console.log("SW Fetch (SWR):", event.request.url);
   const cache = await caches.open(RUNTIME_NAME);
   const cachedPromise = cache.match(event.request);
   const networkPromise = fetch(event.request)
     .then(async (resp) => {
+      console.log("SW Network response for:", event.request.url);
       if (resp && resp.ok && event.request.method === 'GET') {
         // Check if we have a cached version to compare with
         const cached = await cachedPromise;
         if (cached) {
-          // Compare response content to detect updates
-          const cachedText = await cached.clone().text();
-          const networkText = await resp.clone().text();
-          
-          // If content has changed, notify clients about the update
-          if (cachedText !== networkText) {
-            self.clients.matchAll({ includeUncontrolled: true }).then((clients: readonly Client[]) => {
-              clients.forEach((client: Client) => {
-                client.postMessage({ 
-                  type: 'CONTENT_UPDATED',
-                  url: event.request.url,
-                  timestamp: new Date().toISOString()
+          console.log("SW: Comparing content for", event.request.url);
+          // Clone both responses early to avoid "already used" errors
+          try {
+            const cachedText = await cached.clone().text();
+            const networkText = await resp.clone().text();
+            
+            // If content has changed, notify clients about the update
+            // But only for navigation requests (documents/pages)
+            if (cachedText !== networkText && event.request.mode === 'navigate') {
+              console.log("SW: Document content updated for", event.request.url);
+              self.clients.matchAll({ includeUncontrolled: true }).then((clients: readonly Client[]) => {
+                clients.forEach((client: Client) => {
+                  client.postMessage({ 
+                    type: 'CONTENT_UPDATED',
+                    url: event.request.url,
+                    timestamp: new Date().toISOString()
+                  });
                 });
               });
-            });
+            } else if (cachedText !== networkText) {
+              console.log("SW: Content updated (non-document) for", event.request.url);
+            } else {
+              console.log("SW: Content unchanged for", event.request.url);
+            }
+          } catch (cloneError) {
+            console.warn("SW: Could not compare content (response already used):", cloneError);
           }
+        } else {
+          console.log("SW: No cached version for", event.request.url);
         }
         
+        // Clone again for cache storage
         cache.put(event.request, resp.clone());
       }
       return resp;
     })
-    .catch(async () => {
+    .catch(async (err) => {
+      console.error("SW Network error for:", event.request.url, err);
       const cached = await cachedPromise;
-      if (cached) return cached;
+      if (cached) return cached.clone(); // Clone to avoid "already used" error
       throw new Error('Network failed and no cache available');
     });
 
   const cached = await cachedPromise;
-  return cached || await networkPromise;
+  return cached ? cached.clone() : await networkPromise; // Clone to avoid "already used" error
 }
 
 self.addEventListener('fetch', (event: FetchEvent) => {
