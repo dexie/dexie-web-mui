@@ -12,6 +12,7 @@ export interface MenuItem {
   href: string
   text: string
   external: boolean
+  fontStyle?: string
   children?: SubMenuItem[]
 }
 
@@ -78,4 +79,5 @@ export const menuItems: MenuItem[] = [
     ],
   },
   { id: 7, href: "https://medium.com/dexie-js", text: "Blog", external: true },
+  { id: 8, href: "https://old.dexie.org", text: "Old site", external: false, fontStyle: "italic" },
 ]

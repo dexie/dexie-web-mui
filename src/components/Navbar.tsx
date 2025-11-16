@@ -583,6 +583,7 @@ export default function Navbar() {
                   display: "flex",
                   alignItems: "center",
                   gap: "4px",
+                  fontStyle: item.fontStyle || "normal",
 
                   "&:hover": {
                     backgroundColor: alpha(theme.palette.primary.main, 0.08),
