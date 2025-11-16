@@ -56,7 +56,7 @@ What's an Offline First application without sync? We're cooking something slick 
 <div class="MuiBox-root" style="margin-bottom: 32px;">
     <div class="MuiBox-root">
         <a class="clickable-square MuiBox-root" 
-           href="/cloud/"
+           href="/docs/cloud/quickstart"
            style="display: flex; align-items: center; justify-content: center; height: 100px; padding: 32px; background-image: linear-gradient(rgba(255,255,255,0.3), rgba(255,255,255,0.05)); border-radius: 8px; text-decoration: none; color: #dee2e6 !important; text-align: center; transition: transform 0.2s; position: relative;">
             <!-- <div class="video-parent" style="overflow:hidden; border-radius: 5px;">
                 <video
