@@ -1,5 +1,19 @@
 import React from "react"
 
+// Type definitions for DOM nodes from HTML parser
+interface DOMTextNode {
+  type: "text"
+  data?: string
+}
+
+interface DOMElementNode {
+  type: string
+  children?: DOMNode[]
+  data?: string
+}
+
+type DOMNode = DOMTextNode | DOMElementNode
+
 /**
  * Generate an ID from heading text content
  * Converts text to lowercase and replaces non-alphanumeric characters with dashes
@@ -21,7 +35,7 @@ export function generateHeadingId(children: React.ReactNode): string {
       return String(node)
     }
     if (React.isValidElement(node)) {
-      return extractText((node as React.ReactElement<any>).props.children)
+      return extractText((node as React.ReactElement<{ children?: React.ReactNode }>).props.children)
     }
     if (Array.isArray(node)) {
       return node.map(extractText).join("")
@@ -44,13 +58,13 @@ export function generateHeadingId(children: React.ReactNode): string {
  * @param domNodes - Array of DOM nodes
  * @returns Extracted text content
  */
-export function extractTextFromDOMNodes(domNodes: any[]): string {
+export function extractTextFromDOMNodes(domNodes: DOMNode[]): string {
   return domNodes
     .map((node) => {
       if (node.type === "text") {
         return node.data || ""
       }
-      if (node.children && Array.isArray(node.children)) {
+      if ("children" in node && node.children && Array.isArray(node.children)) {
         return extractTextFromDOMNodes(node.children)
       }
       return ""
@@ -64,7 +78,7 @@ export function extractTextFromDOMNodes(domNodes: any[]): string {
  * @param domNodes - Array of DOM nodes from HTML parser
  * @returns Generated ID string
  */
-export function generateHeadingIdFromDOM(domNodes: any[]): string {
+export function generateHeadingIdFromDOM(domNodes: DOMNode[]): string {
   const text = extractTextFromDOMNodes(domNodes)
   
   return text
