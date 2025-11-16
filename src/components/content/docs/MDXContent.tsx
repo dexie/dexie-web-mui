@@ -10,6 +10,7 @@ import {
 } from "@mui/material"
 import parse, { domToReact, Element, DOMNode } from "html-react-parser"
 import CodeBlock from "../../../components/content/shared/CodeBlock"
+import { generateHeadingIdFromDOM } from "@/utils/headingId"
 
 interface MDXContentProps {
   source: string
@@ -73,18 +74,21 @@ function parseHTMLToComponents(html: string): React.ReactNode {
 
         switch (name) {
           case "h1":
+            const h1Id = generateHeadingIdFromDOM(children as DOMNode[])
             return (
               <Typography
                 key={getKey()}
                 variant="h1"
                 component="h1"
                 gutterBottom
+                id={h1Id}
                 {...convertProps(attribs || {})}
               >
                 {domToReact(children as DOMNode[], options)}
               </Typography>
             )
           case "h2":
+            const h2Id = generateHeadingIdFromDOM(children as DOMNode[])
             return (
               <Typography
                 key={getKey()}
@@ -92,12 +96,14 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 component="h2"
                 gutterBottom
                 sx={{ mt: 4 }}
+                id={h2Id}
                 {...convertProps(attribs || {})}
               >
                 {domToReact(children as DOMNode[], options)}
               </Typography>
             )
           case "h3":
+            const h3Id = generateHeadingIdFromDOM(children as DOMNode[])
             return (
               <Typography
                 key={getKey()}
@@ -105,12 +111,14 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 component="h3"
                 gutterBottom
                 sx={{ mt: 3 }}
+                id={h3Id}
                 {...convertProps(attribs || {})}
               >
                 {domToReact(children as DOMNode[], options)}
               </Typography>
             )
           case "h4":
+            const h4Id = generateHeadingIdFromDOM(children as DOMNode[])
             return (
               <Typography
                 key={getKey()}
@@ -118,6 +126,37 @@ function parseHTMLToComponents(html: string): React.ReactNode {
                 component="h4"
                 gutterBottom
                 sx={{ mt: 3 }}
+                id={h4Id}
+                {...convertProps(attribs || {})}
+              >
+                {domToReact(children as DOMNode[], options)}
+              </Typography>
+            )
+          case "h5":
+            const h5Id = generateHeadingIdFromDOM(children as DOMNode[])
+            return (
+              <Typography
+                key={getKey()}
+                variant="h5"
+                component="h5"
+                gutterBottom
+                sx={{ mt: 2 }}
+                id={h5Id}
+                {...convertProps(attribs || {})}
+              >
+                {domToReact(children as DOMNode[], options)}
+              </Typography>
+            )
+          case "h6":
+            const h6Id = generateHeadingIdFromDOM(children as DOMNode[])
+            return (
+              <Typography
+                key={getKey()}
+                variant="h6"
+                component="h6"
+                gutterBottom
+                sx={{ mt: 2 }}
+                id={h6Id}
                 {...convertProps(attribs || {})}
               >
                 {domToReact(children as DOMNode[], options)}

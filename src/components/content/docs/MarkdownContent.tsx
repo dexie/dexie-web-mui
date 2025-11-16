@@ -15,6 +15,7 @@ import {
   Box,
 } from "@mui/material"
 import dynamic from "next/dynamic"
+import { generateHeadingId } from "@/utils/headingId"
 
 const CodeBlock = dynamic(() => import("../shared/CodeBlock"), { ssr: false })
 
@@ -95,20 +96,23 @@ const convertProps = (
 export const components = {
   h1: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
     const convertedProps = convertProps(props)
+    const id = generateHeadingId(children)
     return (
-      <Typography variant="h1" component="h1" gutterBottom {...convertedProps}>
+      <Typography variant="h1" component="h1" gutterBottom id={id} {...convertedProps}>
         {children}
       </Typography>
     )
   },
   h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
     const convertedProps = convertProps(props)
+    const id = generateHeadingId(children)
     return (
       <Typography
         variant="h2"
         component="h2"
         gutterBottom
         sx={{ mt: 4 }}
+        id={id}
         {...convertedProps}
       >
         {children}
@@ -117,12 +121,14 @@ export const components = {
   },
   h3: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
     const convertedProps = convertProps(props)
+    const id = generateHeadingId(children)
     return (
       <Typography
         variant="h3"
         component="h3"
         gutterBottom
         sx={{ mt: 3 }}
+        id={id}
         {...convertedProps}
       >
         {children}
@@ -131,12 +137,46 @@ export const components = {
   },
   h4: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
     const convertedProps = convertProps(props)
+    const id = generateHeadingId(children)
     return (
       <Typography
         variant="h4"
         component="h4"
         gutterBottom
         sx={{ mt: 3 }}
+        id={id}
+        {...convertedProps}
+      >
+        {children}
+      </Typography>
+    )
+  },
+  h5: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+    const convertedProps = convertProps(props)
+    const id = generateHeadingId(children)
+    return (
+      <Typography
+        variant="h5"
+        component="h5"
+        gutterBottom
+        sx={{ mt: 2 }}
+        id={id}
+        {...convertedProps}
+      >
+        {children}
+      </Typography>
+    )
+  },
+  h6: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
+    const convertedProps = convertProps(props)
+    const id = generateHeadingId(children)
+    return (
+      <Typography
+        variant="h6"
+        component="h6"
+        gutterBottom
+        sx={{ mt: 2 }}
+        id={id}
         {...convertedProps}
       >
         {children}
