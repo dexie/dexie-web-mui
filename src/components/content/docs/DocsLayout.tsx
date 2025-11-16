@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import Link from "next/link"
 import Sidebar from "./Sidebar"
+import EditOnGitHubButton from "./EditOnGitHubButton"
 import {
   Box,
   Container,
@@ -148,6 +149,12 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
                 </Typography>
               )}
             </Breadcrumbs>
+            
+            {currentSlug && (
+              <Box sx={{ display: { xs: "none", md: "block" } }}>
+                <EditOnGitHubButton slug={currentSlug} />
+              </Box>
+            )}
           </Box>
 
           <Divider sx={{ mb: 3 }} />
