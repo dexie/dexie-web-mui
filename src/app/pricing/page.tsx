@@ -179,7 +179,8 @@ const cloudPlans = [
     buttonLink: {
       url: "/docs/cloud/quickstart",
       querystring: "",
-      title: "Start for Free"
+      title: "Start for Free",
+      target: "_self",
     },
     sectionTitle: "Get started with:",
     features: [
