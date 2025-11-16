@@ -191,8 +191,29 @@ async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
   const cache = await caches.open(RUNTIME_NAME);
   const cachedPromise = cache.match(event.request);
   const networkPromise = fetch(event.request)
-    .then((resp) => {
+    .then(async (resp) => {
       if (resp && resp.ok && event.request.method === 'GET') {
+        // Check if we have a cached version to compare with
+        const cached = await cachedPromise;
+        if (cached) {
+          // Compare response content to detect updates
+          const cachedText = await cached.clone().text();
+          const networkText = await resp.clone().text();
+          
+          // If content has changed, notify clients about the update
+          if (cachedText !== networkText) {
+            self.clients.matchAll({ includeUncontrolled: true }).then((clients: readonly Client[]) => {
+              clients.forEach((client: Client) => {
+                client.postMessage({ 
+                  type: 'CONTENT_UPDATED',
+                  url: event.request.url,
+                  timestamp: new Date().toISOString()
+                });
+              });
+            });
+          }
+        }
+        
         cache.put(event.request, resp.clone());
       }
       return resp;
@@ -290,6 +311,7 @@ self.addEventListener('fetch', (event: FetchEvent) => {
 });
 
 // Message handler: clear cache or trigger warmup
+// Clients can listen for CONTENT_UPDATED messages to detect when pages have been updated
 self.addEventListener('message', (event: ExtendableMessageEvent) => {
   const type = event.data && event.data.type;
   if (type === 'CLEAR_CACHE') {
