@@ -1,9 +1,9 @@
 'use client'
 
 import { useLiveQuery } from 'dexie-react-hooks'
-import { offlineDB, type OfflineStatus } from '@/db/offlineStatus'
+import { offlineDB, type OfflineStatus } from '@/db/offlineDB'
 
-export type { OfflineStatus } from '@/db/offlineStatus'
+export type { OfflineStatus } from '@/db/offlineDB'
 
 export function useOfflineStatus(): OfflineStatus | undefined {
   return useLiveQuery(() => offlineDB.status.get('cache'));

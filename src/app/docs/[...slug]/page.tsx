@@ -7,7 +7,6 @@ import {
 } from "@/utils/mdx"
 
 import DocsLayout from "@/components/content/docs/DocsLayout"
-import MDXContent from "@/components/content/docs/MDXContent"
 import { Box, Typography } from "@mui/material"
 
 // Generera statiska sidor för alla docs
@@ -43,16 +42,13 @@ export default async function DocPage({ params }: DocPageProps) {
       navigation={navigation}
       currentSlug={slugString}
       pageTitle={doc.metadata.title}
+      mdxSource={mdxContent}
     >
       <Box component="article">
         <Box component="header" sx={{ mb: 5 }}>
           <Typography variant="h1" component="h1" sx={{ mb: 3 }}>
             {doc.metadata.title}
           </Typography>
-        </Box>
-
-        <Box className="docs-content">
-          <MDXContent source={mdxContent} />
         </Box>
 
         <Box

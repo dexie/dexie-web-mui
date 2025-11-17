@@ -4,7 +4,8 @@
 
 /// <reference lib="webworker" />
 
-import { offlineDB, type OfflineStatus } from '../db/offlineStatus'
+import { MDFullTextMeta } from '@/types/MDFullTextMeta';
+import { offlineDB, type OfflineStatus } from '../db/offlineDB'
 
 const VERSION = 'v1';
 const PRECACHE_NAME = `dexie-web-precache-${VERSION}`;
@@ -72,10 +73,18 @@ async function warmCacheFromManifest() {
           const req = new Request(url, { credentials: 'same-origin' });
           const existing = await cache.match(req);
           if (!existing) {
-            const resp = await fetch(req);
+            const urlObj = new URL(url);
+            const [resp] = await Promise.all([
+              fetch(req),
+              urlObj.pathname.startsWith('/docs/')
+                ? putFullTextIndex(urlObj.pathname)
+                : Promise.resolve()
+            ]);
             if (resp.ok) {
               await cache.put(req, resp.clone());
               cached++;
+            } else {
+              await offlineDB.deleteFullTextDoc(urlObj.pathname);
             }
           } else {
             alreadyCached++;
@@ -194,7 +203,19 @@ async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
   const networkPromise = fetch(event.request)
     .then(async (resp) => {
       console.log("SW Network response for:", event.request.url);
-      if (resp && resp.ok && event.request.method === 'GET') {
+      if (!resp || event.request.method !== 'GET') {
+        return resp; // Only cache GET requests
+      }
+      if (!resp.ok) {
+        if (resp.status === 404) {
+          // Remove from cache and full text
+          await cache.delete(event.request);
+          const urlObj = new URL(event.request.url);
+          if (urlObj.pathname.startsWith('/docs/')) {
+            await offlineDB.deleteFullTextDoc(urlObj.pathname);
+          }
+        }
+      } else {
         // Check if we have a cached version to compare with
         const cached = await cachedPromise;
         if (cached) {
@@ -217,6 +238,12 @@ async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
                   });
                 });
               });
+
+              // Update full text index if applicable
+              const urlObj = new URL(event.request.url);
+              if (urlObj.pathname.startsWith('/docs/')) {
+                await putFullTextIndex(urlObj.pathname);
+              }
             } else if (cachedText !== networkText) {
               console.log("SW: Content updated (non-document) for", event.request.url);
             } else {
@@ -352,6 +379,29 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
     event.waitUntil(warmCacheFromManifest());
   }
 });
+
+async function putFullTextIndex(route: string) {
+  try {
+    const req = new Request(`/full-text-search${route}.json`, { credentials: 'same-origin' });
+    const resp = await fetch(req);
+    if (resp.ok) {
+      const ftMeta = await resp.json() as MDFullTextMeta;
+      // Store in IndexedDB via Dexie
+      for (const section of ftMeta.sections) {
+        const url = section.slug
+          ? `${route}#${section.slug}`
+          : route;
+        const title = section.slug ? section.title : ftMeta.title || route;
+        const parentTitle = ftMeta.title || undefined;
+        await offlineDB.putFullTextDoc(url, title, section.content, parentTitle);
+      }
+    } else if (resp.status === 404) {
+      // No full text index available for this route
+      await offlineDB.deleteFullTextDoc(route);
+    }
+  } catch {
+  }
+}
 
 // TypeScript globals for service worker
 declare const self: ServiceWorkerGlobalScope & typeof globalThis;

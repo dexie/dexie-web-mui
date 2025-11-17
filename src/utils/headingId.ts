@@ -80,9 +80,20 @@ export function extractTextFromDOMNodes(domNodes: DOMNode[]): string {
  */
 export function generateHeadingIdFromDOM(domNodes: DOMNode[]): string {
   const text = extractTextFromDOMNodes(domNodes)
-  
+  return generateHeadingIdFromString(text)
+}
+
+export function generateHeadingIdFromString(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "") // Remove leading/trailing dashes
 }
+
+/*function createSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove special chars except spaces and hyphens
+    .replace(/\s+/g, '-')     // Replace spaces with hyphens
+    .trim();
+}*/
