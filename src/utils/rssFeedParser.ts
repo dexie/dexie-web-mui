@@ -6,6 +6,8 @@ export interface BlogPost {
   description: string
   thumbnail?: string
   categories: string[]
+  slug: string
+  content?: string
 }
 
 /**

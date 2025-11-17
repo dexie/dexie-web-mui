@@ -1,9 +1,73 @@
 import { MetadataRoute } from "next"
-import { getAllDocs, getAllCloudDocs } from "@/utils/mdx"
+import { getAllDocs } from "@/utils/mdx"
+import { BlogPost } from "@/utils/rssFeedParser"
 
 export const dynamic = "force-static"
 
-export default function sitemap(): MetadataRoute.Sitemap {
+async function getBlogPosts(): Promise<BlogPost[]> {
+  try {
+    const response = await fetch("https://medium.com/feed/dexie-js", {
+      next: { revalidate: 3600 },
+    })
+
+    if (!response.ok) return []
+
+    const xmlText = await response.text()
+    const { parseStringPromise } = await import("xml2js")
+    const result = await parseStringPromise(xmlText, {
+      trim: true,
+      explicitArray: false,
+    })
+
+    const items = result.rss?.channel?.item || []
+    const itemsArray = Array.isArray(items) ? items : [items]
+
+    const createSlug = (title: string): string => {
+      return title
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/--+/g, "-")
+        .trim()
+    }
+
+    interface RSSItem {
+      title?: string
+      link?: string
+      pubDate?: string
+      "dc:creator"?: string
+      creator?: string
+      category?: string | string[]
+    }
+
+    const posts: BlogPost[] = itemsArray.map((item: RSSItem) => {
+      let categories: string[] = []
+      if (item.category) {
+        categories = Array.isArray(item.category)
+          ? item.category
+          : [item.category]
+      }
+
+      return {
+        title: item.title || "",
+        link: item.link || "",
+        pubDate: item.pubDate || "",
+        author: item["dc:creator"] || item.creator || "Dexie Team",
+        description: "",
+        categories,
+        slug: createSlug(item.title || ""),
+        content: "",
+      }
+    })
+
+    return posts
+  } catch (error) {
+    console.error("Error fetching blog posts for sitemap:", error)
+    return []
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://dexie.org"
 
   // Statiska sidor
@@ -44,6 +108,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.9,
     },
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
   ]
 
   // Hämta alla docs
@@ -56,7 +126,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     }))
 
-    return [...staticRoutes, ...docRoutes]
+    // Hämta blogginlägg
+    const blogPosts = await getBlogPosts()
+    const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: new Date(post.pubDate),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }))
+
+    return [...staticRoutes, ...docRoutes, ...blogRoutes]
   } catch (error) {
     console.error("Error generating sitemap:", error)
     return staticRoutes
