@@ -135,21 +135,21 @@ export class OfflineDB extends Dexie {
     // * Combine scores: If a document matches multiple tokens, multiply their scores
     const scoreMap = new Map<number, number>();
     for (const [contentId, innerScoreMap] of intermediateScoreMap.entries()) {
-      let totalScore = 1;
+      let totalScore = 0;
       for (const score of Object.values(innerScoreMap)) {
-        totalScore *= score;
+        totalScore += score;
       }
       scoreMap.set(contentId, totalScore);
     }
     // Sort by score descending
-    const top50Results = Array.from(scoreMap.entries())
+    const topResults = Array.from(scoreMap.entries())
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 50); // Limit to top 50 results
+      .slice(0, 200); // Limit to top 200 results
 
     // * Fetch URLs from fullTextContent
     const resultContents = (await this.fullTextContent.bulkGet(
-      top50Results.map(([contentId]) => contentId)
-    )).map((c, i) => ({...c, id: top50Results[i][0], score: top50Results[i][1]}));
+      topResults.map(([contentId]) => contentId)
+    )).map((c, i) => ({...c, id: topResults[i][0], score: topResults[i][1]}));
 
     // Give further score if searchText appears as a whole in title or body
     for (const content of resultContents) {
@@ -170,6 +170,7 @@ export class OfflineDB extends Dexie {
     return resultContents
       .filter(c => c.url && c.title)
       .sort((a, b) => b.score - a.score)
+      .slice(0, 50) // Limit to top 50 results
       .map(c => ({
         url: c.url!,
         title: c.title!,

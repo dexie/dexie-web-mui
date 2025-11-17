@@ -74,7 +74,8 @@ export default function ServiceWorkerRegistration() {
                   ? `${ftMeta.route}#${section.slug}`
                   : ftMeta.route;
                 const title = section.slug ? section.title : ftMeta.title || ftMeta.route;
-                await offlineDB.putFullTextDoc(url, title, section.content);
+                const parentTitle = section.slug ? ftMeta.title : undefined;
+                await offlineDB.putFullTextDoc(url, title, section.content, parentTitle);
               }
             }
           });

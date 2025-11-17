@@ -14,6 +14,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search"
 import ClearIcon from "@mui/icons-material/Clear"
 import { offlineDB } from "@/db/offlineDB"
+import { useLiveQuery } from "dexie-react-hooks"
 
 interface NavItem {
   title: string
@@ -44,40 +45,15 @@ const filterNavigation = async (
   searchTerm: string
 ): Promise<NavStructure> => {
   const filtered: NavStructure = {}
+  if (searchTerm.trim() === "") {
+    return navStructure
+  }
 
   const foundSections = await offlineDB.findDocuments(searchTerm);
-  for (const doc of foundSections) {
-    // Derive category from URL
-    const category = doc.url.split('/')[2].toUpperCase(); // Assuming category is the third segment in the URL
-    let subNav = filtered[category] || (filtered[category] = {});
-    if (doc.parentTitle && !isNavItem(subNav)) {
-      subNav = subNav[doc.parentTitle] || (subNav[doc.parentTitle] = {});
-    }
-    subNav.title = doc.title ?? doc.parentTitle ?? "Untitled";
-    subNav.slug = doc.url.replace(/^\/docs\//, '');
-  }
-  /*const lowerSearchTerm = searchTerm.toLowerCase()
-
-  await Promise.all(Object.entries(navStructure).map(async ([key, item]) => {
-    if (isNavItem(item)) {
-      // Check if the item title matches the search term
-      if (item.title.toLowerCase().includes(lowerSearchTerm)) {
-        filtered[key] = item
-      }
-    } else {
-      // It's a NavStructure, recursively filter it
-      const filteredSubItems = await filterNavigation(item, searchTerm)
-      // Include the folder if it has matching items or if the folder name matches
-      if (
-        Object.keys(filteredSubItems).length > 0 ||
-        key.toLowerCase().includes(lowerSearchTerm)
-      ) {
-        filtered[key] =
-          Object.keys(filteredSubItems).length > 0 ? filteredSubItems : item
-      }
-    }
-  }));*/
-
+  return Object.fromEntries(foundSections.map(doc => [doc.title ?? doc.parentTitle ??  "Untitled", {
+    title: doc.title ?? doc.parentTitle ??  "Untitled",
+    slug: doc.url.replace(/^\/docs\//, ''),
+  }]));
 
   // Append full-text search results if applicable
 
@@ -100,16 +76,11 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   // Filtered navigation based on search text
 
-  const [filteredNav, setFilteredNav] = useState<NavStructure>(navigation);
-  useEffect(() => {
-    if (searchText.trim() === "") {
-      setFilteredNav(navigation);
-    } else {
-      filterNavigation(navigation, searchText.trim()).then(result => {
-        setFilteredNav(result);
-      });
-    }
-  }, [navigation, searchText]);
+  const filteredNav = useLiveQuery(
+    () => filterNavigation(navigation, searchText),
+    [searchText],
+    navigation
+  );
 
   const renderNavItem = (
     key: string,

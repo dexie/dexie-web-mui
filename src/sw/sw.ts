@@ -392,7 +392,8 @@ async function putFullTextIndex(route: string) {
           ? `${route}#${section.slug}`
           : route;
         const title = section.slug ? section.title : ftMeta.title || route;
-        await offlineDB.putFullTextDoc(url, title, section.content);
+        const parentTitle = ftMeta.title || undefined;
+        await offlineDB.putFullTextDoc(url, title, section.content, parentTitle);
       }
     } else if (resp.status === 404) {
       // No full text index available for this route
