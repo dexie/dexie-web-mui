@@ -7,11 +7,12 @@
 import { MDFullTextMeta } from '@/types/MDFullTextMeta';
 import { offlineDB, type OfflineStatus } from '../db/offlineDB'
 
-const VERSION = 'v1';
+const VERSION = 'v2'; // Bumped to trigger reindexing
 const PRECACHE_NAME = `dexie-web-precache-${VERSION}`;
 const RUNTIME_NAME = `dexie-web-runtime-${VERSION}`;
 const MANIFEST_URL = '/offline-manifest.json';
 const ORIGIN = self.location.origin;
+const FORCE_REINDEX_FLAG = 'force-reindex-v2'; // One-time reindexing flag
 
 // Utility: Save offline cache status to Dexie for GUI consumption
 async function saveOfflineStatus(status: Partial<OfflineStatus>) {
@@ -162,8 +163,54 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
   // Take control immediately
   event.waitUntil(self.clients.claim());
 
-  // Warm the runtime cache with all known pages & assets
-  event.waitUntil(warmCacheFromManifest());
+  // Only run warmup if this is a new installation or forced reindexing is needed
+  event.waitUntil(
+    (async () => {
+      try {
+        const cacheStatus = await offlineDB.status.get('cache');
+        const forceReindex = await offlineDB.status.get(FORCE_REINDEX_FLAG);
+        
+        // Only run warmup if:
+        // 1. Cache has never been warmed (new installation)
+        // 2. Or we need to force reindexing (one-time after this update)
+        // 3. Or previous warmup failed
+        if (!cacheStatus || !cacheStatus.isReady || !forceReindex) {
+          if (!forceReindex) {
+            // Mark that we're doing the one-time reindexing
+            await offlineDB.status.put({
+              id: FORCE_REINDEX_FLAG,
+              isWarming: true,
+              isReady: false,
+              updatedAt: new Date().toISOString()
+            });
+            
+            // Clear all existing full text data to force complete reindexing
+            await offlineDB.transaction('rw', offlineDB.fullTextIndex, offlineDB.fullTextContent, async () => {
+              await offlineDB.fullTextIndex.clear();
+              await offlineDB.fullTextContent.clear();
+            });
+          }
+          
+          // Run warmup (either first time or forced reindexing)
+          await warmCacheFromManifest();
+          
+          // Mark reindexing as complete if this was a forced reindex
+          if (!forceReindex) {
+            await offlineDB.status.put({
+              id: FORCE_REINDEX_FLAG,
+              isWarming: false,
+              isReady: true,
+              updatedAt: new Date().toISOString()
+            });
+          }
+        }
+        // If cache is already ready and reindexing is done, skip warmup entirely
+      } catch (e) {
+        // If anything fails, run warmup as fallback
+        await warmCacheFromManifest();
+      }
+    })()
+  );
 });
 
 // Cache strategies
