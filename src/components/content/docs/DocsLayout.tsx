@@ -4,6 +4,7 @@ import React, { useState } from "react"
 import Link from "next/link"
 import Sidebar from "./Sidebar"
 import EditOnGitHubButton from "./EditOnGitHubButton"
+import MDXContent from "./MDXContent"
 import {
   Box,
   Container,
@@ -29,6 +30,7 @@ interface DocsLayoutProps {
   currentSlug?: string
   pageTitle?: string
   navigation?: NavStructure
+  mdxSource?: string // Add MDX source
 }
 
 const DocsLayout: React.FC<DocsLayoutProps> = ({
@@ -36,6 +38,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
   currentSlug,
   pageTitle,
   navigation = {},
+  mdxSource,
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchText, setSearchText] = useState("")
@@ -176,7 +179,11 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
               },
             }}
           >
-            {children}
+            {mdxSource ? (
+              <MDXContent source={mdxSource} searchText={searchText} />
+            ) : (
+              children
+            )}
           </Box>
         </Box>
       </Box>
