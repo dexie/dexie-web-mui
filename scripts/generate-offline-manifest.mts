@@ -5,7 +5,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { MDFullTextMeta } from '../src/types/MDFullTextMeta';
-import { collectDocsRoutes } from '../src/utils/parseMarkdownSections.js';
+import { collectDocsRoutes } from '../src/utils/parseMarkdownSections';
 
 const root = process.cwd();
 const appDir = path.join(root, 'src', 'app');
