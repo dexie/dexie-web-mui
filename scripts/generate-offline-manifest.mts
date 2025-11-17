@@ -101,8 +101,9 @@ interface OfflineManifest {
 }
 
 function writeManifest(data: OfflineManifest): void {
+  const {fullTextMetas, ...rest} = data;
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
-  fs.writeFileSync(outputFile, JSON.stringify(data, null, 2));
+  fs.writeFileSync(outputFile, JSON.stringify(rest, null, 2));
   if (data.fullTextMetas) {
     for (const docMetadata of data.fullTextMetas) {
       const filepath = path.join(publicDir, 'full-text-search', docMetadata.route + '.json');

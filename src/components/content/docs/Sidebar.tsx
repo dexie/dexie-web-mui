@@ -54,10 +54,6 @@ const filterNavigation = async (
     title: doc.title ?? doc.parentTitle ??  "Untitled",
     slug: doc.url.replace(/^\/docs\//, ''),
   }]));
-
-  // Append full-text search results if applicable
-
-  return filtered;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
