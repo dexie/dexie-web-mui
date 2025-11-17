@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack && npm run build:sw && tsx scripts/generate-offline-manifest.mjs",
+    "build": "next build --turbopack && npm run build:sw && tsx scripts/generate-offline-manifest.mts",
     "build:sw": "tsx scripts/build-sw.mjs",
     "start": "next start --port 4100",
     "lint": "eslint",
