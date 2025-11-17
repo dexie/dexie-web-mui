@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
+import type { Root, Heading, Text, PhrasingContent } from 'mdast';
 import { MarkdownSection, MDFullTextMeta } from "@/types/MDFullTextMeta";
 import { generateHeadingIdFromString } from './headingId';
 
@@ -51,7 +52,23 @@ export function parseMarkdownSectionsSync(content: string): MarkdownSection[] {
     level: 1
   }
   
-  const ast = remark.parse(content);
+  // Helper function to extract text from heading children
+  function extractTextFromHeading(children: PhrasingContent[]): string {
+    return children.map((child) => {
+      if (child.type === 'text') {
+        return (child as Text).value;
+      }
+      if (child.type === 'inlineCode') {
+        return child.value;
+      }
+      if (child.type === 'strong' || child.type === 'emphasis') {
+        return extractTextFromHeading(child.children);
+      }
+      return '';
+    }).join('');
+  }
+  
+  const ast: Root = remark.parse(content);
   
   for (const node of ast.children) {
     if (node.type === 'heading') {
@@ -66,14 +83,20 @@ export function parseMarkdownSectionsSync(content: string): MarkdownSection[] {
       }
       
       // Start new section
+      const headingNode = node as Heading;
       currentSection = {
-        level: (node as any).depth,
-        title: (node as any).children.map((child: any) => child.value || '').join(''),
+        level: headingNode.depth,
+        title: extractTextFromHeading(headingNode.children),
         content: ''
       };
     } else if (currentSection) {
       // Add content to current section
-      const nodeText = remark.stringify(node as any);
+      // Create a temporary root node to stringify individual content
+      const tempRoot: Root = {
+        type: 'root',
+        children: [node]
+      };
+      const nodeText = remark.stringify(tempRoot);
       currentSection.content = (currentSection.content || '') + nodeText + '\n';
     }
   }
