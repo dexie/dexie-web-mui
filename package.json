@@ -9,7 +9,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack && npm run build:sw && tsx scripts/generate-offline-manifest.mts",
     "build:sw": "tsx scripts/build-sw.mjs",
-    "start": "next start --port 4100",
+    "start": "next start",
     "lint": "eslint",
     "predeploy": "npm run build && echo 'preview2.dexie.org' > out/CNAME",
     "deploy": "gh-pages -d out"
