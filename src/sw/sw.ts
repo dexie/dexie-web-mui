@@ -4,7 +4,7 @@
 
 /// <reference lib="webworker" />
 
-import { offlineDB, type OfflineStatus } from '../db/offlineStatus'
+import { offlineDB, type OfflineStatus } from '../db/offlineDB'
 
 const VERSION = 'v1';
 const PRECACHE_NAME = `dexie-web-precache-${VERSION}`;
