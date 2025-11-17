@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo } from "react"
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import {
   Box,
@@ -13,6 +13,7 @@ import {
 } from "@mui/material"
 import SearchIcon from "@mui/icons-material/Search"
 import ClearIcon from "@mui/icons-material/Clear"
+import { offlineDB } from "@/db/offlineDB"
 
 interface NavItem {
   title: string
@@ -29,6 +30,8 @@ interface SidebarProps {
   currentSlug?: string
   basePath?: string // Add basePath prop
   onNavigate?: () => void // Add optional onNavigate prop for mobile
+  searchText?: string // Add external search text
+  setSearchText?: (text: string) => void // Add external search text setter
 }
 
 const isNavItem = (item: NavItem | NavStructure): item is NavItem => {
@@ -36,14 +39,26 @@ const isNavItem = (item: NavItem | NavStructure): item is NavItem => {
 }
 
 // Function to recursively filter navigation structure
-const filterNavigation = (
+const filterNavigation = async (
   navStructure: NavStructure,
   searchTerm: string
-): NavStructure => {
+): Promise<NavStructure> => {
   const filtered: NavStructure = {}
-  const lowerSearchTerm = searchTerm.toLowerCase()
 
-  Object.entries(navStructure).forEach(([key, item]) => {
+  const foundSections = await offlineDB.findDocuments(searchTerm);
+  for (const doc of foundSections) {
+    // Derive category from URL
+    const category = doc.url.split('/')[2].toUpperCase(); // Assuming category is the third segment in the URL
+    let subNav = filtered[category] || (filtered[category] = {});
+    if (doc.parentTitle && !isNavItem(subNav)) {
+      subNav = subNav[doc.parentTitle] || (subNav[doc.parentTitle] = {});
+    }
+    subNav.title = doc.title ?? doc.parentTitle ?? "Untitled";
+    subNav.slug = doc.url.replace(/^\/docs\//, '');
+  }
+  /*const lowerSearchTerm = searchTerm.toLowerCase()
+
+  await Promise.all(Object.entries(navStructure).map(async ([key, item]) => {
     if (isNavItem(item)) {
       // Check if the item title matches the search term
       if (item.title.toLowerCase().includes(lowerSearchTerm)) {
@@ -51,7 +66,7 @@ const filterNavigation = (
       }
     } else {
       // It's a NavStructure, recursively filter it
-      const filteredSubItems = filterNavigation(item, searchTerm)
+      const filteredSubItems = await filterNavigation(item, searchTerm)
       // Include the folder if it has matching items or if the folder name matches
       if (
         Object.keys(filteredSubItems).length > 0 ||
@@ -61,9 +76,12 @@ const filterNavigation = (
           Object.keys(filteredSubItems).length > 0 ? filteredSubItems : item
       }
     }
-  })
+  }));*/
 
-  return filtered
+
+  // Append full-text search results if applicable
+
+  return filtered;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -71,16 +89,27 @@ const Sidebar: React.FC<SidebarProps> = ({
   currentSlug,
   basePath = "/docs",
   onNavigate,
+  searchText: externalSearchText,
+  setSearchText: externalSetSearchText,
 }) => {
-  const [searchText, setSearchText] = useState("")
+  const [internalSearchText, setInternalSearchText] = useState("")
+  
+  // Use external search text if provided, otherwise use internal
+  const searchText = externalSearchText ?? internalSearchText
+  const setSearchText = externalSetSearchText ?? setInternalSearchText
 
   // Filtered navigation based on search text
-  const filteredNav = useMemo(() => {
-    if (!searchText.trim()) {
-      return navigation
+
+  const [filteredNav, setFilteredNav] = useState<NavStructure>(navigation);
+  useEffect(() => {
+    if (searchText.trim() === "") {
+      setFilteredNav(navigation);
+    } else {
+      filterNavigation(navigation, searchText.trim()).then(result => {
+        setFilteredNav(result);
+      });
     }
-    return filterNavigation(navigation, searchText.trim())
-  }, [navigation, searchText])
+  }, [navigation, searchText]);
 
   const renderNavItem = (
     key: string,

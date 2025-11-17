@@ -38,6 +38,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
   navigation = {},
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchText, setSearchText] = useState("")
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -88,6 +89,8 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
               currentSlug={currentSlug}
               basePath="/docs"
               onNavigate={() => setMobileOpen(false)}
+              searchText={searchText}
+              setSearchText={setSearchText}
             />
           </Box>
         </Drawer>
@@ -103,6 +106,8 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
             navigation={navigation}
             currentSlug={currentSlug}
             basePath="/docs"
+            searchText={searchText}
+            setSearchText={setSearchText}
           />
         </Box>
 

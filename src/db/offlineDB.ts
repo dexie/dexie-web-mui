@@ -22,7 +22,7 @@ export class OfflineDB extends Dexie {
     {contentId: number, score: number}, // Value (contentId, score)
     [string, number] // Primary Key: [token, contentId]
   >
-  fullTextContent!: Table<{ title: string, body: string, url: string }, number>
+  fullTextContent!: Table<{ title: string, body: string, url: string, parentTitle: string | undefined }, number>
 
   constructor() {
     super('OfflineDB')
@@ -33,7 +33,7 @@ export class OfflineDB extends Dexie {
     })
   }
 
-  putFullTextDoc(routeAndSlug: string, title: string, body: string) {
+  putFullTextDoc(routeAndSlug: string, title: string, body: string, parentTitle?: string) {
     // Let all blocks of text be single lines
     title = title.toLowerCase();
     body = body.toLowerCase();
@@ -51,7 +51,7 @@ export class OfflineDB extends Dexie {
       }
       if (contentIds.length === 0) {
         // Add new content entry
-        const contentId = await this.fullTextContent.add({title, body, url: routeAndSlug});
+        const contentId = await this.fullTextContent.add({title, body, url: routeAndSlug, parentTitle});
         await this.fullTextIndex.bulkAdd(
           Array.from(contentTokens.values()).map((score) => ({contentId, score})),
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -63,7 +63,7 @@ export class OfflineDB extends Dexie {
         // Update entry
         // * query all fullTextIndex entries for this content id
         const existingEntries = new Map<string, number>(
-          await this.fullTextIndex.where({0: contentId}).primaryKeys()
+          await this.fullTextIndex.where({contentId}).primaryKeys()
         );
         // * compare with our lunr-index. Delete missing ones, update changed ones and add new ones
         for (const [token, score] of contentTokens.entries()) {
@@ -79,7 +79,7 @@ export class OfflineDB extends Dexie {
           }
         }
         // * update fullTextContent entry
-        await this.fullTextContent.put({title, body, url: routeAndSlug}, contentId);
+        await this.fullTextContent.put({title, body, url: routeAndSlug, parentTitle}, contentId);
       }
     });
   }
@@ -103,34 +103,43 @@ export class OfflineDB extends Dexie {
     });
   }
 
-  async findDocuments(searchText: string): Promise<{ url: string, title: string, score: number }[]> {
+  async findDocuments(searchText: string): Promise<{ url: string, title: string, score: number, parentTitle: string | undefined }[]> {
     searchText = searchText.trim().toLowerCase();
     if (searchText.length === 0) {
       return [];
     }
     // * lunr-index the query to get tokens
-    const queryTokens = extractFullTextTokens(searchText).keys();
+    const queryTokens = extractFullTextTokens(searchText, 0).keys();
     // * For every token, query fullTextIndex for matching tokens to get contentIds and scores (toArray())
     const tokenResults = await Promise.all(
       Array.from(queryTokens).map(token => 
         this.fullTextIndex
           .where(':id')
-          .between([token, Dexie.minKey], [token, Dexie.maxKey])
+          .between([token, Dexie.minKey], [token + '\uffff', Dexie.maxKey])
           .toArray()
       )
     );
-    // * Aggregate scores per contentId
-    const scoreMap = new Map<number, number>();
-    for (const results of tokenResults) {
+    // * Aggregate scores per search token and contentId
+    const intermediateScoreMap = new Map<number, {[resultId: number]: number}>();
+    for (let resultId = 0; resultId < tokenResults.length; resultId++) {
+      const results = tokenResults[resultId];
       for (const {contentId, score} of results) {
-        const existingScore = scoreMap.get(contentId) || 0;
-        if (existingScore > 0) {
-          // Factor up score for each matching token found previously
-          scoreMap.set(contentId, (existingScore + score) * 10); // Many search works match
-        } else {
-          scoreMap.set(contentId, score);
+        let existingScore = intermediateScoreMap.get(contentId)!;
+        if (!existingScore) {
+          existingScore = {};
+          intermediateScoreMap.set(contentId, existingScore);
         }
+        existingScore[resultId] = (existingScore[resultId] || 0) + score;
       }
+    }
+    // * Combine scores: If a document matches multiple tokens, multiply their scores
+    const scoreMap = new Map<number, number>();
+    for (const [contentId, innerScoreMap] of intermediateScoreMap.entries()) {
+      let totalScore = 1;
+      for (const score of Object.values(innerScoreMap)) {
+        totalScore *= score;
+      }
+      scoreMap.set(contentId, totalScore);
     }
     // Sort by score descending
     const top50Results = Array.from(scoreMap.entries())
@@ -164,7 +173,8 @@ export class OfflineDB extends Dexie {
       .map(c => ({
         url: c.url!,
         title: c.title!,
-        score: c.score
+        score: c.score,
+        parentTitle: c.parentTitle
       }));
   }
 }

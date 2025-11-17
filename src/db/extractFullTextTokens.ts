@@ -29,7 +29,7 @@ const simpleStem = (word: string): string => {
   return word
 }
 
-export function extractFullTextTokens(text: string): Map<string, number> {
+export function extractFullTextTokens(text: string, minChars = 2): Map<string, number> {
   const tf = new Map<string, number>()
   
   if (!text || text.length === 0) return tf
@@ -39,7 +39,7 @@ export function extractFullTextTokens(text: string): Map<string, number> {
     .split(/[\s\-_.,:;!?()\[\]{}|\\\/\n\r\t"'`]+/)
     .filter((token: string) => {
       // Filter out short tokens, numbers, and programming noise
-      if (token.length < 2) return false
+      if (token.length < minChars) return false
       if (/^\d+$/.test(token)) return false
       if (['var', 'let', 'const', 'function', 'if', 'else', 'for', 'while', 'return'].includes(token)) return false
       return true
@@ -52,7 +52,7 @@ export function extractFullTextTokens(text: string): Map<string, number> {
     })
     .filter((token: string) => {
       // Final filtering: length check and stop words
-      return token.length >= 2 && !stopWords.has(token)
+      return token.length >= minChars && !stopWords.has(token)
     })
 
   // Count token frequencies

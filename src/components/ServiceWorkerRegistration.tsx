@@ -1,5 +1,7 @@
 'use client'
 
+import { offlineDB } from '@/db/offlineDB'
+import { MDFullTextMeta } from '@/types/MDFullTextMeta'
 import { useEffect } from 'react'
 
 export default function ServiceWorkerRegistration() {
@@ -53,6 +55,38 @@ export default function ServiceWorkerRegistration() {
         .catch((error) => {
           console.error('Service Worker registration failed:', error)
         })
+    } else {
+      console.log('NOT using Service Worker. (DEVELOPMENT MODE or unsupported browser)');
+      console.log('Need to download some heavy fulltext data for offline search...');
+      // Make sure to index fulltext using the fulltext API route in this case
+      fetch('/api/fulltext').then(async (response) => {
+        if (response.ok) {
+          const {docRoutes}: { docRoutes: MDFullTextMeta[] } = await response.json()
+          console.log('Fulltext data fetched for indexing:', docRoutes.length, 'documents');
+
+          await offlineDB.transaction('rw', offlineDB.fullTextContent, offlineDB.fullTextIndex, async () => {
+            offlineDB.fullTextIndex.clear();
+            offlineDB.fullTextContent.clear();
+            for (const ftMeta of docRoutes) {
+              // Store in IndexedDB via Dexie
+              for (const section of ftMeta.sections) {
+                const url = section.slug
+                  ? `${ftMeta.route}#${section.slug}`
+                  : ftMeta.route;
+                const title = section.slug ? section.title : ftMeta.title || ftMeta.route;
+                await offlineDB.putFullTextDoc(url, title, section.content);
+              }
+            }
+          });
+
+          console.log("Done indexintg fulltext data for offline search.");
+        } else {
+          console.error('Failed to fetch fulltext data:', response.statusText)
+        }
+      }).catch((error) => {
+        console.error('Error fetching fulltext data:', error)
+      })
+      
     }
   }, [])
 
