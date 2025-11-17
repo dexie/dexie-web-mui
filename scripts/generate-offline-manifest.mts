@@ -5,7 +5,6 @@
 import fs from 'fs';
 import path from 'path';
 import type { MDFullTextMeta } from '../src/types/MDFullTextMeta';
-import { collectDocsRoutes } from '../src/utils/parseMarkdownSections';
 
 const root = process.cwd();
 const appDir = path.join(root, 'src', 'app');
@@ -117,7 +116,10 @@ function writeManifest(data: OfflineManifest): void {
   console.log(`Wrote ${outputFile} with ${data.routes.length} routes and ${data.assets.length} assets.`);
 }
 
-function main(): void {
+async function main(): Promise<void> {
+  // Dynamic import for better CI compatibility
+  const { collectDocsRoutes } = await import('../src/utils/parseMarkdownSections');
+  
   const appRoutes = collectAppRoutes();
   const docsData = collectDocsRoutes(docsDir);
   const publicAssets = collectPublicAssets();
