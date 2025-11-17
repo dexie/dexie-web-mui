@@ -1,5 +1,5 @@
-import Dexie, { IndexableTypeArrayReadonly, Table } from 'dexie'
-import { extractLunrTokens } from './extractLunrTokens'
+import Dexie, { Table } from 'dexie'
+import { extractFullTextTokens } from './extractFullTextTokens'
 
 export interface OfflineStatus {
   id: string
@@ -19,21 +19,21 @@ export interface OfflineStatus {
 export class OfflineDB extends Dexie {
   status!: Table<OfflineStatus>
   fullTextIndex!: Table<
-    [number, number], // Value: [contentId, score]
+    {contentId: number, score: number}, // Value (contentId, score)
     [string, number] // Primary Key: [token, contentId]
   >
   fullTextContent!: Table<{ title: string, body: string, url: string }, number>
 
   constructor() {
-    super('OfflineStatus')
+    super('OfflineDB')
     this.version(1).stores({
       status: 'id',
-      fullTextIndex: ',0', // outbound [token+contentId] -> {contentId, score}
+      fullTextIndex: ',contentId', // outbound [token+contentId] -> {contentId, score}
       fullTextContent: '++,url'
     })
   }
 
-  putFullTextDoc(url: string, title: string, body: string) {
+  putFullTextDoc(routeAndSlug: string, title: string, body: string) {
     // Let all blocks of text be single lines
     title = title.toLowerCase();
     body = body.toLowerCase();
@@ -41,20 +41,22 @@ export class OfflineDB extends Dexie {
     return this.transaction('rw', this.fullTextIndex, this.fullTextContent, async () => {
       // TODO:
       // * lunr-index content and generate tokens + scores
-      const contentTokens = extractLunrTokens(content);
+      const contentTokens = extractFullTextTokens(content);
       // * query the content id given the URL (primaryKeys() query on url)
-      let contentIds = await this.fullTextContent.where({url}).primaryKeys();
+      let contentIds = await this.fullTextContent.where({url: routeAndSlug}).primaryKeys();
       if (contentIds.length > 1) {
         // Should not happen, but if it does, delete all and start fresh
-        await this.fullTextContent.where({url}).delete();
+        await this.fullTextContent.where({url: routeAndSlug}).delete();
         contentIds = [];
       }
       if (contentIds.length === 0) {
         // Add new content entry
-        const contentId = await this.fullTextContent.add({title, body, url});
+        const contentId = await this.fullTextContent.add({title, body, url: routeAndSlug});
         await this.fullTextIndex.bulkAdd(
-          Array.from(contentTokens.values()).map((score) => [contentId, score]),
-          Array.from(contentTokens.keys()).map(token => [token, contentId]) as any // typings bug in dexie
+          Array.from(contentTokens.values()).map((score) => ({contentId, score})),
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore  // typings bug in dexie
+          Array.from(contentTokens.keys()).map(token => [token, contentId])
         );
       } else {
         const contentId = contentIds[0];
@@ -67,31 +69,34 @@ export class OfflineDB extends Dexie {
         for (const [token, score] of contentTokens.entries()) {
           if (existingEntries.get(token) !== score) {
             // New or changed token
-            await this.fullTextIndex.put([contentId, score], [token, contentId]);
+            await this.fullTextIndex.put({contentId, score}, [token, contentId]);
           }
         }
-        for (const [token, score] of existingEntries.entries()) {
+        for (const token of existingEntries.keys()) {
           if (!contentTokens.has(token)) {
             // Deleted token
             await this.fullTextIndex.delete([token, contentId]);
           }
         }
         // * update fullTextContent entry
-        await this.fullTextContent.put({title, body, url}, contentId);
+        await this.fullTextContent.put({title, body, url: routeAndSlug}, contentId);
       }
     });
   }
 
-  deleteFullTextDoc(url: string) {
+  deleteFullTextDoc(route: string) {
     // Steps:
     // * query the content id given the URL (primaryKeys() query on url)
     // * delete all fullTextIndex entries for this content id
     // * delete fullTextContent entry
     return this.transaction('rw', this.fullTextIndex, this.fullTextContent, async () => {
-      const contentIds = await this.fullTextContent.where({url}).primaryKeys();
+      const contentIds = await this.fullTextContent
+        .where('url')
+        .startsWith(route) // Remove both main doc and all sections
+        .primaryKeys();
       for (const contentId of contentIds) {
         // * delete all fullTextIndex entries for this content id
-        await this.fullTextIndex.where({0: contentId}).delete();
+        await this.fullTextIndex.where({contentId}).delete();
         // * delete fullTextContent entry
         await this.fullTextContent.delete(contentId);
       }
@@ -104,7 +109,7 @@ export class OfflineDB extends Dexie {
       return [];
     }
     // * lunr-index the query to get tokens
-    const queryTokens = extractLunrTokens(searchText).keys();
+    const queryTokens = extractFullTextTokens(searchText).keys();
     // * For every token, query fullTextIndex for matching tokens to get contentIds and scores (toArray())
     const tokenResults = await Promise.all(
       Array.from(queryTokens).map(token => 
@@ -117,7 +122,7 @@ export class OfflineDB extends Dexie {
     // * Aggregate scores per contentId
     const scoreMap = new Map<number, number>();
     for (const results of tokenResults) {
-      for (const [contentId, score] of results) {
+      for (const {contentId, score} of results) {
         const existingScore = scoreMap.get(contentId) || 0;
         if (existingScore > 0) {
           // Factor up score for each matching token found previously
@@ -134,7 +139,7 @@ export class OfflineDB extends Dexie {
 
     // * Fetch URLs from fullTextContent
     const resultContents = (await this.fullTextContent.bulkGet(
-      top50Results.map(([contentId, _score]) => contentId)
+      top50Results.map(([contentId]) => contentId)
     )).map((c, i) => ({...c, id: top50Results[i][0], score: top50Results[i][1]}));
 
     // Give further score if searchText appears as a whole in title or body

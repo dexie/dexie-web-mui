@@ -4,6 +4,9 @@
 
 import fs from 'fs';
 import path from 'path';
+import matter from 'gray-matter';
+import { remark } from 'remark';
+import type { MDFullTextMeta, MarkdownSection } from '../src/types/MDFullTextMeta';
 
 const root = process.cwd();
 const appDir = path.join(root, 'src', 'app');
@@ -14,6 +17,62 @@ const outputFile = path.join(publicDir, 'offline-manifest.json');
 
 function exists(p: string): boolean {
   try { fs.accessSync(p); return true; } catch { return false; }
+}
+
+function createSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '') // Remove special chars except spaces and hyphens
+    .replace(/\s+/g, '-')     // Replace spaces with hyphens
+    .trim();
+}
+
+function parseMarkdownSectionsSync(content: string): MarkdownSection[] {
+  const sections: MarkdownSection[] = [];
+  let currentSection: Partial<MarkdownSection> = {
+    title: '',
+    level: 1
+  }
+  
+  const ast = remark.parse(content);
+  
+  for (const node of ast.children) {
+    if (node.type === 'heading') {
+      // Save previous section if exists
+      if (currentSection) {
+        sections.push({
+          level: currentSection.level!,
+          title: currentSection.title ?? '',
+          content: currentSection.content || '',
+          slug: currentSection.title ? createSlug(currentSection.title) : ''
+        });
+      }
+      
+      // Start new section
+      currentSection = {
+        level: (node as any).depth,
+        title: (node as any).children.map((child: any) => child.value || '').join(''),
+        content: ''
+      };
+    } else if (currentSection) {
+      // Add content to current section
+      const nodeText = remark.stringify(node as any);
+      currentSection.content = (currentSection.content || '') + nodeText + '\n';
+    }
+  }
+  
+  // Add the last section
+  if (currentSection) {
+    sections.push({
+      level: currentSection.level!,
+      title: currentSection.title ?? '',
+      content: currentSection.content || '',
+      slug: currentSection.title ? createSlug(currentSection.title) : ''
+    });
+  }
+  
+  return sections;
+
 }
 
 function normalizeRoute(segments: string[]): string {
@@ -43,25 +102,43 @@ function collectAppRoutes(): string[] {
   return Array.from(routes).sort();
 }
 
-function collectDocsRoutes(): string[] {
+function collectDocsRoutes(): { routes: string[]; docRoutes: MDFullTextMeta[] } {
   const routes = new Set<string>(['/docs']);
-  function walk(dir: string, base = ''): void {
+  const docRoutes: MDFullTextMeta[] = [];
+  
+  function walkSync(dir: string, base = ''): void {
     const items = fs.readdirSync(dir, { withFileTypes: true });
     for (const item of items) {
       const full = path.join(dir, item.name);
       if (item.isDirectory()) {
-        walk(full, path.join(base, item.name));
+        walkSync(full, path.join(base, item.name));
       } else if (item.isFile() && item.name.endsWith('.md')) {
         const slug = path.join(base, item.name.replace(/\.md$/, '')).replace(/\\/g, '/');
         const route = '/docs/' + slug;
         routes.add(route);
-        // Load the MD file and parse title, headings and contents per heading
         
+        // Parse frontmatter and content using gray-matter
+        const fileContent = fs.readFileSync(full, 'utf8');
+        const { data: frontmatter, content } = matter(fileContent);
+        const title = frontmatter.title as string | undefined;
+        
+        // Parse markdown sections synchronously
+        const sections = parseMarkdownSectionsSync(content);
+        
+        docRoutes.push({
+          route,
+          title,
+          sections
+        });
       }
     }
   }
-  if (exists(docsDir)) walk(docsDir);
-  return Array.from(routes).sort();
+  
+  if (exists(docsDir)) {
+    walkSync(docsDir);
+  }
+  
+  return { routes: Array.from(routes).sort(), docRoutes };
 }
 
 function collectPublicAssets(): string[] {
@@ -71,7 +148,7 @@ function collectPublicAssets(): string[] {
     for (const item of items) {
       const rel = path.join(base, item.name).replace(/\\/g, '/');
       const full = path.join(dir, item.name);
-      if (item.isDirectory()) {
+      if (item.isDirectory() && item.name !== 'full-text-search') {
         walk(full, rel);
       } else if (item.isFile()) {
         if (rel === 'sw.js' || rel === 'offline-manifest.json') continue;
@@ -117,28 +194,40 @@ interface OfflineManifest {
   generatedAt: string;
   routes: string[];
   assets: string[];
+  fullTextMetas?: MDFullTextMeta[];
 }
 
 function writeManifest(data: OfflineManifest): void {
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
   fs.writeFileSync(outputFile, JSON.stringify(data, null, 2));
+  if (data.fullTextMetas) {
+    for (const docMetadata of data.fullTextMetas) {
+      const filepath = path.join(publicDir, 'full-text-search', docMetadata.route + '.json');
+      //const route = path.join('/', 'full-text-search', doc.route + '.json');
+      //console.log(`Doc: ${route} (${doc.sections.length} sections)`);
+      //console.log(filepath);
+      fs.mkdirSync(path.dirname(filepath), { recursive: true });
+      fs.writeFileSync(filepath, JSON.stringify(docMetadata, null, 2));
+    }
+  }
   console.log(`Wrote ${outputFile} with ${data.routes.length} routes and ${data.assets.length} assets.`);
 }
 
 function main(): void {
   const appRoutes = collectAppRoutes();
-  const docsRoutes = collectDocsRoutes();
+  const docsData = collectDocsRoutes();
   const publicAssets = collectPublicAssets();
   const nextStatic = collectNextStatic();
 
-  // Merge and de-duplicate
-  const routes = Array.from(new Set([ ...appRoutes, ...docsRoutes ]));
+  // Merge and de-duplicate routes
+  const routes = Array.from(new Set([ ...appRoutes, ...docsData.routes ]));
   const assets = Array.from(new Set([ ...publicAssets, ...nextStatic ]));
 
   writeManifest({
     generatedAt: new Date().toISOString(),
     routes,
     assets,
+    fullTextMetas: docsData.docRoutes,
   });
 }
 
