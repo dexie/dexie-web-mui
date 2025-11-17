@@ -22,22 +22,28 @@ export class OfflineDB extends Dexie {
     {contentId: number, score: number}, // Value (contentId, score)
     [string, number] // Primary Key: [token, contentId]
   >
-  fullTextContent!: Table<{ title: string, body: string, url: string, parentTitle: string | undefined }, number>
+  fullTextContent!: Table<{
+    title: string,
+    lowerTitle: string,
+    body: string,
+    url: string,
+    parentTitle: string | undefined
+   }, number>
 
   constructor() {
     super('OfflineDB')
-    this.version(1).stores({
+    this.version(2).stores({
       status: 'id',
       fullTextIndex: ',contentId', // outbound [token+contentId] -> {contentId, score}
-      fullTextContent: '++,url'
+      fullTextContent: '++,url,lowerTitle'
     })
   }
 
   putFullTextDoc(routeAndSlug: string, title: string, body: string, parentTitle?: string) {
     // Let all blocks of text be single lines
-    title = title.toLowerCase();
+    const lowerTitle = title.toLowerCase();
     body = body.toLowerCase();
-    const content = (title + ' ' + body);
+    const content = (lowerTitle + ' ' + body);
     return this.transaction('rw', this.fullTextIndex, this.fullTextContent, async () => {
       // TODO:
       // * lunr-index content and generate tokens + scores
@@ -51,7 +57,7 @@ export class OfflineDB extends Dexie {
       }
       if (contentIds.length === 0) {
         // Add new content entry
-        const contentId = await this.fullTextContent.add({title, body, url: routeAndSlug, parentTitle});
+        const contentId = await this.fullTextContent.add({title, lowerTitle, body, url: routeAndSlug, parentTitle});
         await this.fullTextIndex.bulkAdd(
           Array.from(contentTokens.values()).map((score) => ({contentId, score})),
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -79,7 +85,7 @@ export class OfflineDB extends Dexie {
           }
         }
         // * update fullTextContent entry
-        await this.fullTextContent.put({title, body, url: routeAndSlug, parentTitle}, contentId);
+        await this.fullTextContent.put({title, lowerTitle, body, url: routeAndSlug, parentTitle}, contentId);
       }
     });
   }
@@ -111,7 +117,7 @@ export class OfflineDB extends Dexie {
     // * lunr-index the query to get tokens
     const queryTokens = extractFullTextTokens(searchText, 0).keys();
     // * For every token, query fullTextIndex for matching tokens to get contentIds and scores (toArray())
-    const tokenResults = await Promise.all(
+    const tokenResultPromise = Promise.all(
       Array.from(queryTokens).map(token => 
         this.fullTextIndex
           .where(':id')
@@ -119,6 +125,16 @@ export class OfflineDB extends Dexie {
           .toArray()
       )
     );
+    const titlePromise = this.fullTextContent
+      .where('lowerTitle')
+      .startsWith(searchText)
+      .limit(5)
+      .primaryKeys();
+
+    const [tokenResults, titleMatches] = await Promise.all([
+      tokenResultPromise,
+      titlePromise
+    ]);
     // * Aggregate scores per search token and contentId
     const intermediateScoreMap = new Map<number, {[resultId: number]: number}>();
     for (let resultId = 0; resultId < tokenResults.length; resultId++) {
@@ -141,10 +157,14 @@ export class OfflineDB extends Dexie {
       }
       scoreMap.set(contentId, totalScore);
     }
+    for (const id of titleMatches) {
+      // Let titleMatches always win by giving a huge score boost
+      scoreMap.set(id, (scoreMap.get(id) || 0) + 1000_000_000);
+    }
     // Sort by score descending
     const topResults = Array.from(scoreMap.entries())
       .sort((a, b) => b[1] - a[1])
-      .slice(0, 200); // Limit to top 200 results
+      .slice(0, 100); // Limit to top 100 results
 
     // * Fetch URLs from fullTextContent
     const resultContents = (await this.fullTextContent.bulkGet(
