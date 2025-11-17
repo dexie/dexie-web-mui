@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 // Generate a list of routes and assets to prefetch and cache for offline usage.
 // Outputs public/offline-manifest.json
 
@@ -12,11 +12,11 @@ const publicDir = path.join(root, 'public');
 const nextDir = path.join(root, '.next');
 const outputFile = path.join(publicDir, 'offline-manifest.json');
 
-function exists(p) {
+function exists(p: string): boolean {
   try { fs.accessSync(p); return true; } catch { return false; }
 }
 
-function normalizeRoute(segments) {
+function normalizeRoute(segments: string[]): string {
   // Skip special group segments e.g. (marketing)
   const cleaned = segments
     .filter(Boolean)
@@ -26,9 +26,9 @@ function normalizeRoute(segments) {
   return route === '/' ? '/' : route.replace(/\/+$/, '');
 }
 
-function collectAppRoutes() {
-  const routes = new Set(['/']);
-  function walk(dir, rel = []) {
+function collectAppRoutes(): string[] {
+  const routes = new Set<string>(['/']);
+  function walk(dir: string, rel: string[] = []): void {
     const items = fs.readdirSync(dir, { withFileTypes: true });
     for (const item of items) {
       if (item.isDirectory()) {
@@ -43,9 +43,9 @@ function collectAppRoutes() {
   return Array.from(routes).sort();
 }
 
-function collectDocsRoutes() {
-  const routes = new Set(['/docs']);
-  function walk(dir, base = '') {
+function collectDocsRoutes(): string[] {
+  const routes = new Set<string>(['/docs']);
+  function walk(dir: string, base = ''): void {
     const items = fs.readdirSync(dir, { withFileTypes: true });
     for (const item of items) {
       const full = path.join(dir, item.name);
@@ -55,6 +55,8 @@ function collectDocsRoutes() {
         const slug = path.join(base, item.name.replace(/\.md$/, '')).replace(/\\/g, '/');
         const route = '/docs/' + slug;
         routes.add(route);
+        // Load the MD file and parse title, headings and contents per heading
+        
       }
     }
   }
@@ -62,9 +64,9 @@ function collectDocsRoutes() {
   return Array.from(routes).sort();
 }
 
-function collectPublicAssets() {
-  const assets = new Set();
-  function walk(dir, base = '') {
+function collectPublicAssets(): string[] {
+  const assets = new Set<string>();
+  function walk(dir: string, base = ''): void {
     const items = fs.readdirSync(dir, { withFileTypes: true });
     for (const item of items) {
       const rel = path.join(base, item.name).replace(/\\/g, '/');
@@ -81,17 +83,17 @@ function collectPublicAssets() {
   return Array.from(assets).sort();
 }
 
-function collectNextStatic() {
-  const urls = new Set();
+function collectNextStatic(): string[] {
+  const urls = new Set<string>();
   if (!exists(nextDir)) return [];
   const buildIdFile = path.join(nextDir, 'BUILD_ID');
-  let buildId = null;
+  let buildId: string | null = null;
   try {
     buildId = fs.readFileSync(buildIdFile, 'utf8').trim();
   } catch {}
 
   const staticDir = path.join(nextDir, 'static');
-  function walk(dir, base = '') {
+  function walk(dir: string, base = ''): void {
     const items = fs.readdirSync(dir, { withFileTypes: true });
     for (const item of items) {
       const rel = path.join(base, item.name).replace(/\\/g, '/');
@@ -111,13 +113,19 @@ function collectNextStatic() {
   return Array.from(urls).sort();
 }
 
-function writeManifest(data) {
+interface OfflineManifest {
+  generatedAt: string;
+  routes: string[];
+  assets: string[];
+}
+
+function writeManifest(data: OfflineManifest): void {
   fs.mkdirSync(path.dirname(outputFile), { recursive: true });
   fs.writeFileSync(outputFile, JSON.stringify(data, null, 2));
   console.log(`Wrote ${outputFile} with ${data.routes.length} routes and ${data.assets.length} assets.`);
 }
 
-function main() {
+function main(): void {
   const appRoutes = collectAppRoutes();
   const docsRoutes = collectDocsRoutes();
   const publicAssets = collectPublicAssets();
