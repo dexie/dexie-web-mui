@@ -2,6 +2,9 @@
   "name": "dexie-web",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack && npm run build:sw && tsx scripts/generate-offline-manifest.mjs",
