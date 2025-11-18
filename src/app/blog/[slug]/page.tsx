@@ -66,7 +66,7 @@ async function fetchBlogPosts(): Promise<BlogPost[]> {
     }
 
     const posts: BlogPost[] = itemsArray.map((item: unknown) => {
-      const typedItem = item as { 
+      const typedItem = item as {
         category?: string | string[]
         "content:encoded"?: string
         description?: string
@@ -83,7 +83,8 @@ async function fetchBlogPosts(): Promise<BlogPost[]> {
           : [typedItem.category]
       }
 
-      const content = typedItem["content:encoded"] || typedItem.description || ""
+      const content =
+        typedItem["content:encoded"] || typedItem.description || ""
       const thumbnail = extractThumbnail(content)
       const title = typedItem.title || ""
 

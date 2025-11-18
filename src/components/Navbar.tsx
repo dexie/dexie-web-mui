@@ -102,8 +102,14 @@ export default function Navbar() {
         const response = await fetch(
           "https://api.github.com/repos/dexie/Dexie.js"
         )
+        if (!response.ok) {
+          console.warn("Failed to fetch GitHub stars:", response.status)
+          return
+        }
         const data = await response.json()
-        setStars(data.stargazers_count)
+        if (data.stargazers_count) {
+          setStars(data.stargazers_count)
+        }
       } catch (error) {
         console.error("Error fetching stars:", error)
       }
