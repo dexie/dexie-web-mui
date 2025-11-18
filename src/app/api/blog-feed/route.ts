@@ -9,12 +9,26 @@ export interface BlogPost {
   description: string
   thumbnail?: string
   categories: string[]
+  slug: string
+  content?: string
 }
 
 // In-memory cache
 let cachedPosts: BlogPost[] | null = null
 let cacheTimestamp: number | null = null
 const CACHE_DURATION = 10 * 60 * 1000 // 10 minutes in milliseconds
+
+/**
+ * Creates a URL-friendly slug from a title
+ */
+function createSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "") // Remove special chars
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/--+/g, "-") // Replace multiple hyphens
+    .trim()
+}
 
 /**
  * Strips HTML tags from a string and truncates to a specified length
@@ -117,6 +131,8 @@ async function parseRssFeed(
             description: stripHtml(content),
             thumbnail,
             categories,
+            slug: createSlug(item.title || ""),
+            content, // Store full HTML content
           }
         }
       )

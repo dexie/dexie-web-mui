@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
 import {
   Box,
@@ -44,7 +44,6 @@ const filterNavigation = async (
   navStructure: NavStructure,
   searchTerm: string
 ): Promise<NavStructure> => {
-  const filtered: NavStructure = {}
   if (searchTerm.trim() === "") {
     return navStructure
   }

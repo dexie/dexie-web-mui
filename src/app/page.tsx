@@ -66,7 +66,6 @@ import BlogPostsWidget, {
 import TestimonialsWidget, {
   TestimonialItem,
 } from "@/components/content/TestimonialsWidget"
-import CallToActionWidget from "@/components/content/CallToActionWidget"
 import HackathonWidget from "@/components/content/HackathonWidget"
 import FeatureScreenshotWidget from "@/components/content/FeatureScreenshotWidget"
 import TypeWriter from "@/components/content/shared/TypeWriter"

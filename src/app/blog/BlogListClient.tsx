@@ -15,39 +15,10 @@ import {
   alpha,
 } from "@mui/material"
 import Link from "next/link"
-import { fetchMediumFeed, BlogPost } from "@/utils/rssFeedParser"
+import { BlogPost } from "@/utils/rssFeedParser"
+import ArticleIcon from "@mui/icons-material/Article"
 
-export type BlogFeedVariant = "grid" | "list" | "compact"
-export type BlogFeedSize = "small" | "medium" | "large"
-
-interface BlogFeedWidgetProps {
-  /** Number of articles to display */
-  count?: number
-  /** Layout variant */
-  variant?: BlogFeedVariant
-  /** Size of the cards */
-  size?: BlogFeedSize
-  /** Show author information */
-  showAuthor?: boolean
-  /** Show categories/tags */
-  showCategories?: boolean
-  /** Show publication date */
-  showDate?: boolean
-  /** Custom title for the section */
-  title?: string
-  /** RSS feed URL */
-  feedUrl?: string
-}
-
-const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
-  count = 6,
-  variant = "grid",
-  size = "medium",
-  showCategories = true,
-  showDate = true,
-  title = "Latest from our blog",
-  feedUrl = "https://medium.com/feed/dexie-js",
-}) => {
+const BlogListClient: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -55,25 +26,30 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
 
   useEffect(() => {
     const loadPosts = async () => {
-      console.log("BlogFeedWidget: Starting to load posts...", {
-        feedUrl,
-        count,
-      })
       setLoading(true)
       setError(null)
 
       try {
-        const fetchedPosts = await fetchMediumFeed(feedUrl, count)
-        console.log("BlogFeedWidget: Fetched posts:", fetchedPosts.length)
-        setPosts(fetchedPosts)
+        const response = await fetch(
+          `/api/blog-feed?limit=50&feedUrl=${encodeURIComponent(
+            "https://medium.com/feed/dexie-js"
+          )}`
+        )
 
-        if (fetchedPosts.length === 0) {
-          setError("No posts were returned from the feed")
+        if (!response.ok) {
+          throw new Error(`Failed to fetch blog posts: ${response.statusText}`)
+        }
+
+        const data = await response.json()
+        setPosts(data.posts || [])
+
+        if (data.posts.length === 0) {
+          setError("No posts available")
         }
       } catch (err) {
         const errorMessage =
           err instanceof Error ? err.message : "Unknown error"
-        console.error("BlogFeedWidget: Error loading posts:", errorMessage)
+        console.error("Error loading posts:", errorMessage)
         setError(errorMessage)
       } finally {
         setLoading(false)
@@ -81,14 +57,14 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
     }
 
     loadPosts()
-  }, [feedUrl, count])
+  }, [])
 
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString)
       return date.toLocaleDateString("en-US", {
         year: "numeric",
-        month: "short",
+        month: "long",
         day: "numeric",
       })
     } catch {
@@ -96,54 +72,38 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
     }
   }
 
-  const getGridTemplateColumns = () => {
-    if (variant === "list") return "1fr"
-    if (variant === "compact")
-      return {
-        xs: "1fr",
-        sm: "repeat(2, 1fr)",
-        md: "repeat(3, 1fr)",
-        lg: "repeat(4, 1fr)",
-      }
-    return {
-      xs: "1fr",
-      sm: "repeat(2, 1fr)",
-      md: "repeat(3, 1fr)",
-    }
-  }
-
   const renderSkeleton = () => (
     <>
-      {Array.from({ length: count }).map((_, index) => (
-        <Card
+      {Array.from({ length: 9 }).map((_, index) => (
+        <Box
           key={index}
           sx={{
             display: "flex",
             flexDirection: "column",
             opacity: 0.2,
+            height: "100%",
           }}
         >
-          <Box
+          <Card
             sx={{
-              width: "100%",
-              aspectRatio: "16 / 9",
-              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
             }}
           >
-            <Skeleton variant="rectangular" width="100%" height="100%" />
-          </Box>
-          <CardContent>
-            <Skeleton variant="text" height={32} />
-            <Skeleton variant="text" height={20} />
-            <Skeleton variant="text" height={20} width="60%" />
-          </CardContent>
-        </Card>
+            <Skeleton variant="rectangular" width="100%" height={200} />
+            <CardContent>
+              <Skeleton variant="text" height={32} />
+              <Skeleton variant="text" height={20} />
+              <Skeleton variant="text" height={20} width="60%" />
+            </CardContent>
+          </Card>
+        </Box>
       ))}
     </>
   )
 
   const renderPost = (post: BlogPost) => {
-    // Filter out tracking pixels and use fallback image
     const isValidImage =
       post.thumbnail &&
       !post.thumbnail.includes("/_/stat?") &&
@@ -156,14 +116,13 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
 
     return (
       <Card
-        key={post.link}
+        key={post.slug}
         sx={{
           display: "flex",
-          flexDirection: variant === "list" ? "row" : "column",
+          flexDirection: "column",
           transition: "all 0.3s ease",
           backgroundImage: "none",
           backgroundColor: alpha(theme.palette.text.primary, 0.05),
-
           "&:hover": {
             transform: "translateY(-4px)",
             boxShadow: theme.shadows[8],
@@ -176,14 +135,14 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
           href={`/blog/${post.slug}`}
           sx={{
             display: "flex",
-            flexDirection: variant === "list" ? "row" : "column",
+            flexDirection: "column",
             alignItems: "flex-start",
             height: "100%",
           }}
         >
           <Box
             sx={{
-              width: variant === "list" ? 300 : "100%",
+              width: "100%",
               aspectRatio: "16 / 9",
               overflow: "hidden",
               flexShrink: 0,
@@ -212,8 +171,7 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
             <Box
               sx={{
                 fontWeight: 600,
-                fontSize: size === "small" ? "1rem" : "1.125rem",
-
+                fontSize: "1.125rem",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -221,21 +179,19 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
             >
               {post.title}
             </Box>
-            {showDate && post.pubDate && (
-              <Typography
-                variant="caption"
-                sx={{ color: theme.palette.text.secondary }}
-              >
-                {formatDate(post.pubDate)} - {post.author}
-              </Typography>
-            )}
+            <Typography
+              variant="caption"
+              sx={{ color: theme.palette.text.secondary }}
+            >
+              {formatDate(post.pubDate)} - {post.author}
+            </Typography>
 
             <Typography
               variant="body2"
               sx={{
                 color: theme.palette.text.secondary,
                 display: "-webkit-box",
-                WebkitLineClamp: variant === "compact" ? 2 : 3,
+                WebkitLineClamp: 3,
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
                 mt: 1,
@@ -243,7 +199,7 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
             >
               {post.description}
             </Typography>
-            {showCategories && post.categories.length > 0 && (
+            {post.categories.length > 0 && (
               <Box
                 sx={{
                   display: "flex",
@@ -279,46 +235,70 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
     )
   }
 
-  const gridColumns = getGridTemplateColumns()
-
   return (
-    <Box
-      sx={{
-        py: 8,
-        bgcolor: theme.palette.mode === "dark" ? "#0a0a0a" : "#f8f9fa",
-      }}
-    >
-      <Container maxWidth="lg">
-        {title && (
+    <Box>
+      {/* Hero Header */}
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          background:
+            "linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/assets/images/dexie-bg.jpg')",
+          backgroundPosition: "center",
+          backgroundSize: "cover",
+          padding: { xs: 3, md: 6, lg: 12, xl: 40 },
+          paddingTop: "200px !important",
+          paddingBottom: "100px !important",
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: { xs: "100%", md: "1200px" },
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <Typography
-            variant="h3"
-            component="h2"
+            variant="h1"
             sx={{
+              fontSize: { xs: "2.5rem", md: "3.5rem" },
               fontWeight: 700,
-              mb: 4,
+              mb: 2,
+              lineHeight: 1.2,
               textAlign: "center",
             }}
           >
-            {title}
+            Dexie.js Blog
           </Typography>
-        )}
+          <Typography
+            variant="h5"
+            sx={{
+              mb: 3,
+              opacity: 0.9,
+              fontWeight: 300,
+              fontSize: { xs: "1.1rem", md: "1.3rem" },
+              textAlign: "center",
+              maxWidth: "800px",
+            }}
+          >
+            Explore tutorials, tips and the latest updates about Dexie.js,
+            IndexedDB and modern web development
+          </Typography>
+        </Box>
+      </Box>
 
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        {/* Blog Posts Grid */}
         <Box
           sx={{
             display: "grid",
             gridTemplateColumns: {
-              xs:
-                typeof gridColumns === "string" ? gridColumns : gridColumns.xs,
-              sm:
-                typeof gridColumns === "string" ? gridColumns : gridColumns.sm,
-              md:
-                typeof gridColumns === "string" ? gridColumns : gridColumns.md,
-              lg:
-                typeof gridColumns === "object" && "lg" in gridColumns
-                  ? gridColumns.lg
-                  : typeof gridColumns === "string"
-                  ? gridColumns
-                  : gridColumns.md,
+              xs: "1fr",
+              sm: "repeat(2, 1fr)",
+              md: "repeat(3, 1fr)",
             },
             gap: 3,
           }}
@@ -327,7 +307,10 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
         </Box>
 
         {!loading && posts.length === 0 && (
-          <Box sx={{ textAlign: "center", py: 4 }}>
+          <Box sx={{ textAlign: "center", py: 8 }}>
+            <ArticleIcon
+              sx={{ fontSize: 60, color: "text.secondary", mb: 2 }}
+            />
             <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
               No blog posts available at the moment.
             </Typography>
@@ -347,4 +330,4 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
   )
 }
 
-export default BlogFeedWidget
+export default BlogListClient

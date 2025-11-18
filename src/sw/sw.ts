@@ -389,7 +389,7 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
           isUpdating = false;
         }
       } catch (e) {
-        console.warn('Activate setup failed:', e);
+          console.warn('Activate setup failed:', e);
         await saveOfflineStatus({
           isWarming: false,
           isReady: false,
