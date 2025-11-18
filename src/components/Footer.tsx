@@ -402,9 +402,10 @@ const Footer = () => {
         sx={{
           position: "relative",
           mt: 3,
-          py: 2,
+          p: 2,
           backgroundImage: "url(https://old.dexie.org/assets/images/bg.png)",
           backgroundPosition: "0 0",
+          backgroundSize: "cover",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -446,6 +447,7 @@ const Footer = () => {
             py: 2,
             position: "relative",
             zIndex: 1,
+            textAlign: "center",
           }}
         >
           We recently launched a new website! Missing something? Visit the{" "}
