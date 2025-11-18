@@ -4,13 +4,15 @@
 
 /// <reference lib="webworker" />
 
-import { offlineDB, type OfflineStatus } from '../db/offlineStatus'
+import { MDFullTextMeta } from '@/types/MDFullTextMeta';
+import { offlineDB, type OfflineStatus } from '../db/offlineDB'
 
-const VERSION = 'v1';
+const VERSION = 'v2'; // Bumped to trigger reindexing
 const PRECACHE_NAME = `dexie-web-precache-${VERSION}`;
 const RUNTIME_NAME = `dexie-web-runtime-${VERSION}`;
 const MANIFEST_URL = '/offline-manifest.json';
 const ORIGIN = self.location.origin;
+const FORCE_REINDEX_FLAG = 'force-reindex-v2'; // One-time reindexing flag
 
 // Utility: Save offline cache status to Dexie for GUI consumption
 async function saveOfflineStatus(status: Partial<OfflineStatus>) {
@@ -72,10 +74,18 @@ async function warmCacheFromManifest() {
           const req = new Request(url, { credentials: 'same-origin' });
           const existing = await cache.match(req);
           if (!existing) {
-            const resp = await fetch(req);
+            const urlObj = new URL(url);
+            const [resp] = await Promise.all([
+              fetch(req),
+              urlObj.pathname.startsWith('/docs/')
+                ? putFullTextIndex(urlObj.pathname)
+                : Promise.resolve()
+            ]);
             if (resp.ok) {
               await cache.put(req, resp.clone());
               cached++;
+            } else {
+              await offlineDB.deleteFullTextDoc(urlObj.pathname);
             }
           } else {
             alreadyCached++;
@@ -153,8 +163,54 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
   // Take control immediately
   event.waitUntil(self.clients.claim());
 
-  // Warm the runtime cache with all known pages & assets
-  event.waitUntil(warmCacheFromManifest());
+  // Only run warmup if this is a new installation or forced reindexing is needed
+  event.waitUntil(
+    (async () => {
+      try {
+        const cacheStatus = await offlineDB.status.get('cache');
+        const forceReindex = await offlineDB.status.get(FORCE_REINDEX_FLAG);
+        
+        // Only run warmup if:
+        // 1. Cache has never been warmed (new installation)
+        // 2. Or we need to force reindexing (one-time after this update)
+        // 3. Or previous warmup failed
+        if (!cacheStatus || !cacheStatus.isReady || !forceReindex) {
+          if (!forceReindex) {
+            // Mark that we're doing the one-time reindexing
+            await offlineDB.status.put({
+              id: FORCE_REINDEX_FLAG,
+              isWarming: true,
+              isReady: false,
+              updatedAt: new Date().toISOString()
+            });
+            
+            // Clear all existing full text data to force complete reindexing
+            await offlineDB.transaction('rw', offlineDB.fullTextIndex, offlineDB.fullTextContent, async () => {
+              await offlineDB.fullTextIndex.clear();
+              await offlineDB.fullTextContent.clear();
+            });
+          }
+          
+          // Run warmup (either first time or forced reindexing)
+          await warmCacheFromManifest();
+          
+          // Mark reindexing as complete if this was a forced reindex
+          if (!forceReindex) {
+            await offlineDB.status.put({
+              id: FORCE_REINDEX_FLAG,
+              isWarming: false,
+              isReady: true,
+              updatedAt: new Date().toISOString()
+            });
+          }
+        }
+        // If cache is already ready and reindexing is done, skip warmup entirely
+      } catch (e) {
+        // If anything fails, run warmup as fallback
+        await warmCacheFromManifest();
+      }
+    })()
+  );
 });
 
 // Cache strategies
@@ -194,7 +250,19 @@ async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
   const networkPromise = fetch(event.request)
     .then(async (resp) => {
       console.log("SW Network response for:", event.request.url);
-      if (resp && resp.ok && event.request.method === 'GET') {
+      if (!resp || event.request.method !== 'GET') {
+        return resp; // Only cache GET requests
+      }
+      if (!resp.ok) {
+        if (resp.status === 404) {
+          // Remove from cache and full text
+          await cache.delete(event.request);
+          const urlObj = new URL(event.request.url);
+          if (urlObj.pathname.startsWith('/docs/')) {
+            await offlineDB.deleteFullTextDoc(urlObj.pathname);
+          }
+        }
+      } else {
         // Check if we have a cached version to compare with
         const cached = await cachedPromise;
         if (cached) {
@@ -217,6 +285,12 @@ async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
                   });
                 });
               });
+
+              // Update full text index if applicable
+              const urlObj = new URL(event.request.url);
+              if (urlObj.pathname.startsWith('/docs/')) {
+                await putFullTextIndex(urlObj.pathname);
+              }
             } else if (cachedText !== networkText) {
               console.log("SW: Content updated (non-document) for", event.request.url);
             } else {
@@ -352,6 +426,29 @@ self.addEventListener('message', (event: ExtendableMessageEvent) => {
     event.waitUntil(warmCacheFromManifest());
   }
 });
+
+async function putFullTextIndex(route: string) {
+  try {
+    const req = new Request(`/full-text-search${route}.json`, { credentials: 'same-origin' });
+    const resp = await fetch(req);
+    if (resp.ok) {
+      const ftMeta = await resp.json() as MDFullTextMeta;
+      // Store in IndexedDB via Dexie
+      for (const section of ftMeta.sections) {
+        const url = section.slug
+          ? `${route}#${section.slug}`
+          : route;
+        const title = section.slug ? section.title : ftMeta.title || route;
+        const parentTitle = ftMeta.title || undefined;
+        await offlineDB.putFullTextDoc(url, title, section.content, parentTitle);
+      }
+    } else if (resp.status === 404) {
+      // No full text index available for this route
+      await offlineDB.deleteFullTextDoc(route);
+    }
+  } catch {
+  }
+}
 
 // TypeScript globals for service worker
 declare const self: ServiceWorkerGlobalScope & typeof globalThis;
