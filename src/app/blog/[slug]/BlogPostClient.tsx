@@ -153,7 +153,6 @@ const BlogPostClient: React.FC<BlogPostClientProps> = ({ post }) => {
           <Box
             sx={{
               borderRadius: 2,
-              p: { xs: 3, md: 0 },
               mb: 4,
               boxShadow: theme.shadows[1],
               "& img": {
