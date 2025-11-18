@@ -419,48 +419,50 @@ const Footer = () => {
             zIndex: 0,
           }}
         />
-        <Typography
-          variant="body2"
-          sx={{
-            color: alpha("#dee2e6", 0.9),
-            fontStyle: "italic",
-            fontSize: "0.875rem",
-            py: 2,
-            position: "relative",
-            zIndex: 1,
-            textAlign: "center",
-          }}
-        >
-          We recently launched a new website! Missing something? Visit the{" "}
-          <Link
-            href="https://old.dexie.org"
-            target="_blank"
-            rel="noopener noreferrer"
+        <div suppressHydrationWarning>
+          <Typography
+            variant="body2"
             sx={{
-              textDecoration: "underline",
-              "&:hover": {
-                textDecoration: "underline",
-                color: theme.palette.primary.light,
-              },
+              color: alpha("#dee2e6", 0.9),
+              fontStyle: "italic",
+              fontSize: "0.875rem",
+              py: 2,
+              position: "relative",
+              zIndex: 1,
+              textAlign: "center",
             }}
           >
-            old site
-          </Link>
-          . Your{" "}
-          <Link
-            href="/contact"
-            sx={{
-              textDecoration: "underline",
-              "&:hover": {
+            We recently launched a new website! Missing something? Visit the{" "}
+            <Link
+              href="https://old.dexie.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              sx={{
                 textDecoration: "underline",
-                color: theme.palette.primary.light,
-              },
-            }}
-          >
-            feedback
-          </Link>{" "}
-          is welcome!
-        </Typography>
+                "&:hover": {
+                  textDecoration: "underline",
+                  color: theme.palette.primary.light,
+                },
+              }}
+            >
+              old site
+            </Link>
+            . Your{" "}
+            <Link
+              href="/contact"
+              sx={{
+                textDecoration: "underline",
+                "&:hover": {
+                  textDecoration: "underline",
+                  color: theme.palette.primary.light,
+                },
+              }}
+            >
+              feedback
+            </Link>{" "}
+            is welcome!
+          </Typography>
+        </div>
       </Box>
     </>
   )

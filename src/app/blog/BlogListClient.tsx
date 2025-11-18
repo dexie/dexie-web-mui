@@ -215,9 +215,14 @@ const BlogListClient: React.FC = () => {
                     label={category}
                     size="small"
                     sx={{
-                      fontSize: "0.75rem",
+                      backgroundColor: alpha(theme.palette.primary.main, 0.2),
+                      borderColor: alpha(theme.palette.primary.main, 1),
+                      color: "white",
+                      fontWeight: 500,
                       "& .MuiChip-label": {
-                        padding: "0px 8px !important",
+                        fontSize: "0.75rem",
+                        padding: "0px 10px !important",
+                        pb: "2px !important",
                       },
                     }}
                   />
