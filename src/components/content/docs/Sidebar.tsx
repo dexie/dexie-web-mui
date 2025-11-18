@@ -48,16 +48,11 @@ const filterNavigation = async (
     return navStructure
   }
 
-  const foundSections = await offlineDB.findDocuments(searchTerm)
-  return Object.fromEntries(
-    foundSections.map((doc) => [
-      doc.title ?? doc.parentTitle ?? "Untitled",
-      {
-        title: doc.title ?? doc.parentTitle ?? "Untitled",
-        slug: doc.url.replace(/^\/docs\//, ""),
-      },
-    ])
-  )
+  const foundSections = await offlineDB.findDocuments(searchTerm);
+  return Object.fromEntries(foundSections.map(doc => [doc.title ?? doc.parentTitle ??  "Untitled", {
+    title: doc.parentTitle ?? doc.title ?? "Untitled",
+    slug: doc.url.replace(/^\/docs\//, ''),
+  }]));
 }
 
 const Sidebar: React.FC<SidebarProps> = ({

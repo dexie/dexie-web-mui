@@ -6,6 +6,7 @@ export interface OfflineStatus {
   isWarming: boolean
   isReady: boolean
   cached?: number
+  failed?: number
   total?: number
   progress?: number
   startedAt?: string
@@ -15,9 +16,16 @@ export interface OfflineStatus {
   updatedAt: string
 }
 
+export interface CacheMetadata {
+  id: string // 'manifest' or URL
+  hash: string | null
+  lastUpdated: string
+}
+
 // Dedicated database for offline status (shared between SW and GUI)
 export class OfflineDB extends Dexie {
   status!: Table<OfflineStatus>
+  cacheMetadata!: Table<CacheMetadata>
   fullTextIndex!: Table<
     {contentId: number, score: number}, // Value (contentId, score)
     [string, number] // Primary Key: [token, contentId]
@@ -32,8 +40,9 @@ export class OfflineDB extends Dexie {
 
   constructor() {
     super('OfflineDB')
-    this.version(2).stores({
+    this.version(3).stores({
       status: 'id',
+      cacheMetadata: 'id',
       fullTextIndex: ',contentId', // outbound [token+contentId] -> {contentId, score}
       fullTextContent: '++,url,lowerTitle'
     })

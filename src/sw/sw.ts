@@ -1,145 +1,352 @@
-// Offline-first service worker with warm-cache of all site pages
-// Caches Next.js static assets, public assets and a compiled list of routes from /public/offline-manifest.json
+// Offline-first service worker with smart background updates
+// Detects updates on hard page loads, caches requested page first, then updates rest in background
 // ES modules supported in Chrome 91+, Safari 15+, Firefox 114+ (June 2023)
+
+// Background update service worker
+// Check for updates on hard page loads, cache current page first, then update everything else
 
 /// <reference lib="webworker" />
 
-import { MDFullTextMeta } from "@/types/MDFullTextMeta"
-import { offlineDB, type OfflineStatus } from "../db/offlineDB"
+import { MDFullTextMeta } from '@/types/MDFullTextMeta';
+import { offlineDB, type OfflineStatus, type CacheMetadata } from '../db/offlineDB'
+import type { OfflineManifest } from '@/types/OfflineManifest';
 
-const VERSION = "v2" // Bumped to trigger reindexing
-const PRECACHE_NAME = `dexie-web-precache-${VERSION}`
-const RUNTIME_NAME = `dexie-web-runtime-${VERSION}`
-const MANIFEST_URL = "/offline-manifest.json"
-const ORIGIN = self.location.origin
-const FORCE_REINDEX_FLAG = "force-reindex-v2" // One-time reindexing flag
+const VERSION = 'v3'; // Bumped for simplified approach
+const PRECACHE_NAME = `dexie-web-precache-${VERSION}`;
+const RUNTIME_NAME = `dexie-web-runtime-${VERSION}`;
+const MANIFEST_URL = '/offline-manifest.json';
+const ORIGIN = self.location.origin;
+
+// Utility: Check if we need to update cache based on manifest changes
+async function checkForUpdates(notifyClients = false) {
+  console.log('🔍 Checking for updates...', { notifyClients });
+  
+  try {
+    const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
+    if (!res.ok) {
+      console.log('❌ Failed to fetch manifest:', res.status);
+      return false;
+    }
+    
+    const manifest: OfflineManifest = await res.json();
+    console.log('📄 Fetched manifest:', { generatedAt: manifest.generatedAt });
+    
+    // Check if manifest is newer than what we have cached
+    const manifestMeta = await offlineDB.cacheMetadata.get('manifest');
+    console.log('💾 Cached manifest meta:', manifestMeta);
+    
+    const isManifestNewer = !manifestMeta || manifestMeta.lastUpdated !== manifest.generatedAt;
+    console.log('🆕 Is manifest newer?', isManifestNewer, {
+      cached: manifestMeta?.lastUpdated,
+      new: manifest.generatedAt
+    });
+    
+    if (isManifestNewer) {
+      console.log('🔄 New manifest detected, updating all routes and assets...');
+      isUpdating = true;
+      try {
+        await updateCacheFromManifest(manifest);
+        
+        // Update manifest metadata
+        await offlineDB.cacheMetadata.put({
+          id: 'manifest',
+          hash: null, // Not applicable for manifest
+          lastUpdated: manifest.generatedAt
+        });
+      } finally {
+        isUpdating = false;
+      }
+
+      // Notify clients about content updates if requested
+      if (notifyClients) {
+        console.log('📢 Notifying clients of new version...');
+        const clients = await self.clients.matchAll({ includeUncontrolled: true, type: 'window' });
+        console.log(`👥 Found ${clients.length} clients`);
+        
+        for (const client of clients) {
+          client.postMessage({ 
+            type: 'VERSION_AVAILABLE',
+            message: 'New version available'
+          });
+        }
+      }
+      
+      return true;
+    }
+    
+    console.log('✅ No updates needed');
+    return false;
+  } catch (error) {
+    console.warn('❌ Failed to check for updates:', error);
+    return false;
+  }
+}
+
+// Track last update check to avoid excessive checking
+let lastUpdateCheck = 0;
+let isUpdating = false;
+const UPDATE_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+// Check for updates and cache the current request first, then continue in background
+async function checkForUpdatesAndCacheInBackground(event: FetchEvent) {
+  const request = event.request;
+  
+  // Only check on navigation requests and avoid excessive checking
+  if (request.mode !== 'navigate' || isUpdating) {
+    return;
+  }
+  
+  // Check if this is likely a hard page load vs SPA navigation
+  const referrer = request.referrer;
+  const isHardLoad = !referrer || 
+    new URL(referrer).origin !== ORIGIN ||
+    request.cache === 'reload';
+    
+  if (!isHardLoad) {
+    return;
+  }
+  
+  const now = Date.now();
+  const timeSinceLastCheck = now - lastUpdateCheck;
+  
+  if (timeSinceLastCheck < UPDATE_CHECK_INTERVAL) {
+    return;
+  }
+  
+  lastUpdateCheck = now;
+  
+  // Don't await this - let it run in background
+  updateInBackground().catch(error => {
+    console.warn('❌ Background update failed:', error);
+  });
+}
+
+// Background update process
+async function updateInBackground() {
+  // Don't try to update if we're offline
+  if (!isLikelyOnline()) {
+    console.log('Offline: skipping background update check');
+    return;
+  }
+  
+  try {
+    // Check if manifest has changed
+    const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
+    if (!res.ok) return;
+    
+    const manifest: OfflineManifest = await res.json();
+    const manifestMeta = await offlineDB.cacheMetadata.get('manifest');
+    
+    const isManifestNewer = !manifestMeta || manifestMeta.lastUpdated !== manifest.generatedAt;
+    
+    if (isManifestNewer) {
+      console.log('🔄 New version detected, updating cache in background...');
+      isUpdating = true;
+      
+      try {
+        await updateCacheFromManifest(manifest);
+        
+        // Update manifest metadata
+        await offlineDB.cacheMetadata.put({
+          id: 'manifest',
+          hash: null,
+          lastUpdated: manifest.generatedAt
+        });
+        
+        console.log('✅ Background cache update completed');
+      } finally {
+        isUpdating = false;
+      }
+    }
+  } catch (error) {
+    console.warn('❌ Background update failed:', error);
+    isUpdating = false;
+  }
+}
+
+// Utility: Clean up cache entries that are no longer in the manifest
+async function cleanupRemovedEntries(manifest: OfflineManifest) {
+  const cache = await caches.open(RUNTIME_NAME);
+  const allManifestUrls = new Set([...manifest.routes, ...Object.keys(manifest.assets)]);
+  
+  // Get all cached metadata entries
+  const allCachedEntries = await offlineDB.cacheMetadata.toArray();
+  const entriesToRemove = allCachedEntries.filter(entry => {
+    // Don't remove the manifest entry itself
+    if (entry.id === 'manifest') return false;
+    
+    // Only remove if not in current manifest
+    return !allManifestUrls.has(entry.id);
+  });
+  
+  if (entriesToRemove.length > 0) {
+    console.log(`Cleaning up ${entriesToRemove.length} removed entries from cache`);
+    
+    // Add a small delay to ensure any ongoing requests have completed
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    for (const entry of entriesToRemove) {
+      try {
+        // Remove from cache
+        const req = new Request(new URL(entry.id, ORIGIN).toString());
+        await cache.delete(req);
+        
+        // Remove from metadata
+        await offlineDB.cacheMetadata.delete(entry.id);
+        
+        // Remove from full-text search if it's a docs route
+        if (entry.id.startsWith('/docs/')) {
+          await offlineDB.deleteFullTextDoc(entry.id);
+        }
+        
+        console.log(`Removed cached entry: ${entry.id}`);
+      } catch (error) {
+        console.warn(`Failed to remove cached entry ${entry.id}:`, error);
+      }
+    }
+  }
+}
+
+// Utility: Update all routes and assets from manifest (simplified approach)
+async function updateCacheFromManifest(manifest: OfflineManifest) {
+  const cache = await caches.open(RUNTIME_NAME);
+  
+  // Get all routes and assets to process
+  const allRoutes = manifest.routes;
+  const allAssets = Object.keys(manifest.assets);
+  const allEntries = [...allRoutes, ...allAssets];
+  const total = allEntries.length;
+  let processed = 0;
+  let updated = 0;
+  let index = 0;
+  const concurrency = 4;
+
+  // Set initial status
+  await saveOfflineStatus({
+    isWarming: true,
+    isReady: false,
+    cached: 0,
+    failed: 0,
+    total,
+    progress: 0,
+    startedAt: new Date().toISOString()
+  });
+
+  async function worker() {
+    while (index < allEntries.length) {
+      const entry = allEntries[index++];
+      const isAsset = allAssets.includes(entry);
+      const expectedHash = isAsset ? manifest.assets[entry] : null;
+      
+      try {
+        // For assets, check if hash has changed
+        // For routes, always update since we don't track route hashes anymore
+        let shouldUpdate = true;
+        
+        if (isAsset && expectedHash) {
+          const currentMeta = await offlineDB.cacheMetadata.get(entry);
+          shouldUpdate = !currentMeta || currentMeta.hash !== expectedHash;
+        }
+        
+        if (shouldUpdate) {
+          console.log(`🔄 Updating ${entry}${isAsset ? ' (asset)' : ' (route)'}...`);
+          
+          const req = new Request(
+            new URL(entry, ORIGIN).toString(),
+            {
+              credentials: 'same-origin',
+              cache: 'no-cache'
+            }
+          );
+          
+          const [resp] = await Promise.all([
+            fetch(req),
+            (!isAsset && entry.startsWith('/docs/')) ? putFullTextIndex(entry) : Promise.resolve()
+          ]);
+          
+          if (resp.ok) {
+            await cache.put(req, resp.clone());
+            await offlineDB.cacheMetadata.put({
+              id: entry,
+              hash: expectedHash,
+              lastUpdated: new Date().toISOString()
+            });
+            updated++;
+          }
+        }
+        
+        processed++;
+        
+        // Update progress every 5 processed items
+        if (processed % 5 === 0 || processed === total) {
+          await saveOfflineStatus({
+            isWarming: processed < total,
+            isReady: processed === total,
+            cached: updated,
+            failed: processed - updated,
+            total,
+            progress: Math.round((processed / total) * 100)
+          });
+        }
+        
+      } catch (error) {
+        console.warn(`Failed to update ${entry}:`, error);
+        processed++;
+      }
+    }
+  }
+
+  try {
+    // Process all entries
+    await Promise.all(Array.from({ length: concurrency }, () => worker()));
+    
+    // Clean up old entries
+    await cleanupRemovedEntries(manifest);
+    
+    // Final success status
+    await saveOfflineStatus({
+      isWarming: false,
+      isReady: true,
+      cached: updated,
+      failed: processed - updated,
+      total,
+      progress: 100,
+      completedAt: new Date().toISOString()
+    });
+
+    console.log(`Cache update complete: ${updated} updated, ${processed - updated} unchanged`);
+    
+  } catch (error) {
+    // Error status
+    await saveOfflineStatus({
+      isWarming: false,
+      isReady: false,
+      error: (error as Error).message,
+      failedAt: new Date().toISOString()
+    });
+    throw error;
+  }
+}
 
 // Utility: Save offline cache status to Dexie for GUI consumption
 async function saveOfflineStatus(status: Partial<OfflineStatus>) {
   try {
     await offlineDB.status.put({
-      id: "cache",
+      id: 'cache',
       isWarming: false,
-      isReady: false,
+      isReady: false,      
       ...status,
-      updatedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     })
   } catch {
     // Fallback to message if Dexie access fails
-    self.clients
-      .matchAll({ includeUncontrolled: true })
-      .then((clients: readonly Client[]) => {
-        clients.forEach((client: Client) =>
-          client.postMessage({ type: "OFFLINE_STATUS", ...status })
-        )
-      })
+    self.clients.matchAll({ includeUncontrolled: true }).then((clients: readonly Client[]) => {
+      clients.forEach((client: Client) => client.postMessage({ type: 'OFFLINE_STATUS', ...status }));
+    });
   }
 }
 
-// Utility: limit concurrent fetches when warming the cache
-async function warmCacheFromManifest() {
-  try {
-    // Set initial status
-    await saveOfflineStatus({
-      isWarming: true,
-      isReady: false,
-      cached: 0,
-      total: 0,
-      startedAt: new Date().toISOString(),
-    })
-
-    const res = await fetch(MANIFEST_URL, { cache: "no-cache" })
-    if (!res.ok) return
-    const manifest = await res.json()
-    const urls = Array.from(
-      new Set([...(manifest.routes || []), ...(manifest.assets || [])])
-    )
-      .filter((u) => typeof u === "string")
-      .map((u) => (u.startsWith("http") ? u : new URL(u, ORIGIN).toString()))
-
-    const cache = await caches.open(RUNTIME_NAME)
-    const concurrency = 8
-    let index = 0
-    let cached = 0
-    let alreadyCached = 0
-    const total = urls.length
-
-    // Update total count
-    await saveOfflineStatus({
-      isWarming: true,
-      isReady: false,
-      cached: 0,
-      total,
-      startedAt: new Date().toISOString(),
-    })
-
-    async function worker() {
-      while (index < urls.length) {
-        const url = urls[index++]
-        try {
-          const req = new Request(url, { credentials: "same-origin" })
-          const existing = await cache.match(req)
-          if (!existing) {
-            const urlObj = new URL(url)
-            const [resp] = await Promise.all([
-              fetch(req),
-              urlObj.pathname.startsWith("/docs/")
-                ? putFullTextIndex(urlObj.pathname)
-                : Promise.resolve(),
-            ])
-            if (resp.ok) {
-              await cache.put(req, resp.clone())
-              cached++
-            } else {
-              await offlineDB.deleteFullTextDoc(urlObj.pathname)
-            }
-          } else {
-            alreadyCached++
-          }
-
-          const totalProcessed = cached + alreadyCached
-
-          // Update progress every 10 processed items
-          if (totalProcessed % 10 === 0) {
-            await saveOfflineStatus({
-              isWarming: true,
-              isReady: false,
-              cached: totalProcessed, // Total resources available, not just newly cached
-              total,
-              progress: Math.round((totalProcessed / total) * 100),
-            })
-          }
-        } catch {
-          // Swallow errors to avoid blocking other fetches
-        }
-      }
-    }
-
-    await Promise.all(Array.from({ length: concurrency }, () => worker()))
-
-    const totalCached = cached + alreadyCached
-
-    // Set final completion status
-    await saveOfflineStatus({
-      isWarming: false,
-      isReady: true,
-      cached: totalCached, // Total resources available offline
-      total,
-      progress: 100,
-      completedAt: new Date().toISOString(),
-    })
-  } catch (e) {
-    // Error status
-    await saveOfflineStatus({
-      isWarming: false,
-      isReady: false,
-      error: (e as Error).message,
-      failedAt: new Date().toISOString(),
-    })
-  }
-}
-
-self.addEventListener("install", (event: ExtendableEvent) => {
+self.addEventListener('install', (event: ExtendableEvent) => {
   // Activate immediately
   self.skipWaiting()
 
@@ -171,60 +378,39 @@ self.addEventListener("activate", (event: ExtendableEvent) => {
   // Take control immediately
   event.waitUntil(self.clients.claim())
 
-  // Only run warmup if this is a new installation or forced reindexing is needed
+  // Initial setup only - check if we need to populate cache
   event.waitUntil(
     (async () => {
       try {
-        const cacheStatus = await offlineDB.status.get("cache")
-        const forceReindex = await offlineDB.status.get(FORCE_REINDEX_FLAG)
-
-        // Only run warmup if:
-        // 1. Cache has never been warmed (new installation)
-        // 2. Or we need to force reindexing (one-time after this update)
-        // 3. Or previous warmup failed
-        if (!cacheStatus || !cacheStatus.isReady || !forceReindex) {
-          if (!forceReindex) {
-            // Mark that we're doing the one-time reindexing
-            await offlineDB.status.put({
-              id: FORCE_REINDEX_FLAG,
-              isWarming: true,
-              isReady: false,
-              updatedAt: new Date().toISOString(),
-            })
-
-            // Clear all existing full text data to force complete reindexing
-            await offlineDB.transaction(
-              "rw",
-              offlineDB.fullTextIndex,
-              offlineDB.fullTextContent,
-              async () => {
-                await offlineDB.fullTextIndex.clear()
-                await offlineDB.fullTextContent.clear()
-              }
-            )
-          }
-
-          // Run warmup (either first time or forced reindexing)
-          await warmCacheFromManifest()
-
-          // Mark reindexing as complete if this was a forced reindex
-          if (!forceReindex) {
-            await offlineDB.status.put({
-              id: FORCE_REINDEX_FLAG,
-              isWarming: false,
-              isReady: true,
-              updatedAt: new Date().toISOString(),
-            })
-          }
+        // For regular activations, just check if we have any cached content
+        const manifestMeta = await offlineDB.cacheMetadata.get('manifest');
+        if (!manifestMeta) {
+          console.log('First install detected, populating cache...');
+          isUpdating = true;
+          await checkForUpdates(false);
+          isUpdating = false;
         }
-        // If cache is already ready and reindexing is done, skip warmup entirely
-      } catch {
-        // If anything fails, run warmup as fallback
-        await warmCacheFromManifest()
+      } catch (e) {
+          console.warn('Activate setup failed:', e);
+        await saveOfflineStatus({
+          isWarming: false,
+          isReady: false,
+          error: (e as Error).message,
+          failedAt: new Date().toISOString()
+        });
       }
     })()
   )
 })
+
+// Listen for online/offline events to optimize behavior
+self.addEventListener('online', () => {
+  console.log('📶 Back online - enabling background updates');
+});
+
+self.addEventListener('offline', () => {
+  console.log('📵 Gone offline - disabling background updates');
+});
 
 // Cache strategies
 function isSameOrigin(req: Request) {
@@ -236,111 +422,106 @@ function isSameOrigin(req: Request) {
   }
 }
 
-async function cacheFirst(event: FetchEvent) {
-  const cache = await caches.open(RUNTIME_NAME)
-  const cached = await cache.match(event.request)
-  if (cached) return cached
-  try {
-    const resp = await fetch(event.request)
-    if (resp && resp.ok && event.request.method === "GET") {
-      await cache.put(event.request, resp.clone())
-    }
-    return resp
-  } catch (err) {
-    // Fallback to offline shell for documents
-    if (event.request.mode === "navigate") {
-      const shell = await caches.open(PRECACHE_NAME).then((c) => c.match("/"))
-      if (shell) return shell
-    }
-    throw err
-  }
+// Utility: Check if we're likely online
+function isLikelyOnline(): boolean {
+  // Use navigator.onLine if available, but it's not always reliable
+  return 'onLine' in navigator ? navigator.onLine : true;
 }
 
-async function staleWhileRevalidate(event: FetchEvent): Promise<Response> {
-  console.log("SW Fetch (SWR):", event.request.url)
-  const cache = await caches.open(RUNTIME_NAME)
-  const cachedPromise = cache.match(event.request)
-  const networkPromise = fetch(event.request)
-    .then(async (resp) => {
-      console.log("SW Network response for:", event.request.url)
-      if (!resp || event.request.method !== "GET") {
-        return resp // Only cache GET requests
+async function cacheFirst(event: FetchEvent) {
+  const cache = await caches.open(RUNTIME_NAME);
+  const request = event.request;
+  
+  // Log request details for debugging prefetch behavior
+  if (request.url.includes('/docs/')) {
+    console.log('SW Request:', {
+      url: request.url.split('/').pop(),
+      mode: request.mode,
+      destination: request.destination,
+      cache: request.cache,
+      hasRSC: request.url.includes('_rsc='),
+      referrer: request.referrer ? 'has-referrer' : 'no-referrer'
+    });
+  }
+  
+  // Only do network-first for actual user navigation (NOT prefetch/RSC)
+  const isUserNavigation = request.mode === 'navigate' && 
+    request.destination === 'document' &&
+    !request.url.includes('_next/static') &&
+    !request.url.includes('_rsc=') && // Next.js React Server Components (prefetch)
+    request.cache !== 'force-cache'; // Prefetch often uses force-cache
+    
+  if (isUserNavigation && !isUpdating && isLikelyOnline()) {
+    checkForUpdatesAndCacheInBackground(event);
+  }
+  
+  // For USER navigation requests only, try network-first
+  if (isUserNavigation && isLikelyOnline()) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3000);
+      
+      const resp = await fetch(request, { 
+        signal: controller.signal,
+        cache: 'no-cache' 
+      });
+      
+      clearTimeout(timeoutId);
+      
+      if (resp && resp.ok) {
+        await cache.put(request, resp.clone());
+        console.log('Network-first served:', request.url.split('/').pop());
+        return resp;
       }
-      if (!resp.ok) {
-        if (resp.status === 404) {
-          // Remove from cache and full text
-          await cache.delete(event.request)
-          const urlObj = new URL(event.request.url)
-          if (urlObj.pathname.startsWith("/docs/")) {
-            await offlineDB.deleteFullTextDoc(urlObj.pathname)
-          }
-        }
-      } else {
-        // Check if we have a cached version to compare with
-        const cached = await cachedPromise
-        if (cached) {
-          console.log("SW: Comparing content for", event.request.url)
-          // Clone both responses early to avoid "already used" errors
-          try {
-            const cachedText = await cached.clone().text()
-            const networkText = await resp.clone().text()
-
-            // If content has changed, notify clients about the update
-            // But only for navigation requests (documents/pages)
-            if (
-              cachedText !== networkText &&
-              event.request.mode === "navigate"
-            ) {
-              console.log("SW: Document content updated for", event.request.url)
-              self.clients
-                .matchAll({ includeUncontrolled: true })
-                .then((clients: readonly Client[]) => {
-                  clients.forEach((client: Client) => {
-                    client.postMessage({
-                      type: "CONTENT_UPDATED",
-                      url: event.request.url,
-                      timestamp: new Date().toISOString(),
-                    })
-                  })
-                })
-
-              // Update full text index if applicable
-              const urlObj = new URL(event.request.url)
-              if (urlObj.pathname.startsWith("/docs/")) {
-                await putFullTextIndex(urlObj.pathname)
-              }
-            } else if (cachedText !== networkText) {
-              console.log(
-                "SW: Content updated (non-document) for",
-                event.request.url
-              )
-            } else {
-              console.log("SW: Content unchanged for", event.request.url)
-            }
-          } catch (cloneError) {
-            console.warn(
-              "SW: Could not compare content (response already used):",
-              cloneError
-            )
-          }
-        } else {
-          console.log("SW: No cached version for", event.request.url)
-        }
-
-        // Clone again for cache storage
-        cache.put(event.request, resp.clone())
+    } catch (err) {
+      console.log('Network failed, falling back to cache for:', request.url.split('/').pop());
+    }
+  }
+  
+  // For ALL other requests (prefetch, assets, etc.), use cache-first
+  const cached = await cache.match(request);
+  
+  if (cached) {
+    console.log('Cache-first served:', request.url.split('/').pop());
+    return cached;
+  }
+  
+  // For RSC requests, use shorter timeout to avoid blocking scrolling
+  const isRSCRequest = request.url.includes('_rsc=');
+  
+  if (isLikelyOnline()) {
+    try {
+      /*const controller = new AbortController();
+      // Shorter timeout for RSC requests to avoid blocking scrolling
+      const timeout = isRSCRequest ? 1000 : 5000; // 1s for RSC, 5s for others
+      const timeoutId = setTimeout(() => controller.abort(), timeout);*/
+      
+      const resp = await fetch(request);
+      //clearTimeout(timeoutId);
+      
+      if (resp && resp.ok && request.method === 'GET') {
+        await cache.put(request, resp.clone());
+        console.log(isRSCRequest ? 'RSC served:' : 'Network fallback served:', request.url.split('/').pop());
       }
-      return resp
-    })
-    .catch(async (err) => {
-      console.error("SW Network error for:", event.request.url, err)
-      const cached = await cachedPromise
-      if (cached) return cached.clone() // Clone to avoid "already used" error
-      throw new Error("Network failed and no cache available")
-    })
-
-  const cached = await cachedPromise
-  return cached ? cached.clone() : await networkPromise // Clone to avoid "already used" error
+      return resp;
+    } catch (err) {
+      console.log(isRSCRequest ? 'RSC timeout/failed:' : 'Network failed for:', request.url.split('/').pop());
+      if (isRSCRequest) {
+        // For RSC requests, return a minimal response to avoid breaking navigation
+        return new Response('', { status: 204 }); // No Content
+      }
+    }
+  }
+  
+  // Final fallback for navigation
+  if (request.mode === 'navigate') {
+    const shell = await caches.open(PRECACHE_NAME).then((c) => c.match('/'));
+    if (shell) {
+      return shell;
+    }
+  }
+  
+  throw new Error('Unable to serve request offline');
 }
 
 self.addEventListener("fetch", (event: FetchEvent) => {
@@ -352,34 +533,21 @@ self.addEventListener("fetch", (event: FetchEvent) => {
     return // allow default network
   }
 
-  // Next.js static assets - immutable, cache forever
-  if (url.pathname.startsWith("/_next/static/")) {
-    event.respondWith(cacheFirst(event))
-    return
-  }
-
-  // Public assets - images, icons etc - can change occasionally
-  if (
-    url.pathname.startsWith("/assets/") ||
-    url.pathname.startsWith("/favicon")
-  ) {
-    event.respondWith(staleWhileRevalidate(event))
-    return
-  }
-
-  // All pages/documents - want fresh content but offline fallback
-  if (
-    request.mode === "navigate" ||
-    url.pathname.startsWith("/docs") ||
-    url.pathname === "/" ||
-    url.pathname.startsWith("/product") ||
-    url.pathname.startsWith("/pricing") ||
-    url.pathname.startsWith("/contact") ||
-    url.pathname.startsWith("/privacy") ||
-    url.pathname.startsWith("/terms")
-  ) {
-    event.respondWith(staleWhileRevalidate(event))
-    return
+  // All same-origin requests use cache-first strategy
+  // Our smart cache update system handles keeping content fresh
+  if (url.pathname.startsWith('/_next/static/') ||
+      url.pathname.startsWith('/assets/') || 
+      url.pathname.startsWith('/favicon') ||
+      request.mode === 'navigate' || 
+      url.pathname.startsWith('/docs') || 
+      url.pathname === '/' ||
+      url.pathname.startsWith('/product') ||
+      url.pathname.startsWith('/pricing') ||
+      url.pathname.startsWith('/contact') ||
+      url.pathname.startsWith('/privacy') ||
+      url.pathname.startsWith('/terms')) {
+    event.respondWith(cacheFirst(event));
+    return;
   }
 
   // API routes and other dynamic content - network first
@@ -395,78 +563,66 @@ self.addEventListener("fetch", (event: FetchEvent) => {
     return
   }
 
-  // GitHub API for repo stats - network first with cache fallback
-  if (
-    url.hostname === "api.github.com" &&
-    (url.pathname.includes("/repos/dexie/Dexie.js") ||
-      url.pathname.includes("/repos/dexie/"))
-  ) {
-    event.respondWith(staleWhileRevalidate(event))
-    return
+  // External resources - cache first for offline support
+  if (url.hostname === 'api.github.com' && 
+      (url.pathname.includes('/repos/dexie/Dexie.js') || 
+       url.pathname.includes('/repos/dexie/'))) {
+    event.respondWith(cacheFirst(event));
+    return;
   }
 
-  // Medium CDN images - stale while revalidate for offline blog content
-  if (url.hostname === "cdn-images-1.medium.com") {
-    event.respondWith(staleWhileRevalidate(event))
-    return
+  if (url.hostname === 'cdn-images-1.medium.com') {
+    event.respondWith(cacheFirst(event));
+    return;
   }
 
-  // Google Fonts and static resources - cache first (rarely change)
-  if (
-    url.hostname === "fonts.gstatic.com" ||
-    url.hostname === "ssl.gstatic.com" ||
-    url.hostname === "www.gstatic.com"
-  ) {
-    event.respondWith(cacheFirst(event))
-    return
+  if (url.hostname === 'fonts.gstatic.com' || 
+      url.hostname === 'ssl.gstatic.com' || 
+      url.hostname === 'www.gstatic.com') {
+    event.respondWith(cacheFirst(event));
+    return;
   }
 
-  // Google profile/avatar images - stale while revalidate
-  if (url.hostname === "lh3.googleusercontent.com") {
-    event.respondWith(staleWhileRevalidate(event))
-    return
+  if (url.hostname === 'lh3.googleusercontent.com') {
+    event.respondWith(cacheFirst(event));
+    return;
   }
 
-  // Google Open Graph images - stale while revalidate
-  if (url.hostname === "ogs.google.com") {
-    event.respondWith(staleWhileRevalidate(event))
-    return
+  if (url.hostname === 'ogs.google.com') {
+    event.respondWith(cacheFirst(event));
+    return;
   }
 
-  // Fallback: cache-first for anything else (rare edge cases)
-  event.respondWith(cacheFirst(event))
-})
+  // Fallback: cache-first for anything else
+  event.respondWith(cacheFirst(event));
+});
 
-// Message handler: clear cache or trigger warmup
-// Clients can listen for CONTENT_UPDATED messages to detect when pages have been updated
-self.addEventListener("message", (event: ExtendableMessageEvent) => {
-  const type = event.data && event.data.type
-  if (type === "CLEAR_CACHE") {
+// Message handler: clear cache
+self.addEventListener('message', (event: ExtendableMessageEvent) => {
+  const type = event.data && event.data.type;
+  if (type === 'CLEAR_CACHE') {
     event.waitUntil(
-      caches
-        .keys()
-        .then((names) => Promise.all(names.map((n) => caches.delete(n))))
-        .then(async () => {
-          // Reset offline status in Dexie - this is the authoritative source
-          await saveOfflineStatus({
-            isWarming: false,
-            isReady: false,
-            cached: 0,
-            total: 0,
-          })
-
-          // Optional: Notify clients that cache was cleared (for logging/UI feedback)
-          self.clients
-            .matchAll({ includeUncontrolled: true })
-            .then((clients: readonly Client[]) => {
-              clients.forEach((client: Client) =>
-                client.postMessage({ type: "CACHE_CLEARED" })
-              )
-            })
-        })
-    )
-  } else if (type === "PREFETCH_ALL") {
-    event.waitUntil(warmCacheFromManifest())
+      caches.keys().then((names) => Promise.all(names.map((n) => caches.delete(n)))).then(async () => {
+        // Reset offline status
+        await saveOfflineStatus({
+          isWarming: false,
+          isReady: false,
+          cached: 0,
+          total: 0
+        });
+        
+        // Clear metadata
+        await offlineDB.cacheMetadata.clear();
+        
+        // Notify clients that cache was cleared
+        self.clients.matchAll({ includeUncontrolled: true }).then((clients: readonly Client[]) => {
+          clients.forEach((client: Client) => client.postMessage({ type: 'CACHE_CLEARED' }));
+        });
+      })
+    );
+  } else if (type === 'SKIP_WAITING') {
+    // Allow clients to force service worker update
+    self.skipWaiting();
   }
 })
 
