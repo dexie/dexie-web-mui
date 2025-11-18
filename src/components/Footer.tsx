@@ -398,6 +398,78 @@ const Footer = () => {
           </Box>
         </Container>
       </Box>
+      <Box
+        sx={{
+          position: "relative",
+          mt: 3,
+          py: 2,
+          backgroundImage: "url(https://old.dexie.org/assets/images/bg.png)",
+          backgroundPosition: "0 0",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          boxShadow:
+            "inset 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 -4px 8px rgba(0, 0, 0, 0.3)",
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            height: "2px",
+            width: "100%",
+            left: 0,
+            top: 0,
+            backgroundColor: "#000000",
+            clipPath:
+              "polygon(1% 0%, 4% 100%, 9% 0%, 13% 100%, 19% 1%, 21% 100%, 26% 5%, 30% 100%, 36% 2%, 43% 100%, 50% 1%, 52% 100%, 61% 0%, 69% 94%, 70% 0%, 76% 100%, 81% 0%, 84% 100%, 91% 0%, 97% 100%, 99% 3%)",
+          },
+          "&::after": {
+            content: '""',
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(2px)",
+            zIndex: 0,
+          },
+        }}
+      >
+        <Typography
+          variant="body2"
+          sx={{
+            color: alpha("#dee2e6", 0.9),
+            fontStyle: "italic",
+            fontSize: "0.875rem",
+            py: 2,
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          We recently launched a new website! Missing something? Visit the{" "}
+          <Link
+            href="https://old.dexie.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              color: alpha(theme.palette.primary.main, 0.8),
+              "&:hover": { color: theme.palette.primary.light },
+            }}
+          >
+            old site
+          </Link>
+          . Your{" "}
+          <Link
+            href="/contact"
+            sx={{
+              color: alpha(theme.palette.primary.main, 0.8),
+              "&:hover": { color: theme.palette.primary.light },
+            }}
+          >
+            feedback
+          </Link>{" "}
+          is welcome!
+        </Typography>
+      </Box>
     </>
   )
 }

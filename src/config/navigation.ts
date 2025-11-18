@@ -79,11 +79,4 @@ export const menuItems: MenuItem[] = [
     ],
   },
   { id: 7, href: "/blog", text: "Blog", external: false },
-  {
-    id: 8,
-    href: "https://old.dexie.org",
-    text: "Old site",
-    external: false,
-    fontStyle: "italic",
-  },
 ]
