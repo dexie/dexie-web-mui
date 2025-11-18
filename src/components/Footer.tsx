@@ -408,6 +408,7 @@ const Footer = () => {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
+          overflow: "hidden",
           boxShadow:
             "inset 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 -4px 8px rgba(0, 0, 0, 0.3)",
           "&::before": {
@@ -421,8 +422,11 @@ const Footer = () => {
             clipPath:
               "polygon(1% 0%, 4% 100%, 9% 0%, 13% 100%, 19% 1%, 21% 100%, 26% 5%, 30% 100%, 36% 2%, 43% 100%, 50% 1%, 52% 100%, 61% 0%, 69% 94%, 70% 0%, 76% 100%, 81% 0%, 84% 100%, 91% 0%, 97% 100%, 99% 3%)",
           },
-          "&::after": {
-            content: '""',
+        }}
+      >
+        {/* Dark overlay */}
+        <Box
+          sx={{
             position: "absolute",
             top: 0,
             left: 0,
@@ -431,9 +435,8 @@ const Footer = () => {
             backgroundColor: "rgba(0, 0, 0, 0.4)",
             backdropFilter: "blur(2px)",
             zIndex: 0,
-          },
-        }}
-      >
+          }}
+        />
         <Typography
           variant="body2"
           sx={{
