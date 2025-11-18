@@ -437,8 +437,11 @@ const Footer = () => {
             target="_blank"
             rel="noopener noreferrer"
             sx={{
-              color: alpha(theme.palette.primary.main, 0.8),
-              "&:hover": { color: theme.palette.primary.light },
+              textDecoration: "underline",
+              "&:hover": {
+                textDecoration: "underline",
+                color: theme.palette.primary.light,
+              },
             }}
           >
             old site
@@ -447,8 +450,11 @@ const Footer = () => {
           <Link
             href="/contact"
             sx={{
-              color: alpha(theme.palette.primary.main, 0.8),
-              "&:hover": { color: theme.palette.primary.light },
+              textDecoration: "underline",
+              "&:hover": {
+                textDecoration: "underline",
+                color: theme.palette.primary.light,
+              },
             }}
           >
             feedback
