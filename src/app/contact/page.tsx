@@ -61,7 +61,6 @@ import LaunchIcon from "@mui/icons-material/Launch"
 import Image from "next/image"
 import PersonIcon from "@mui/icons-material/Person"
 import LocationOnIcon from "@mui/icons-material/LocationOn"
-import ContactForm from "@/components/content/ContactForm"
 import FAQWidget from "@/components/content/FAQWidget"
 interface ContactAction {
   text: string

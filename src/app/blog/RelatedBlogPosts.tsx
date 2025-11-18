@@ -15,7 +15,6 @@ import {
 } from "@mui/material"
 import Link from "next/link"
 import { BlogPost } from "@/utils/rssFeedParser"
-import ArticleIcon from "@mui/icons-material/Article"
 
 interface RelatedBlogPostsProps {
   currentSlug?: string

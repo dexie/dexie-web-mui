@@ -205,7 +205,7 @@ self.addEventListener('activate', (event: ExtendableEvent) => {
           }
         }
         // If cache is already ready and reindexing is done, skip warmup entirely
-      } catch (e) {
+      } catch {
         // If anything fails, run warmup as fallback
         await warmCacheFromManifest();
       }

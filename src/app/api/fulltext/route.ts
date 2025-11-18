@@ -13,7 +13,7 @@ import path from "path";
  * Also in case service worker is not supported, this route can be used
  * to provide the full-text search data to the client-side code.
  */
-export async function GET(request: Request) {
+export async function GET() {
     try {
         // I Next.js behöver du använda process.cwd() för att få projektets rotmapp
         const docsDir = path.join(process.cwd(), "docs");

@@ -27,6 +27,7 @@ export default function CustomVideoPreview() {
           }}
           onClick={() => setShowVideo(true)}
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/assets/images/yt-thumb.png"
             alt="Dexie video thumbnail"

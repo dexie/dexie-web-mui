@@ -43,7 +43,6 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
   count = 6,
   variant = "grid",
   size = "medium",
-  showAuthor = true,
   showCategories = true,
   showDate = true,
   title = "Latest from our blog",

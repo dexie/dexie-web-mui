@@ -65,23 +65,33 @@ async function fetchBlogPosts(): Promise<BlogPost[]> {
       return undefined
     }
 
-    const posts: BlogPost[] = itemsArray.map((item: any) => {
+    const posts: BlogPost[] = itemsArray.map((item: unknown) => {
+      const typedItem = item as { 
+        category?: string | string[]
+        "content:encoded"?: string
+        description?: string
+        title?: string
+        link?: string
+        pubDate?: string
+        "dc:creator"?: string
+        creator?: string
+      }
       let categories: string[] = []
-      if (item.category) {
-        categories = Array.isArray(item.category)
-          ? item.category
-          : [item.category]
+      if (typedItem.category) {
+        categories = Array.isArray(typedItem.category)
+          ? typedItem.category
+          : [typedItem.category]
       }
 
-      const content = item["content:encoded"] || item.description || ""
+      const content = typedItem["content:encoded"] || typedItem.description || ""
       const thumbnail = extractThumbnail(content)
-      const title = item.title || ""
+      const title = typedItem.title || ""
 
       return {
         title,
-        link: item.link || "",
-        pubDate: item.pubDate || "",
-        author: item["dc:creator"] || item.creator || "Dexie Team",
+        link: typedItem.link || "",
+        pubDate: typedItem.pubDate || "",
+        author: typedItem["dc:creator"] || typedItem.creator || "Dexie Team",
         description: stripHtml(content),
         thumbnail,
         categories,
