@@ -12,19 +12,6 @@ export default function ServiceWorkerRegistration() {
       hostname: typeof window !== 'undefined' ? window.location.hostname : 'undefined'
     })
     
-    // Listen for service worker messages (including CONTENT_UPDATED)
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('message', (event) => {
-        console.log("Content Message received:", event);
-        if (event.data.type === 'CONTENT_UPDATED') {
-          // Service worker only sends this for navigation requests (documents)
-          // so we can safely reload the page
-          console.log('Document content updated, reloading...', event.data.url)
-          window.location.reload()
-        }
-      })
-    }
-    
     // Only register service worker in production
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       console.log('Attempting to register service worker...')
@@ -41,7 +28,7 @@ export default function ServiceWorkerRegistration() {
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed') {
                   if (navigator.serviceWorker.controller) {
-                    // New version available
+                    // New version available - but we handle this automatically now
                     console.log('New service worker version available')
                   } else {
                     // First installation
@@ -91,5 +78,6 @@ export default function ServiceWorkerRegistration() {
     }
   }, [])
 
-  return null // This component renders nothing
+  // No UI - automatic background updates
+  return null
 }
