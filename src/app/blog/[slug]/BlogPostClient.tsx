@@ -132,8 +132,14 @@ const BlogPostClient: React.FC<BlogPostClientProps> = ({ post }) => {
                   size="small"
                   sx={{
                     backgroundColor: alpha(theme.palette.primary.main, 0.2),
+                    borderColor: alpha(theme.palette.primary.main, 1),
                     color: "white",
                     fontWeight: 500,
+                    "& .MuiChip-label": {
+                      fontSize: "0.75rem",
+                      padding: "0px 10px !important",
+                      pb: "2px !important",
+                    },
                   }}
                 />
               ))}
