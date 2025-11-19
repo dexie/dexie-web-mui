@@ -65,19 +65,6 @@ const DocsHomePage: React.FC<DocsHomePageProps> = ({
   return (
     <Layout currentSlug={currentSlug} pageTitle={title}>
       <Box component="article">
-        <Box component="header" sx={{ mb: 5 }}>
-          <Typography variant="h1" component="h1" sx={{ mb: 3 }}>
-            {title}
-          </Typography>
-          <Typography
-            variant="h6"
-            color="text.secondary"
-            sx={{ mb: 4, maxWidth: 600 }}
-          >
-            {description}
-          </Typography>
-        </Box>
-
         <Box className="docs-content">
           {useSimpleList && indexContent ? (
             // Render content från index.md

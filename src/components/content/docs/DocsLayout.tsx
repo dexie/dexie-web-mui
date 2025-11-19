@@ -179,6 +179,18 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
               },
             }}
           >
+            <Box component="header" sx={{ mb: 5 }}>
+              <Typography variant="h1" component="h1" sx={{ mb: 3 }}>
+                {pageTitle}
+              </Typography>
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                sx={{ mb: 4, maxWidth: 600 }}
+              >
+                {/* Description under title could go here if needed */}
+              </Typography>
+            </Box>
             {mdxSource ? (
               <MDXContent source={mdxSource} searchText={searchText} />
             ) : (
