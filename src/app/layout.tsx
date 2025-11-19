@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar"
 import Footer from "../components/Footer"
 import ServiceWorkerRegistration from "../components/ServiceWorkerRegistration"
 import OfflineStatusIndicator from "../components/OfflineStatusIndicator"
+import CookieConsentManager from "../components/CookieConsentManager"
 import "./globals.css"
 import "../../public/assets/css/prism.css"
 
@@ -186,16 +187,18 @@ export default function RootLayout({
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ServiceWorkerRegistration />
-        <OfflineStatusIndicator />
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Navbar />
-            {children}
-            <Footer />
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <CookieConsentManager gaId="G-7W0YET4Q10">
+          <ServiceWorkerRegistration />
+          <OfflineStatusIndicator />
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <Navbar />
+              {children}
+              <Footer />
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </CookieConsentManager>
       </body>
     </html>
   )

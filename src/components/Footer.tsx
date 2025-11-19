@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import {
   Box,
   Container,
@@ -11,9 +11,11 @@ import {
   alpha,
 } from "@mui/material"
 import { LocationOn, ArrowUpward } from "@mui/icons-material"
+import CookieSettings from "./CookieSettings"
 
 const Footer = () => {
   const theme = useTheme()
+  const [cookieSettingsOpen, setCookieSettingsOpen] = useState(false)
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
@@ -377,7 +379,21 @@ const Footer = () => {
               <Link href="/privacy" sx={{ color: theme.palette.primary.main }}>
                 Privacy Policy
               </Link>
-              .
+              .{" "}
+              <Link 
+                component="button"
+                onClick={() => setCookieSettingsOpen(true)}
+                sx={{ 
+                  color: theme.palette.primary.main,
+                  cursor: 'pointer',
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }}
+              >
+                Cookie Settings
+              </Link>
             </Typography>
           </Box>
         </Container>
@@ -467,6 +483,12 @@ const Footer = () => {
           </Typography>
         </div>
       </Box>
+
+      {/* Cookie Settings Dialog */}
+      <CookieSettings 
+        open={cookieSettingsOpen}
+        onClose={() => setCookieSettingsOpen(false)}
+      />
     </>
   )
 }
