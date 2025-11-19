@@ -279,8 +279,7 @@ const Footer = () => {
                 GitHub
               </Link>
               <Link
-                href="https://medium.com/dexie-js"
-                target="_blank"
+                href="/blog"
                 rel="nofollow noopener"
                 sx={{
                   color: "#dee2e6",
