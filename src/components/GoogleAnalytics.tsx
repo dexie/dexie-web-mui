@@ -5,8 +5,8 @@ import { isAnalyticsAllowed } from '../utils/cookieUtils'
 
 declare global {
   interface Window {
-    gtag: (...args: any[]) => void
-    dataLayer: any[]
+    gtag: (...args: unknown[]) => void
+    dataLayer: unknown[]
   }
 }
 
@@ -54,7 +54,7 @@ const GoogleAnalytics = ({ measurementId }: GoogleAnalyticsProps) => {
 export default GoogleAnalytics
 
 // Helper functions for sending events to GA
-export const trackEvent = (eventName: string, parameters?: Record<string, any>) => {
+export const trackEvent = (eventName: string, parameters?: Record<string, unknown>) => {
   if (typeof window !== 'undefined' && window.gtag && isAnalyticsAllowed()) {
     window.gtag('event', eventName, parameters)
   }
