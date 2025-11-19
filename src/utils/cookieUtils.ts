@@ -1,5 +1,7 @@
 // Utility functions for cookie management and geographic detection
 
+import { use } from "react"
+
 export interface CookiePreferences {
   necessary: boolean
   analytics: boolean
@@ -25,6 +27,8 @@ export const isEUUser = (): boolean => {
   
   return euTimezones.includes(timezone)
 }
+
+const userIsEU = isEUUser()
 
 /**
  * Get stored cookie preferences
@@ -69,6 +73,7 @@ export const setCookiePreferences = (preferences: Omit<CookiePreferences, 'times
  * Check if analytics cookies are allowed
  */
 export const isAnalyticsAllowed = (): boolean => {
+  if (!userIsEU) return true
   const preferences = getCookiePreferences()
   if (!preferences) return false
   return preferences.analytics
