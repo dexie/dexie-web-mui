@@ -564,6 +564,11 @@ self.addEventListener("fetch", (event: FetchEvent) => {
   if (request.method !== "GET" || !isSameOrigin(request)) {
     return // allow default network
   }
+  if (url.searchParams.get('_rsc')) {
+    // Let RSC requests pass through unhandled to avoid caching
+    // non-cachable responses
+    return
+  }
 
   // All same-origin requests use cache-first strategy
   // Our smart cache update system handles keeping content fresh
