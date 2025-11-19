@@ -173,7 +173,9 @@ const BlogPostClient: React.FC<BlogPostClientProps> = ({ post }) => {
                 fontSize: "1.1rem",
               },
               "& p:last-of-type": {
-                fontSize: "x-small",
+                fontSize: "11px",
+                color: theme.palette.text.disabled,
+                opacity: 0.7,
               },
               "& h1, & h2, & h3, & h4, & h5, & h6": {
                 mt: 3,

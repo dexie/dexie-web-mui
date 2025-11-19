@@ -164,12 +164,15 @@ const Footer = () => {
               >
                 Location
               </Typography>
-              <Box sx={{ display: "flex", alignItems: "flex-start", mb: 1 }}>
-                <LocationOn sx={{ mr: 1, mt: 0.5, fontSize: 20 }} />
-                <Box>
+              <Box>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <LocationOn sx={{ mr: 1, fontSize: 20 }} />
                   <Typography variant="body2" sx={{ color: "#dee2e6" }}>
-                    Störtloppsvägen 14, Hägersten
+                    Störtloppsvägen 14, Hägersten, Stockholm
                   </Typography>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                  <LocationOn sx={{ mr: 1, fontSize: 20 }} />
                   <Typography variant="body2" sx={{ color: "#dee2e6" }}>
                     Oxtorget 4, Växjö
                   </Typography>
