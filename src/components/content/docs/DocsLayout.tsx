@@ -106,28 +106,11 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
             top: "100px", // Below the main navigation
             left: 0,
             height: "calc(100vh - 100px)",
-            overflowY: "auto",
+            overflowY: "hidden", // Remove scrolling from container
             p: 2,
             backgroundColor: "background.paper",
             borderRight: "1px solid rgba(255, 255, 255, 0.12)",
             zIndex: 100,
-            // Custom scrollbar styling for webkit browsers
-            "&::-webkit-scrollbar": {
-              width: "6px",
-            },
-            "&::-webkit-scrollbar-track": {
-              background: "transparent",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              borderRadius: "3px",
-              "&:hover": {
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-              },
-            },
-            // Firefox scrollbar styling
-            scrollbarWidth: "thin",
-            scrollbarColor: "rgba(255, 255, 255, 0.1) transparent",
           }}
         >
           <Sidebar

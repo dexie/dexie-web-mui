@@ -140,8 +140,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   }
 
   return (
-    <Box sx={{ width: "100%", maxWidth: { xs: "100%", md: "300px" } }}>
-      <Box mb={2}>
+    <Box sx={{ 
+      width: "100%", 
+      maxWidth: { xs: "100%", md: "300px" },
+      height: "100%",
+      display: "flex",
+      flexDirection: "column"
+    }}>
+      {/* Fixed header section */}
+      <Box sx={{ 
+        flexShrink: 0,
+        mb: 2,
+        pb: 2,
+        borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
+      }}>
         <Typography
           variant="h5"
           mb={2}
@@ -205,18 +217,41 @@ const Sidebar: React.FC<SidebarProps> = ({
           }}
         />
       </Box>
-      <List>
-        {Object.entries(filteredNav).map(([key, item]) =>
-          renderNavItem(key, item)
+      
+      {/* Scrollable navigation content */}
+      <Box sx={{ 
+        flex: 1,
+        overflowY: "auto",
+        // Custom scrollbar styling
+        "&::-webkit-scrollbar": {
+          width: "6px",
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "transparent",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          borderRadius: "3px",
+          "&:hover": {
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+          },
+        },
+        scrollbarWidth: "thin",
+        scrollbarColor: "rgba(255, 255, 255, 0.1) transparent",
+      }}>
+        <List>
+          {Object.entries(filteredNav).map(([key, item]) =>
+            renderNavItem(key, item)
+          )}
+        </List>
+        {searchText.trim() && Object.keys(filteredNav).length === 0 && (
+          <Box sx={{ textAlign: "center", mt: 3, color: "text.secondary" }}>
+            <Typography variant="body2">
+              No results found for &ldquo;{searchText}&rdquo;
+            </Typography>
+          </Box>
         )}
-      </List>
-      {searchText.trim() && Object.keys(filteredNav).length === 0 && (
-        <Box sx={{ textAlign: "center", mt: 3, color: "text.secondary" }}>
-          <Typography variant="body2">
-            No results found for &ldquo;{searchText}&rdquo;
-          </Typography>
-        </Box>
-      )}
+      </Box>
     </Box>
   )
 }
