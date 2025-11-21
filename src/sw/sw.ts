@@ -25,7 +25,6 @@ const ORIGIN = self.location.origin
 async function checkForUpdates(notifyClients = false) {
   console.log("🔍 Checking for updates...", { notifyClients })
 
-  try {
     const res = await fetch(MANIFEST_URL, { cache: "no-cache" })
     if (!res.ok) {
       console.log("❌ Failed to fetch manifest:", res.status)
@@ -84,10 +83,6 @@ async function checkForUpdates(notifyClients = false) {
 
     console.log("✅ No updates needed")
     return false
-  } catch (error) {
-    console.warn("❌ Failed to check for updates:", error)
-    return false
-  }
 }
 
 // Track last update check to avoid excessive checking
@@ -131,6 +126,7 @@ async function checkForUpdatesAndCacheInBackground(request: Request) {
 // Background update process
 async function updateInBackground() {
   // Don't try to update if we're offline
+  console.log("updateInBackground: Checking online status...");
   if (!isLikelyOnline()) {
     console.log("Offline: skipping background update check")
     return
@@ -165,6 +161,8 @@ async function updateInBackground() {
       } finally {
         isUpdating = false
       }
+    } else {
+      console.log("✅ No background updates needed")
     }
   } catch (error) {
     console.warn("❌ Background update failed:", error)
@@ -220,6 +218,8 @@ async function cleanupRemovedEntries(manifest: OfflineManifest) {
   }
 }
 
+let ftsUpdated: number = 0;
+
 // Utility: Update all routes and assets from manifest (simplified approach)
 async function updateCacheFromManifest(manifest: OfflineManifest) {
   const cache = await caches.open(RUNTIME_NAME)
@@ -232,6 +232,7 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
   let processed = 0
   let updated = 0
   let index = 0
+  let ftsIndex = 0
   const concurrency = 4
 
   // Set initial status
@@ -245,7 +246,32 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
     startedAt: new Date().toISOString(),
   })
 
+    async function ftsWorker() {
+    while (ftsIndex < allEntries.length) {
+      const entry = allEntries[ftsIndex++]
+      const isAsset = allAssets.includes(entry)
+
+      if (!isAsset && entry.startsWith("/docs/")) {
+        try {
+          await putFullTextIndex(entry)
+        } catch (error) {
+          console.warn(
+            `Failed to update full-text index for ${entry}:`,
+            error
+          )
+        }
+      }
+    }
+  }
+
+  const abortController = new AbortController()
+  fetchRequested.addEventListener("fetchRequested", ()=>{
+    abortController.abort();
+  }, { once: true });
+
+
   async function worker() {
+    const signal = abortController.signal;
     await new Promise<void>(resolve => setTimeout(resolve, 10));
     while (index < allEntries.length) {
       const entry = allEntries[index++]
@@ -272,12 +298,7 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
             cache: "no-cache",
           })
 
-          const [resp] = await Promise.all([
-            fetch(req),
-            !isAsset && entry.startsWith("/docs/")
-              ? putFullTextIndex(entry)
-              : Promise.resolve(),
-          ])
+          const resp = await fetch(req, { signal });
 
           if (resp.ok) {
             await cache.put(req, resp.clone())
@@ -304,13 +325,26 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
           })
         }
       } catch (error) {
-        console.warn(`Failed to update ${entry}:`, error)
         processed++
+        if (signal.aborted) {
+          throw new DOMException("Update aborted due to fetch event", "AbortError");
+        } else {
+          console.warn(`Failed to update ${entry}:`, error)
+        }
       }
     }
   }
 
   try {
+    // Process full-text index updates in parallel
+    if (Date.now() - ftsUpdated > 10 * 60 * 1000) {
+      await Promise.all(
+        Array.from({ length: concurrency }, () => ftsWorker())
+      )
+      ftsUpdated = Date.now();
+    } else {
+      console.log("Skipping full-text index update; last update was recent.");
+    }
     // Process all entries
     await Promise.all(Array.from({ length: concurrency }, () => worker()))
 
@@ -341,6 +375,10 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
       error: (error as Error).message,
       failedAt: new Date().toISOString(),
     })
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      console.log("Update aborted due to fetch event, will resume later.");
+      setTimeout(()=>updateInBackground(), 5000);
+    }
     throw error
   }
 }
@@ -412,7 +450,12 @@ self.addEventListener("activate", (event: ExtendableEvent) => {
           isUpdating = false
         }
       } catch (e) {
-        console.warn("Activate setup failed:", e)
+        if (e instanceof DOMException && e.name === 'AbortError') {
+          console.log("Activate setup aborted due to fetch event, will resume later.");
+          setTimeout(()=>updateInBackground(), 5000);
+        } else {
+          console.warn("Activate setup failed:", e)
+        }
         await saveOfflineStatus({
           isWarming: false,
           isReady: false,
@@ -556,7 +599,10 @@ async function cacheFirst(event: FetchEvent) {
   throw new Error("Unable to serve request offline")
 }
 
+const fetchRequested = new EventTarget();
+
 self.addEventListener("fetch", (event: FetchEvent) => {
+  fetchRequested.dispatchEvent(new CustomEvent("fetchRequested"));
   const { request } = event
   const url = new URL(request.url)
 
