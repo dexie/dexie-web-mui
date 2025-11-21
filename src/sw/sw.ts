@@ -96,9 +96,7 @@ let isUpdating = false
 const UPDATE_CHECK_INTERVAL = 5 * 60 * 1000 // 5 minutes
 
 // Check for updates and cache the current request first, then continue in background
-async function checkForUpdatesAndCacheInBackground(event: FetchEvent) {
-  const request = event.request
-
+async function checkForUpdatesAndCacheInBackground(request: Request) {
   // Only check on navigation requests and avoid excessive checking
   if (request.mode !== "navigate" || isUpdating) {
     return
@@ -248,6 +246,7 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
   })
 
   async function worker() {
+    await new Promise<void>(resolve => setTimeout(resolve, 10));
     while (index < allEntries.length) {
       const entry = allEntries[index++]
       const isAsset = allAssets.includes(entry)
@@ -456,14 +455,14 @@ async function cacheFirst(event: FetchEvent) {
 
   // Log request details for debugging prefetch behavior
   if (request.url.includes("/docs/")) {
-    console.log("SW Request:", {
+    /*console.log("SW Request:", {
       url: request.url.split("/").pop(),
       mode: request.mode,
       destination: request.destination,
       cache: request.cache,
       hasRSC: request.url.includes("_rsc="),
       referrer: request.referrer ? "has-referrer" : "no-referrer",
-    })
+    })*/
   }
 
   // Only do network-first for actual user navigation (NOT prefetch/RSC)
@@ -475,7 +474,8 @@ async function cacheFirst(event: FetchEvent) {
     request.cache !== "force-cache" // Prefetch often uses force-cache
 
   if (isUserNavigation && !isUpdating && isLikelyOnline()) {
-    checkForUpdatesAndCacheInBackground(event)
+    const request = event.request.clone();
+    setTimeout(()=>checkForUpdatesAndCacheInBackground(request), 100)
   }
 
   // For USER navigation requests only, try network-first
