@@ -148,8 +148,8 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get("limit") || "6", 10)
-    const feedUrl =
-      searchParams.get("feedUrl") || "https://medium.com/feed/dexie-js"
+    const feedUrl = "https://dexie.org/blog-feed.xml"
+    // searchParams.get("feedUrl") || "https://medium.com/feed/dexie-js"
 
     // Check if we have valid cached data
     const now = Date.now()
