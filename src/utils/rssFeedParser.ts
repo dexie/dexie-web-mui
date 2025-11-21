@@ -1,3 +1,5 @@
+import { FEEDS } from "@/config/feeds"
+
 export interface BlogPost {
   title: string
   link: string
@@ -17,7 +19,7 @@ export interface BlogPost {
  * @returns Promise with array of blog posts
  */
 export async function fetchMediumFeed(
-  feedUrl: string = "https://medium.com/feed/dexie-js",
+  feedUrl: string = FEEDS.BLOG,
   limit: number = 6
 ): Promise<BlogPost[]> {
   try {

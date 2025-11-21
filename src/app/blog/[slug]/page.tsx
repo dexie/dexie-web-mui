@@ -2,11 +2,12 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 import BlogPostClient from "./BlogPostClient"
 import { BlogPost } from "@/utils/rssFeedParser"
+import { FEEDS } from "@/config/feeds"
 
 // Fetch blog posts from API
 async function fetchBlogPosts(): Promise<BlogPost[]> {
   try {
-    const response = await fetch("https://medium.com/feed/dexie-js", {
+    const response = await fetch(FEEDS.BLOG, {
       next: { revalidate: 3600 },
     })
 

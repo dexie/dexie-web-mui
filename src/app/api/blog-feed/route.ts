@@ -144,12 +144,14 @@ async function parseRssFeed(
   }
 }
 
+import { FEEDS } from "@/config/feeds"
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get("limit") || "6", 10)
-    const feedUrl = "https://dexie.org/blog-feed.xml"
-    // searchParams.get("feedUrl") || "https://medium.com/feed/dexie-js"
+    const feedUrl = FEEDS.BLOG
+    // searchParams.get("feedUrl") || FEEDS.BLOG
 
     // Check if we have valid cached data
     const now = Date.now()

@@ -1,12 +1,13 @@
 import { MetadataRoute } from "next"
 import { getAllDocs } from "@/utils/mdx"
 import { BlogPost } from "@/utils/rssFeedParser"
+import { FEEDS } from "@/config/feeds"
 
 export const dynamic = "force-static"
 
 async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const response = await fetch("https://medium.com/feed/dexie-js", {
+    const response = await fetch(FEEDS.BLOG, {
       next: { revalidate: 3600 },
     })
 

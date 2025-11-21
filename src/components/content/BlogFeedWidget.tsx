@@ -16,6 +16,7 @@ import {
 } from "@mui/material"
 import Link from "next/link"
 import { fetchMediumFeed, BlogPost } from "@/utils/rssFeedParser"
+import { FEEDS } from "@/config/feeds"
 
 export type BlogFeedVariant = "grid" | "list" | "compact"
 export type BlogFeedSize = "small" | "medium" | "large"
@@ -46,7 +47,7 @@ const BlogFeedWidget: React.FC<BlogFeedWidgetProps> = ({
   showCategories = true,
   showDate = true,
   title = "Latest from our blog",
-  feedUrl = "https://medium.com/feed/dexie-js",
+  feedUrl = FEEDS.BLOG,
 }) => {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)

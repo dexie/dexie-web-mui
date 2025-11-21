@@ -17,6 +17,7 @@ import {
 import Link from "next/link"
 import { BlogPost } from "@/utils/rssFeedParser"
 import ArticleIcon from "@mui/icons-material/Article"
+import { FEEDS } from "@/config/feeds"
 
 const BlogListClient: React.FC = () => {
   const [posts, setPosts] = useState<BlogPost[]>([])
@@ -32,7 +33,7 @@ const BlogListClient: React.FC = () => {
       try {
         const response = await fetch(
           `/api/blog-feed?limit=50&feedUrl=${encodeURIComponent(
-            "https://medium.com/feed/dexie-js"
+            FEEDS.BLOG
           )}`
         )
 

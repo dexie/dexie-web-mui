@@ -15,6 +15,7 @@ import {
 } from "@mui/material"
 import Link from "next/link"
 import { BlogPost } from "@/utils/rssFeedParser"
+import { FEEDS } from "@/config/feeds"
 
 interface RelatedBlogPostsProps {
   currentSlug?: string
@@ -40,7 +41,7 @@ const RelatedBlogPosts: React.FC<RelatedBlogPostsProps> = ({
       try {
         const response = await fetch(
           `/api/blog-feed?limit=50&feedUrl=${encodeURIComponent(
-            "https://medium.com/feed/dexie-js"
+            FEEDS.BLOG
           )}`
         )
 
