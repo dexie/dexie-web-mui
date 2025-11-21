@@ -102,7 +102,32 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
             display: { xs: "none", md: "block" },
             width: drawerWidth,
             flexShrink: 0,
+            position: "fixed",
+            top: "100px", // Below the main navigation
+            left: 0,
+            height: "calc(100vh - 100px)",
+            overflowY: "auto",
             p: 2,
+            backgroundColor: "background.paper",
+            borderRight: "1px solid rgba(255, 255, 255, 0.12)",
+            zIndex: 100,
+            // Custom scrollbar styling for webkit browsers
+            "&::-webkit-scrollbar": {
+              width: "6px",
+            },
+            "&::-webkit-scrollbar-track": {
+              background: "transparent",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              borderRadius: "3px",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+              },
+            },
+            // Firefox scrollbar styling
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(255, 255, 255, 0.1) transparent",
           }}
         >
           <Sidebar
@@ -127,6 +152,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
             paddingLeft: { xs: 2, md: 4 },
             paddingRight: { xs: 2, md: 4 },
             width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
+            marginLeft: { xs: 0, md: `${drawerWidth}px` }, // Account for fixed sidebar
           }}
         >
           <Box
