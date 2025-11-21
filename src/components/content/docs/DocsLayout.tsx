@@ -157,12 +157,6 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
                 </Typography>
               )}
             </Breadcrumbs>
-            
-            {currentSlug && (
-              <Box sx={{ display: { xs: "none", md: "block" } }}>
-                <EditOnGitHubButton slug={currentSlug} />
-              </Box>
-            )}
           </Box>
 
           <Divider sx={{ mb: 3 }} />
@@ -198,6 +192,21 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
             )}
           </Box>
         </Box>
+
+        {/* Sticky Edit on GitHub Button - Desktop only */}
+        {currentSlug && (
+          <Box
+            sx={{
+              display: { xs: "none", md: "block" },
+              position: "fixed",
+              top: "65px", // Below the main navigation
+              right: "24px",
+              zIndex: 1000,
+            }}
+          >
+            <EditOnGitHubButton slug={currentSlug} />
+          </Box>
+        )}
       </Box>
     </Container>
   )
