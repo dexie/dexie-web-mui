@@ -5,6 +5,7 @@ import Link from "next/link"
 import Sidebar from "./Sidebar"
 import EditOnGitHubButton from "./EditOnGitHubButton"
 import MDXContent from "./MDXContent"
+import { useSessionStorage } from "@/utils/useSessionStorage"
 import {
   Box,
   Container,
@@ -41,7 +42,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
   mdxSource,
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [searchText, setSearchText] = useState("")
+  const [searchText, setSearchText] = useSessionStorage("docsSidebarSearch", "")
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)

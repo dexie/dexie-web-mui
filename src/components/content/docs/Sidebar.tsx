@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Link from "next/link"
 import {
   Box,
@@ -40,12 +40,11 @@ const isNavItem = (item: NavItem | NavStructure): item is NavItem => {
 }
 
 // Function to recursively filter navigation structure
-const filterNavigation = async (
-  navStructure: NavStructure,
+const searchDocs = async (
   searchTerm: string
 ): Promise<NavStructure> => {
   if (searchTerm.trim() === "") {
-    return navStructure
+    return {};
   }
 
   const foundSections = await offlineDB.findDocuments(searchTerm);
@@ -60,22 +59,22 @@ const Sidebar: React.FC<SidebarProps> = ({
   currentSlug,
   basePath = "/docs",
   onNavigate,
-  searchText: externalSearchText,
-  setSearchText: externalSetSearchText,
+  searchText = "",
+  setSearchText,
 }) => {
-  const [internalSearchText, setInternalSearchText] = useState("")
-
-  // Use external search text if provided, otherwise use internal
-  const searchText = externalSearchText ?? internalSearchText
-  const setSearchText = externalSetSearchText ?? setInternalSearchText
 
   // Filtered navigation based on search text
 
-  const filteredNav = useLiveQuery(
-    () => filterNavigation(navigation, searchText),
+  const searchResults = useLiveQuery(
+    () => searchDocs(searchText),
     [searchText],
-    navigation
+    {loading: {title: "Loading...", slug: ""}} // hack to show nothing while loading (below...)
   )
+  const filteredNavigation = searchResults.loading?.slug === ""
+    ? {}
+    : Object.keys(searchResults).length === 0
+    ? navigation
+    : searchResults;
 
   const renderNavItem = (
     key: string,
@@ -154,17 +153,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         pb: 2,
         borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
       }}>
-        <Typography
-          variant="h5"
-          mb={2}
-          sx={{ fontSize: { xs: "1.25rem", md: "1.5rem" } }}
-        >
-          Documentation
-        </Typography>
-        <TextField
+        {setSearchText != null && <TextField
           size="small"
           placeholder="Search in documentation..."
           value={searchText}
+          autoFocus={true}
           onChange={(e) => setSearchText(e.target.value)}
           InputProps={{
             startAdornment: (
@@ -215,7 +208,7 @@ const Sidebar: React.FC<SidebarProps> = ({
               },
             },
           }}
-        />
+        />}
       </Box>
       
       {/* Scrollable navigation content */}
@@ -240,11 +233,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         scrollbarColor: "rgba(255, 255, 255, 0.1) transparent",
       }}>
         <List>
-          {Object.entries(filteredNav).map(([key, item]) =>
+          {Object.entries(filteredNavigation).map(([key, item]) =>
             renderNavItem(key, item)
           )}
         </List>
-        {searchText.trim() && Object.keys(filteredNav).length === 0 && (
+        {searchText.trim() && Object.keys(filteredNavigation).length === 0 && !('loading' in searchResults) && (
           <Box sx={{ textAlign: "center", mt: 3, color: "text.secondary" }}>
             <Typography variant="body2">
               No results found for &ldquo;{searchText}&rdquo;

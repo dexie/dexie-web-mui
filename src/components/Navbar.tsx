@@ -30,6 +30,7 @@ import MenuIcon from "@mui/icons-material/Menu"
 import CloseIcon from "@mui/icons-material/Close"
 import ExpandLessIcon from "@mui/icons-material/ExpandLess"
 import { formatNumber } from "../utils/formatNumber"
+import { useClearSearchText } from "@/utils/useSearchText"
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -117,6 +118,8 @@ export default function Navbar() {
     fetchStars()
   }, [mounted])
 
+  const clearSearchText = useClearSearchText();
+
   // Mobile Drawer Component
   const renderMobileDrawer = () => (
     <Drawer
@@ -167,6 +170,7 @@ export default function Navbar() {
                       handleMobileMenuExpand(item.text)
                     } else {
                       setMobileDrawerOpen(false)
+                      clearSearchText()
                     }
                   }}
                   component={
@@ -574,6 +578,9 @@ export default function Navbar() {
               <Button
                 key={item.id}
                 component={isExternal ? "a" : Link}
+                onClick={() => {
+                  clearSearchText()
+                }}
                 href={item.href}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
