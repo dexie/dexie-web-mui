@@ -51,9 +51,7 @@ export default function ServiceWorkerRegistration() {
           const {docRoutes}: { docRoutes: MDFullTextMeta[] } = await response.json()
           console.log('Fulltext data fetched for indexing:', docRoutes.length, 'documents');
 
-          await offlineDB.transaction('rw', offlineDB.fullTextContent, offlineDB.fullTextIndex, async () => {
-            offlineDB.fullTextIndex.clear();
-            offlineDB.fullTextContent.clear();
+          //await offlineDB.transaction('rw', offlineDB.fullTextContent, offlineDB.fullTextIndex, async () => {
             for (const ftMeta of docRoutes) {
               // Store in IndexedDB via Dexie
               for (const section of ftMeta.sections) {
@@ -65,7 +63,7 @@ export default function ServiceWorkerRegistration() {
                 await offlineDB.putFullTextDoc(url, title, section.content, parentTitle);
               }
             }
-          });
+          //});
 
           console.log("Done indexintg fulltext data for offline search.");
         } else {
