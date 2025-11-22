@@ -32,6 +32,8 @@ const Footer = () => {
           pt: 8,
           pb: 4,
           borderTop: `1px solid ${alpha("#dee2e6", 0.1)}`,
+          position: "relative",
+          zIndex: 200, // Higher than sidebar's z-index (100)
         }}
       >
         <Container maxWidth="lg">
@@ -225,7 +227,10 @@ const Footer = () => {
           bgcolor: "#000000",
           color: "#dee2e6",
           py: 3,
+          pb: 6, // Extra bottom padding instead of margin-top on next section
           borderTop: `1px solid ${alpha("#dee2e6", 0.1)}`,
+          position: "relative",
+          zIndex: 200, // Higher than sidebar's z-index (100)
         }}
       >
         <Container maxWidth="lg">
@@ -400,7 +405,6 @@ const Footer = () => {
       <Box
         sx={{
           position: "relative",
-          mt: 3,
           p: 2,
           backgroundImage: "url(https://old.dexie.org/assets/images/bg.png)",
           backgroundPosition: "0 0",
@@ -409,6 +413,7 @@ const Footer = () => {
           justifyContent: "center",
           alignItems: "center",
           overflow: "hidden",
+          zIndex: 200, // Higher than sidebar's z-index (100)
           boxShadow:
             "inset 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 -4px 8px rgba(0, 0, 0, 0.3)",
           "&::before": {
