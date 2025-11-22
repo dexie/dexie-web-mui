@@ -22,7 +22,7 @@ interface MDXContentProps {
 function convertProps(
   props: Record<string, string | number | boolean | undefined>
 ) {
-  const { style, className, class: classAttr, ...rest } = props
+  const { style, className, class: classAttr, colspan, ...rest } = props
   const converted: Record<
     string,
     string | number | boolean | object | undefined
@@ -32,6 +32,9 @@ function convertProps(
   const finalClassName = className || classAttr
   if (finalClassName) {
     converted.className = finalClassName
+  }
+  if (colspan) {
+    converted.colSpan = colspan
   }
 
   if (typeof style === "string") {
@@ -520,7 +523,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
   return parse(html, options)
 }
 
-export default function MDXContent({ source, searchText }: MDXContentProps) {
+export default function MDXContent({ source, searchText = "" }: MDXContentProps) {
   const content = (
     <Box className="mdx-content" sx={{ maxWidth: "none" }}>
       {parseHTMLToComponents(source)}
