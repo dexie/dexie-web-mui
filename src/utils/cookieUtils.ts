@@ -1,7 +1,5 @@
 // Utility functions for cookie management and geographic detection
 
-import { use } from "react"
-
 export interface CookiePreferences {
   necessary: boolean
   analytics: boolean
