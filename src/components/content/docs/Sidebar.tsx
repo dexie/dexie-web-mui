@@ -65,7 +65,6 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
 
   // Filtered navigation based on search text
-
   const searchResults = useLiveQuery(
     () => searchDocs(navigation, searchText),
     [searchText],
@@ -74,6 +73,18 @@ const Sidebar: React.FC<SidebarProps> = ({
   const filteredNavigation = searchResults.loading?.slug === ""
     ? {}
     : searchResults;
+
+  // Handle keyboard navigation in search field
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      // Focus first navigable item in results
+      const firstLink = document.querySelector('[data-search-result-link]') as HTMLElement
+      if (firstLink) {
+        firstLink.focus()
+      }
+    }
+  }
 
   const renderNavItem = (
     key: string,
@@ -95,6 +106,8 @@ const Sidebar: React.FC<SidebarProps> = ({
           <Link
             href={`${basePath}/${item.slug}`}
             onClick={onNavigate}
+            data-search-result-link
+            tabIndex={0}
             style={{
               fontWeight: 700,
               maxWidth: "100%",
@@ -104,6 +117,42 @@ const Sidebar: React.FC<SidebarProps> = ({
               color: isActive ? "#c77dff" : "inherit",
               display: "block",
               width: "100%",
+              outline: "none",
+            }}
+            onFocus={(e) => {
+              e.target.style.backgroundColor = "rgba(199, 125, 255, 0.2)"
+              e.target.style.color = "#c77dff"
+            }}
+            onBlur={(e) => {
+              e.target.style.backgroundColor = isActive ? "rgba(255,255,255,0.1)" : "transparent"
+              e.target.style.color = isActive ? "#c77dff" : "inherit"
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault()
+                const allLinks = Array.from(document.querySelectorAll('[data-search-result-link]'))
+                const currentIndex = allLinks.indexOf(e.target as HTMLElement)
+                const nextLink = allLinks[currentIndex + 1] as HTMLElement
+                if (nextLink) {
+                  nextLink.focus()
+                }
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault()
+                const allLinks = Array.from(document.querySelectorAll('[data-search-result-link]'))
+                const currentIndex = allLinks.indexOf(e.target as HTMLElement)
+                if (currentIndex === 0) {
+                  // Go back to search input
+                  const searchInput = document.querySelector('input[placeholder*="Search"]') as HTMLElement
+                  if (searchInput) {
+                    searchInput.focus()
+                  }
+                } else {
+                  const prevLink = allLinks[currentIndex - 1] as HTMLElement
+                  if (prevLink) {
+                    prevLink.focus()
+                  }
+                }
+              }
             }}
             title={item.title}
           >
@@ -158,6 +207,7 @@ const Sidebar: React.FC<SidebarProps> = ({
           value={searchText}
           autoFocus={true}
           onChange={(e) => setSearchText(e.target.value)}
+          onKeyDown={handleSearchKeyDown}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -211,7 +261,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       </Box>
       
       {/* Scrollable navigation content */}
-      <Box sx={{ 
+      <Box 
+        sx={{ 
         flex: 1,
         overflowY: "auto",
         // Custom scrollbar styling
@@ -230,9 +281,9 @@ const Sidebar: React.FC<SidebarProps> = ({
         },
         scrollbarWidth: "thin",
         scrollbarColor: "rgba(255, 255, 255, 0.1) transparent",
-      }}>
-        <List>
-          {Object.entries(filteredNavigation).map(([key, item]) =>
+      }}
+      >
+        <List role="listbox" aria-label="Search results">{Object.entries(filteredNavigation).map(([key, item]) =>
             renderNavItem(key, item)
           )}
         </List>
