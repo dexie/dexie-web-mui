@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
+import { usePathname } from "next/navigation"
 import {
   Box,
   Container,
@@ -15,7 +16,12 @@ import CookieSettings from "./CookieSettings"
 
 const Footer = () => {
   const theme = useTheme()
+  const pathname = usePathname()
   const [cookieSettingsOpen, setCookieSettingsOpen] = useState(false)
+  
+  // Check if we're on docs pages to adjust for sidebar
+  const isDocsPage = pathname?.startsWith('/docs')
+  const sidebarWidth = 300
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
@@ -32,6 +38,9 @@ const Footer = () => {
           pt: 8,
           pb: 4,
           borderTop: `1px solid ${alpha("#dee2e6", 0.1)}`,
+          // Adjust for docs sidebar on desktop
+          marginLeft: { xs: 0, md: isDocsPage ? `${sidebarWidth}px` : 0 },
+          width: { xs: "100%", md: isDocsPage ? `calc(100% - ${sidebarWidth}px)` : "100%" },
         }}
       >
         <Container maxWidth="lg">
@@ -226,6 +235,9 @@ const Footer = () => {
           color: "#dee2e6",
           py: 3,
           borderTop: `1px solid ${alpha("#dee2e6", 0.1)}`,
+          // Adjust for docs sidebar on desktop
+          marginLeft: { xs: 0, md: isDocsPage ? `${sidebarWidth}px` : 0 },
+          width: { xs: "100%", md: isDocsPage ? `calc(100% - ${sidebarWidth}px)` : "100%" },
         }}
       >
         <Container maxWidth="lg">
@@ -411,6 +423,9 @@ const Footer = () => {
           overflow: "hidden",
           boxShadow:
             "inset 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 -4px 8px rgba(0, 0, 0, 0.3)",
+          // Adjust for docs sidebar on desktop
+          marginLeft: { xs: 0, md: isDocsPage ? `${sidebarWidth}px` : 0 },
+          width: { xs: "100%", md: isDocsPage ? `calc(100% - ${sidebarWidth}px)` : "100%" },
           "&::before": {
             content: '""',
             position: "absolute",
