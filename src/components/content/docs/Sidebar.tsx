@@ -41,10 +41,11 @@ const isNavItem = (item: NavItem | NavStructure): item is NavItem => {
 
 // Function to recursively filter navigation structure
 const searchDocs = async (
+  navigation: NavStructure,
   searchTerm: string
 ): Promise<NavStructure> => {
   if (searchTerm.trim() === "") {
-    return {};
+    return navigation;
   }
 
   const foundSections = await offlineDB.findDocuments(searchTerm);
@@ -66,14 +67,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   // Filtered navigation based on search text
 
   const searchResults = useLiveQuery(
-    () => searchDocs(searchText),
+    () => searchDocs(navigation, searchText),
     [searchText],
     {loading: {title: "Loading...", slug: ""}} // hack to show nothing while loading (below...)
   )
   const filteredNavigation = searchResults.loading?.slug === ""
     ? {}
-    : Object.keys(searchResults).length === 0
-    ? navigation
     : searchResults;
 
   const renderNavItem = (
