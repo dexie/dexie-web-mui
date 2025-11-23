@@ -267,7 +267,7 @@ const cloudPlans = [
     priceNote: "forever",
     buttonText: "Buy now",
     buttonLink: {
-      url: "https://buy.stripe.com/8wM8yAfOjf9HbcsfZ0",
+      url: "https://buy.stripe.com/cN21680Tp2mVeoE9AD",
       querystring: "",
       title: "Buy now",
       target: "_self",
