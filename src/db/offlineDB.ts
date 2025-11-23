@@ -162,7 +162,11 @@ export class OfflineDB extends Dexie {
     for (const [contentId, innerScoreMap] of intermediateScoreMap.entries()) {
       let totalScore = 0;
       for (const score of Object.values(innerScoreMap)) {
-        totalScore += score;
+        if (totalScore === 0) {
+          totalScore = score;
+        } else {
+          totalScore = score + totalScore + score * totalScore;
+        }
       }
       scoreMap.set(contentId, totalScore);
     }
