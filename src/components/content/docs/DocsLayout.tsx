@@ -198,7 +198,10 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
               </Typography>
             </Box>
             {mdxSource ? (
-              <MDXContent source={mdxSource} searchText={searchText} />
+              <>
+                <MDXContent source={mdxSource} searchText={searchText} />
+                <div style={{ height: '20vh' }}></div> {/* Spacer at bottom */}
+              </>
             ) : (
               children
             )}
