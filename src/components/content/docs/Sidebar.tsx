@@ -1,7 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import Link from "next/link"
+import React, { useState, useRef } from "react"
 import {
   Box,
   List,
@@ -49,6 +48,23 @@ const searchDocs = async (
   }
 
   const foundSections = await offlineDB.findDocuments(searchTerm);
+  const grouped = Object.groupBy(foundSections, doc => doc.parentTitle ?? doc.title ?? "Untitled");
+  return Object.fromEntries(Object.entries(grouped).filter(([, docs]) => !!docs).map(([key, docs]) => {
+    if (docs && docs.length > 1) {
+      return [key, Object.fromEntries(docs.map(doc => [doc.title ?? "Untitled", {
+        title: doc.title ?? doc.parentTitle ?? "Untitled",
+        slug: doc.url.replace(/^\/docs\//, ''),
+      }]))];
+    } else if (docs) {
+      const doc = docs[0];
+      return [key, {
+        title: doc.parentTitle ?? doc.title ?? "Untitled",
+        slug: doc.url.replace(/^\/docs\//, ''),
+      }];
+    } else {
+      return [key, {}];
+    }
+  }));
   return Object.fromEntries(foundSections.map(doc => [doc.title ?? doc.parentTitle ??  "Untitled", {
     title: doc.parentTitle ?? doc.title ?? "Untitled",
     slug: doc.url.replace(/^\/docs\//, ''),
@@ -63,6 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const searchParams = useSearchParams();
   const [searchText, setSearchText] = useState(searchParams.get("search") || "");
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   console.log("Initial search text from URL:", searchText);
 
   // Filtered navigation based on search text
@@ -102,6 +119,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             backgroundColor: isActive ? "rgba(255,255,255,0.1)" : "transparent",
             borderRadius: "6px",
             p: { xs: 1, md: 2 },
+            pl: { xs: 1 * level, md: 2 * level },
           }}
         >
           <PersistentSearchLink
@@ -203,12 +221,18 @@ const Sidebar: React.FC<SidebarProps> = ({
         pb: 2,
         borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
       }}>
-        {setSearchText != null && <TextField
+        <TextField
           size="small"
           placeholder="Search in documentation..."
           value={searchText}
           autoFocus={true}
-          onChange={(e) => setSearchText(e.target.value)}
+          onChange={(e) => {
+            setSearchText(e.target.value)
+            // Reset scroll position of results to top
+            if (scrollContainerRef.current) {
+              scrollContainerRef.current.scrollTop = 0;
+            }
+          }}
           onKeyDown={handleSearchKeyDown}
           InputProps={{
             startAdornment: (
@@ -222,7 +246,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                   aria-label="clear search"
                   title="Clear search"
                   size="small"
-                  onClick={() => setSearchText("")}
+                  onClick={() => {
+                    setSearchText("");
+                    if (scrollContainerRef.current) {
+                      scrollContainerRef.current.scrollTop = 0;
+                    }
+                  }}
                   edge="end"
                   sx={{
                     color: "rgba(255, 255, 255, 0.6)",
@@ -259,11 +288,12 @@ const Sidebar: React.FC<SidebarProps> = ({
               },
             },
           }}
-        />}
+        />
       </Box>
       
       {/* Scrollable navigation content */}
       <Box 
+        ref={scrollContainerRef}
         sx={{ 
         flex: 1,
         overflowY: "auto",
