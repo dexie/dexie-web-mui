@@ -123,8 +123,17 @@ async function checkForUpdatesAndCacheInBackground(request: Request) {
   })
 }
 
+let updateInBackgroundPromise: Promise<void> | null = null;
+function updateInBackground() {
+  if (!updateInBackgroundPromise) {
+    updateInBackgroundPromise = _updateInBackground().finally(() => {
+      updateInBackgroundPromise = null;
+    });
+  }
+  return updateInBackgroundPromise;
+}
 // Background update process
-async function updateInBackground() {
+async function _updateInBackground() {
   // Don't try to update if we're offline
   console.log("updateInBackground: Checking online status...");
   if (!isLikelyOnline()) {
@@ -218,10 +227,20 @@ async function cleanupRemovedEntries(manifest: OfflineManifest) {
   }
 }
 
+let updateCacheFromManifestPromise: Promise<void> | null = null;
+function updateCacheFromManifest(manifest: OfflineManifest) {
+  if (!updateCacheFromManifestPromise) {
+    updateCacheFromManifestPromise = _updateCacheFromManifest(manifest).finally(() => {
+      updateCacheFromManifestPromise = null;
+    });
+  }
+  return updateCacheFromManifestPromise;
+}
+
 let ftsUpdated: number = 0;
 
 // Utility: Update all routes and assets from manifest (simplified approach)
-async function updateCacheFromManifest(manifest: OfflineManifest) {
+async function _updateCacheFromManifest(manifest: OfflineManifest) {
   const cache = await caches.open(RUNTIME_NAME)
 
   // Get all routes and assets to process
@@ -289,9 +308,9 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
         }
 
         if (shouldUpdate) {
-          console.log(
+          /*console.log(
             `🔄 Updating ${entry}${isAsset ? " (asset)" : " (route)"}...`
-          )
+          )*/
 
           const req = new Request(new URL(entry, ORIGIN).toString(), {
             credentials: "same-origin",
@@ -301,7 +320,9 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
           const resp = await fetch(req, { signal });
 
           if (resp.ok) {
-            await cache.put(req, resp.clone())
+            const respClone = resp.clone();
+            console.log((`caching URL: ${entry}. Content-Type: ${resp.headers.get("Content-Type")}`));
+            await cache.put(req, respClone)
             await offlineDB.cacheMetadata.put({
               id: entry,
               hash: expectedHash,
@@ -492,7 +513,47 @@ function isLikelyOnline(): boolean {
   return "onLine" in navigator ? navigator.onLine : true
 }
 
-async function cacheFirst(event: FetchEvent) {
+async function fetchWithTimeout(request: Request, timeout: number): Promise<Response | null> {
+  const abortController = new AbortController();
+  const timer = setTimeout(()=>abortController.abort(), 600);
+  const res = await fetch(request, { signal: abortController.signal }).catch(()=>null);
+  clearTimeout(timer);
+  return res;
+}
+
+async function rscCheck(event: FetchEvent) {
+  fetchRequested.dispatchEvent(new CustomEvent("fetchRequested")); 
+  const cache = await caches.open(RUNTIME_NAME);
+  const request = event.request;
+  console.log("RSC check for:", request.url);
+
+  // Remove hash and search params to match how we cache in manifest
+  const url = new URL(request.url);
+  const searchText = url.searchParams.get("search") || "";
+  const hash = url.hash;
+  url.hash = "";
+  url.search = "";
+  const cleanUrl = url.toString();
+  const cached = await cache.match(cleanUrl);
+  const res = cached
+    ? await fetchWithTimeout(request, 600) // Have no patience for RSC requests
+    : await fetch(request);
+
+  if (cached && (!res || !res.ok)) {
+    // Check if we have the full document cached
+    console.log("RSC cache hit for:", cleanUrl);
+    //return cached;
+    if (searchText) url.searchParams.set("search", searchText);
+    if (hash) url.hash = hash;
+    return new Response(null, {
+      status: 204,
+      //headers: { Location: url.toString() }
+    });
+  }
+  return res!;
+}
+
+async function cacheFirst(event: FetchEvent, {ignoreQuery = true} = {}) : Promise<Response> {
   const cache = await caches.open(RUNTIME_NAME)
   const request = event.request
 
@@ -514,7 +575,7 @@ async function cacheFirst(event: FetchEvent) {
     request.destination === "document" &&
     !request.url.includes("_next/static") &&
     !request.url.includes("_rsc=") && // Next.js React Server Components (prefetch)
-    request.cache !== "force-cache" // Prefetch often uses force-cache
+    ["no-store", "no-cache", "reload"].includes(request.cache)
 
   if (isUserNavigation && !isUpdating && isLikelyOnline()) {
     const request = event.request.clone();
@@ -536,19 +597,20 @@ async function cacheFirst(event: FetchEvent) {
 
       if (resp && resp.ok) {
         await cache.put(request, resp.clone())
-        console.log("Network-first served:", request.url.split("/").pop())
+        console.log("Network-first served:", request.clone())
         return resp
       }
     } catch (err) {
       console.log(
         "Network failed, falling back to cache for:",
-        request.url.split("/").pop()
+        request.url.split("?")[0].split("/").pop()
       )
     }
   }
 
+  const canonicalUrl = ignoreQuery ? request.url.split("?")[0] : request.url;
   // For ALL other requests (prefetch, assets, etc.), use cache-first
-  const cached = await cache.match(request)
+  const cached = await cache.match(canonicalUrl)
 
   if (cached) {
     console.log("Cache-first served:", request.url.split("/").pop())
@@ -564,15 +626,22 @@ async function cacheFirst(event: FetchEvent) {
       // Shorter timeout for RSC requests to avoid blocking scrolling
       const timeout = isRSCRequest ? 1000 : 5000; // 1s for RSC, 5s for others
       const timeoutId = setTimeout(() => controller.abort(), timeout);*/
+      const canonicalRequest = ignoreQuery ? new Request(canonicalUrl, {
+        method: request.method,
+        headers: request.headers,
+        mode: request.mode,
+        credentials: request.credentials,
+        redirect: request.redirect,
+      }) : request;
 
-      const resp = await fetch(request)
+      const resp = await fetch(canonicalRequest)
       //clearTimeout(timeoutId);
 
       if (resp && resp.ok && request.method === "GET") {
-        await cache.put(request, resp.clone())
+        await cache.put(canonicalRequest, resp.clone())
         console.log(
           isRSCRequest ? "RSC served:" : "Network fallback served:",
-          request.url.split("/").pop()
+          request.url.split("?")[0].split("/").pop()
         )
       }
       return resp
@@ -602,19 +671,21 @@ async function cacheFirst(event: FetchEvent) {
 const fetchRequested = new EventTarget();
 
 self.addEventListener("fetch", (event: FetchEvent) => {
-  fetchRequested.dispatchEvent(new CustomEvent("fetchRequested"));
   const { request } = event
   const url = new URL(request.url)
 
   // Only handle same-origin GET requests
   if (request.method !== "GET" || !isSameOrigin(request)) {
+    fetchRequested.dispatchEvent(new CustomEvent("fetchRequested"));
     return // allow default network
   }
   if (url.searchParams.get('_rsc')) {
-    // Let RSC requests pass through unhandled to avoid caching
-    // non-cachable responses
-    return
+    // Handling of _rsc requests: They are unnescessary in case
+    // we have the full document cached already.
+    event.respondWith(rscCheck(event));
+    return;
   }
+  fetchRequested.dispatchEvent(new CustomEvent("fetchRequested"));
 
   // All same-origin requests use cache-first strategy
   // Our smart cache update system handles keeping content fresh
@@ -629,7 +700,8 @@ self.addEventListener("fetch", (event: FetchEvent) => {
     url.pathname.startsWith("/pricing") ||
     url.pathname.startsWith("/contact") ||
     url.pathname.startsWith("/privacy") ||
-    url.pathname.startsWith("/terms")
+    url.pathname.startsWith("/terms") ||
+    url.pathname.startsWith("/blog/")
   ) {
     event.respondWith(cacheFirst(event))
     return
@@ -683,7 +755,7 @@ self.addEventListener("fetch", (event: FetchEvent) => {
   }
 
   // Fallback: cache-first for anything else
-  event.respondWith(cacheFirst(event))
+  event.respondWith(cacheFirst(event, { ignoreQuery: false }) )
 })
 
 // Message handler: clear cache

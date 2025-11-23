@@ -8,6 +8,7 @@ import {
 
 import DocsLayout from "@/components/content/docs/DocsLayout"
 import { Box, Typography } from "@mui/material"
+import { Suspense } from "react"
 
 // Generera statiska sidor för alla docs
 export async function generateStaticParams() {
@@ -38,6 +39,7 @@ export default async function DocPage({ params }: DocPageProps) {
   const navigation = generateNavigation()
 
   return (
+    <Suspense fallback={<div />}>
     <DocsLayout
       navigation={navigation}
       currentSlug={slugString}
@@ -73,6 +75,7 @@ export default async function DocPage({ params }: DocPageProps) {
         </Box>
       </Box>
     </DocsLayout>
+    </Suspense>
   )
 }
 

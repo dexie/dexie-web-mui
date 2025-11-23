@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { Suspense, useState } from "react"
 import Link from "next/link"
 import Sidebar from "./Sidebar"
 import {
@@ -108,12 +108,14 @@ const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
             }}
           >
             <Box sx={{ p: 2 }}>
-              <Sidebar
-                navigation={navigation}
-                currentSlug={navSlug}
-                basePath="/cloud/docs"
-                onNavigate={() => setMobileOpen(false)}
-              />
+              <Suspense fallback={<div />}>
+                <Sidebar
+                  navigation={navigation}
+                  currentSlug={navSlug}
+                  basePath="/cloud/docs"
+                  onNavigate={() => setMobileOpen(false)}
+                />
+              </Suspense>
             </Box>
           </Drawer>
         ) : (
@@ -124,11 +126,13 @@ const CloudDocsLayout: React.FC<CloudDocsLayoutProps> = ({
               p: 2,
             }}
           >
-            <Sidebar
-              navigation={navigation}
-              currentSlug={navSlug}
-              basePath="/cloud/docs"
-            />
+            <Suspense fallback={<div />}>
+              <Sidebar
+                navigation={navigation}
+                currentSlug={navSlug}
+                basePath="/cloud/docs"
+              />
+            </Suspense>
           </Box>
         )}
 

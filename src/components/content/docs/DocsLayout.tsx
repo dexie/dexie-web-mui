@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { Suspense, useState } from "react"
 import Link from "next/link"
 import Sidebar from "./Sidebar"
 import EditOnGitHubButton from "./EditOnGitHubButton"
@@ -16,6 +16,7 @@ import {
   Drawer,
 } from "@mui/material"
 import MenuOpenIcon from "@mui/icons-material/MenuOpen"
+import { useSearchParams } from "next/navigation"
 interface NavItem {
   title: string
   slug: string
@@ -42,7 +43,8 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
   mdxSource,
 }) => {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [searchText, setSearchText] = useSessionStorage("docsSidebarSearch", "")
+  const searchParams = useSearchParams();
+  const searchText = searchParams.get("search") || "";
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -88,14 +90,14 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
           }}
         >
           <Box sx={{ p: 2 }}>
-            <Sidebar
-              navigation={navigation}
-              currentSlug={currentSlug}
-              basePath="/docs"
-              onNavigate={() => setMobileOpen(false)}
-              searchText={searchText}
-              setSearchText={setSearchText}
-            />
+            <Suspense fallback={<div />}>
+              <Sidebar
+                navigation={navigation}
+                currentSlug={currentSlug}
+                basePath="/docs"
+                onNavigate={() => setMobileOpen(false)}
+              />
+            </Suspense>
           </Box>
         </Drawer>
         <Box
@@ -114,13 +116,13 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
             zIndex: 100,
           }}
         >
-          <Sidebar
-            navigation={navigation}
-            currentSlug={currentSlug}
-            basePath="/docs"
-            searchText={searchText}
-            setSearchText={setSearchText}
-          />
+          <Suspense fallback={<div />}>
+            <Sidebar
+              navigation={navigation}
+              currentSlug={currentSlug}
+              basePath="/docs"
+            />
+          </Suspense>
         </Box>
 
         <Box

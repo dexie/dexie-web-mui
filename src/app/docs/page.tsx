@@ -6,6 +6,7 @@ import {
   serializeMarkdown,
   generateNavigation,
 } from "@/utils/mdx"
+import { Suspense } from "react"
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://dexie.org"),
@@ -78,13 +79,15 @@ export default async function DocsHomePageWrapper() {
     currentSlug?: string
     pageTitle?: string
   }) => (
-    <DocsLayout
-      navigation={navigation}
-      currentSlug={currentSlug}
-      pageTitle={pageTitle}
-    >
-      {children}
-    </DocsLayout>
+    <Suspense fallback={<div/>}>
+      <DocsLayout
+        navigation={navigation}
+        currentSlug={currentSlug}
+        pageTitle={pageTitle}
+      >
+        {children}
+      </DocsLayout>
+    </Suspense>
   )
 
   return (
