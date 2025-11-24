@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Suspense } from "react"
 import {
   Typography,
   Box,
@@ -11,11 +11,10 @@ import {
 import parse, { domToReact, Element, DOMNode } from "html-react-parser"
 import CodeBlock from "../../../components/content/shared/CodeBlock"
 import { generateHeadingIdFromDOM } from "@/utils/headingId"
-import HighlightWrapper from "./HighlightWrapper"
+import ClientSearchHighlighter from "./ClientSearchHighlighter"
 
 interface MDXContentProps {
   source: string
-  searchText?: string
 }
 
 // Convert HTML attributes to MUI props
@@ -523,20 +522,20 @@ function parseHTMLToComponents(html: string): React.ReactNode {
   return parse(html, options)
 }
 
-export default function MDXContent({ source, searchText = "" }: MDXContentProps) {
+export default function MDXContent({ source }: MDXContentProps) {
+  const contentId = "mdx-content-container"
   const content = (
     <Box className="mdx-content" sx={{ maxWidth: "none" }}>
       {parseHTMLToComponents(source)}
     </Box>
   )
 
-  if (searchText?.trim()) {
-    return (
-      <HighlightWrapper searchText={searchText}>
-        {content}
-      </HighlightWrapper>
-    )
-  }
-
-  return content
+  return (
+    <div id={contentId}>
+      <Suspense fallback={null}>
+        <ClientSearchHighlighter containerId={contentId} />
+      </Suspense>
+      {content}
+    </div>
+  )
 }
