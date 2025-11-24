@@ -19,20 +19,20 @@ body {
 html {
   /* Fix anchor links being hidden behind fixed header */
   /* Mobile first - smaller header on mobile */
-  scroll-padding-top: 72px;
+  scroll-padding-top: 70px;
 }
 
 /* Tablet and up - slightly larger header */
 @media (min-width: 576px) {
   html {
-    scroll-padding-top: 80px;
+    scroll-padding-top: 78px;
   }
 }
 
 /* Desktop - full header size, but tuned to your preference */
 @media (min-width: 768px) {
   html {
-    scroll-padding-top: 92px;
+    scroll-padding-top: 88px;
   }
 }
 
