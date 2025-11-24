@@ -50,7 +50,7 @@ const searchDocs = async (
   const foundSections = await offlineDB.findDocuments(searchTerm);
   const grouped = Object.groupBy(foundSections, doc => doc.parentTitle ?? doc.title ?? "Untitled");
   return Object.fromEntries(Object.entries(grouped).filter(([, docs]) => !!docs).map(([key, docs]) => {
-    if (docs && docs.length > 1) {
+    if (docs && (docs.length > 1 || (docs[0] && key !== (docs[0].title ?? docs[0].parentTitle)))) {
       return [key, Object.fromEntries(docs.map(doc => [doc.title ?? "Untitled", {
         title: doc.title ?? doc.parentTitle ?? "Untitled",
         slug: doc.url.replace(/^\/docs\//, ''),
@@ -65,10 +65,10 @@ const searchDocs = async (
       return [key, {}];
     }
   }));
-  return Object.fromEntries(foundSections.map(doc => [doc.title ?? doc.parentTitle ??  "Untitled", {
+  /*return Object.fromEntries(foundSections.map(doc => [doc.title ?? doc.parentTitle ??  "Untitled", {
     title: doc.parentTitle ?? doc.title ?? "Untitled",
     slug: doc.url.replace(/^\/docs\//, ''),
-  }]));
+  }]));*/
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
