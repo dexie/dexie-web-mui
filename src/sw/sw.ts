@@ -242,6 +242,7 @@ let ftsUpdated: number = 0;
 
 // Utility: Update all routes and assets from manifest (simplified approach)
 async function _updateCacheFromManifest(manifest: OfflineManifest) {
+  console.log("Starting cache update from manifest...")
   const cache = await caches.open(RUNTIME_NAME)
 
   // Get all routes and assets to process
@@ -667,6 +668,7 @@ async function cacheFirst(event: FetchEvent, {ignoreQuery = true} = {}) : Promis
 
       if (resp && resp.ok && request.method === "GET") {
         await cache.put(canonicalRequest, resp.clone())
+        await putFullTextIndex(new URL(canonicalRequest.url).pathname).catch(()=>{});
         console.log(
           isRSCRequest ? "RSC served:" : "Network fallback served:",
           request.url.split("?")[0].split("/").pop()
