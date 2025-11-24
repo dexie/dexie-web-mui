@@ -14,8 +14,8 @@ import SearchIcon from "@mui/icons-material/Search"
 import ClearIcon from "@mui/icons-material/Clear"
 import { offlineDB } from "@/db/offlineDB"
 import { useLiveQuery } from "dexie-react-hooks"
-import { useSearchParams } from "next/navigation"
-import PersistentSearchLink from "./PersistentSearchLink"
+import { useSessionStorage } from "@/utils/useSessionStorage"
+import Link from "next/link"
 
 interface NavItem {
   title: string
@@ -77,10 +77,9 @@ const Sidebar: React.FC<SidebarProps> = ({
   basePath = "/docs",
   onNavigate
 }) => {
-  const searchParams = useSearchParams();
-  const [searchText, setSearchText] = useState(searchParams.get("search") || "");
+  const [searchText, setSearchText] = useSessionStorage("search", "");
+  //const [searchText, setSearchText] = useState(searchParams.get("search") || "");
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  console.log("Initial search text from URL:", searchText);
 
   // Filtered navigation based on search text
   const searchResults = useLiveQuery(
@@ -122,9 +121,8 @@ const Sidebar: React.FC<SidebarProps> = ({
             pl: { xs: 1 * level, md: 2 * level },
           }}
         >
-          <PersistentSearchLink
+          <Link
             href={`${basePath}/${item.slug}`}
-            search={searchText.trim()}
             onClick={onNavigate}
             data-search-result-link
             tabIndex={0}
@@ -179,7 +177,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             {item.title.length > 28
               ? `...${item.title.slice(-26)}`
               : item.title}
-          </PersistentSearchLink>
+          </Link>
         </ListItem>
       )
     }

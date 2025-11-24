@@ -58,7 +58,6 @@ export function useSessionStorage<T>(
 
   const setValue = (value: T) => {
     try {
-      setStoredValue(value);
       if (typeof window !== "undefined") {
         const state = globalState.get(key);
         if (state) {

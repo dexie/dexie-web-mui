@@ -1,32 +1,41 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { useEffect, useState } from "react"
 import { extractFullTextTokens } from '../../../db/extractFullTextTokens'
+import { useSessionStorage } from "@/utils/useSessionStorage"
 
 interface ClientSearchHighlighterProps {
   containerId: string
 }
 
 export default function ClientSearchHighlighter({ containerId }: ClientSearchHighlighterProps) {
-  const searchParams = useSearchParams()
+  const [sessionStorageSearch] = useSessionStorage("search", "___initial_value___");
   const [searchText, setSearchText] = useState("")
 
   useEffect(() => {
-    const currentSearchText = searchParams.get("search") || ""
-    setSearchText(currentSearchText)
-    
-    if (currentSearchText) {
-      // Apply highlighting after component mounts
-      const container = document.getElementById(containerId)
-      if (container) {
-        highlightSearchText(container, currentSearchText)
-      }
+    const currentSearchText = sessionStorageSearch || ""
+    if (currentSearchText === "___initial_value___") {return;} // Ignore initial placeholder value
+    setSearchText(currentSearchText)    
+    // Apply highlighting after component mounts
+    const container = document.getElementById(containerId)
+    if (container) {
+      highlightSearchText(container, currentSearchText)
     }
-  }, [searchParams, containerId])
+  }, [sessionStorageSearch, containerId])
 
   const highlightSearchText = (container: HTMLElement, searchText: string) => {
-    if (!searchText.trim()) return
+    if (!searchText.trim()) {
+      // Remove existing highlights when no search text
+      const existingHighlights = container.querySelectorAll('mark[data-search-highlight]')
+      existingHighlights.forEach(mark => {
+        const parent = mark.parentNode
+        if (parent) {
+          parent.replaceChild(document.createTextNode(mark.textContent || ''), mark)
+          parent.normalize()
+        }
+      })
+      return
+    }
     const tokens = extractFullTextTokens(searchText);
 
     // Remove existing highlights
