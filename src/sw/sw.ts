@@ -529,13 +529,14 @@ async function rscCheck(event: FetchEvent) {
 
   // Remove hash and search params to match how we cache in manifest
   const url = new URL(request.url);
-  //const searchText = url.searchParams.get("search") || "";
-  //const hash = url.hash;
   url.hash = "";
   url.searchParams.delete("search");
   url.searchParams.delete("_rsc");
   const cleanUrl = url.toString();
+  
+  // Try to find cached version - try multiple variations
   const cached = await cache.match(cleanUrl);
+    
   if (cached) {
     const res = await fetchWithTimeout(request, 1000);
     if (res && res.ok) {
@@ -544,7 +545,6 @@ async function rscCheck(event: FetchEvent) {
     console.log("Network failed or too slow, returning 204 to force loading doc:", request.url);
     return new Response(null, {
       status: 204,
-      //headers: { Location: url.toString() }
     });
   }
   return fetch(request);
@@ -594,8 +594,37 @@ async function cacheFirst(event: FetchEvent, {ignoreQuery = true} = {}) : Promis
   }
 
   const canonicalUrl = ignoreQuery ? request.url.split("?")[0] : request.url;
+  
   // For ALL other requests (prefetch, assets, etc.), use cache-first
-  const cached = await cache.match(canonicalUrl)
+  let cached = await cache.match(canonicalUrl)
+  
+  // If not found and this is a docs route, try case-insensitive variants
+  if (!cached && canonicalUrl.startsWith(`${ORIGIN}/docs/`)) {
+    const url = new URL(canonicalUrl);
+    const pathname = url.pathname;
+    const pathSegments = pathname.split('/').filter(Boolean);
+    
+    if (pathSegments.length >= 2) { // ['docs', 'something', ...]
+      const docPath = pathSegments.slice(1).join('/'); // remove 'docs'
+      
+      // Try variations for potential index routes and case variants
+      const variations = [
+        pathname, // original path like /docs/tutorial
+        pathname + '/index', // try explicit index like /docs/tutorial/index
+        '/docs/' + docPath.charAt(0).toUpperCase() + docPath.slice(1), // capitalize first letter
+        '/docs/' + docPath.charAt(0).toUpperCase() + docPath.slice(1) + '/index'
+      ];
+      
+      for (const variant of variations) {
+        const variantUrl = new URL(variant, ORIGIN).toString();
+        cached = await cache.match(variantUrl);
+        if (cached) {
+          console.log(`Cache: Found variant: ${variant} for request ${pathname}`);
+          break;
+        }
+      }
+    }
+  }
 
   if (cached) {
     console.log("Cache-first served:", request.url.split("/").pop())
@@ -614,7 +643,6 @@ async function cacheFirst(event: FetchEvent, {ignoreQuery = true} = {}) : Promis
       const canonicalRequest = ignoreQuery ? new Request(canonicalUrl, {
         method: request.method,
         headers: request.headers,
-        mode: request.mode,
         credentials: request.credentials,
         redirect: request.redirect,
       }) : request;
@@ -633,7 +661,8 @@ async function cacheFirst(event: FetchEvent, {ignoreQuery = true} = {}) : Promis
     } catch (err) {
       console.log(
         isRSCRequest ? "RSC timeout/failed:" : "Network failed for:",
-        request.url.split("/").pop()
+        request.url,
+        err
       )
       if (isRSCRequest) {
         // For RSC requests, return a minimal response to avoid breaking navigation

@@ -8,15 +8,45 @@ import {
 
 import DocsLayout from "@/components/content/docs/DocsLayout"
 import { Box, Typography } from "@mui/material"
-import { Suspense } from "react"
 
-// Generera statiska sidor för alla docs
+// Generate static pages for all docs
 export async function generateStaticParams() {
   const docs = getAllDocs()
+  const params: { slug: string[] }[] = []
+  const seenPaths = new Set<string>()
 
-  return docs.map((doc) => ({
-    slug: doc.metadata.slug.split("/"),
-  }))
+  docs.forEach((doc) => {
+    const slugParts = doc.metadata.slug.split("/")
+    const slugPath = slugParts.join("/")
+    
+    // Add the exact path
+    if (!seenPaths.has(slugPath)) {
+      params.push({ slug: slugParts })
+      seenPaths.add(slugPath)
+    }
+    
+    // If this is an index file, also add the directory path
+    if (slugParts[slugParts.length - 1] === "index") {
+      const dirPath = slugParts.slice(0, -1)
+      if (dirPath.length > 0) {
+        const dirSlugPath = dirPath.join("/")
+        if (!seenPaths.has(dirSlugPath)) {
+          params.push({ slug: dirPath })
+          seenPaths.add(dirSlugPath)
+        }
+        
+        // Also add lowercase version for case-insensitive access
+        const lowerDirPath = dirPath.map(part => part.toLowerCase())
+        const lowerDirSlugPath = lowerDirPath.join("/")
+        if (!seenPaths.has(lowerDirSlugPath) && lowerDirSlugPath !== dirSlugPath) {
+          params.push({ slug: lowerDirPath })
+          seenPaths.add(lowerDirSlugPath)
+        }
+      }
+    }
+  })
+
+  return params
 }
 
 interface DocPageProps {
@@ -39,7 +69,6 @@ export default async function DocPage({ params }: DocPageProps) {
   const navigation = generateNavigation()
 
   return (
-    <Suspense fallback={<div />}>
     <DocsLayout
       navigation={navigation}
       currentSlug={slugString}
@@ -75,11 +104,10 @@ export default async function DocPage({ params }: DocPageProps) {
         </Box>
       </Box>
     </DocsLayout>
-    </Suspense>
   )
 }
 
-// Generera metadata för varje sida
+// Generate metadata for each page
 export async function generateMetadata({ params }: DocPageProps) {
   const { slug } = await params
   const slugString = slug.join("/")
@@ -91,9 +119,9 @@ export async function generateMetadata({ params }: DocPageProps) {
     }
   }
 
-  // Skapa bättre beskrivningar baserat på content eller title
+  // Create better descriptions based on content or title
   const createDescription = (title: string): string => {
-    // Keyword mapping för bättre SEO
+    // Keyword mapping for better SEO
     const keywordMap: Record<string, string> = {
       Tutorial:
         "Learn Dexie.js step-by-step with this complete tutorial. Build offline-first web applications using IndexedDB wrapper with React, Vue, Angular examples.",
@@ -113,14 +141,14 @@ export async function generateMetadata({ params }: DocPageProps) {
         "Dexie.js WhereClause for precise queries. Learn indexing, filtering, and performance optimization for IndexedDB applications.",
     }
 
-    // Hitta matchande keywords
+    // Find matching keywords
     for (const [key, desc] of Object.entries(keywordMap)) {
       if (title.toLowerCase().includes(key.toLowerCase())) {
         return desc
       }
     }
 
-    // Fallback beskrivning baserad på kategorier
+    // Fallback description based on categories
     if (slugString.includes("cloud")) {
       return `${title} documentation for Dexie Cloud. Learn offline-first sync, authentication, and real-time collaboration features.`
     } else if (slugString.includes("tutorial")) {
@@ -132,7 +160,7 @@ export async function generateMetadata({ params }: DocPageProps) {
     return `${title} documentation for Dexie.js. Learn offline-first development with IndexedDB wrapper for JavaScript applications.`
   }
 
-  // Skapa keywords baserat på content
+  // Create keywords based on content
   const createKeywords = (title: string, slugString: string): string[] => {
     const baseKeywords = [
       "dexie.js",

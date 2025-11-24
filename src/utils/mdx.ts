@@ -126,6 +126,21 @@ export function getDocumentBySlug(
       if (fs.existsSync(indexPath)) {
         filePath = indexPath
       } else {
+        // Also try case-insensitive matching for directory names
+        const allDocs = getAllDocuments(source)
+        const matchingDoc = allDocs.find(doc => {
+          const docSlug = doc.metadata.slug.toLowerCase()
+          const searchSlug = slug.toLowerCase()
+          // Check for exact match or index match
+          return docSlug === searchSlug || 
+                 docSlug === `${searchSlug}/index` ||
+                 (docSlug.endsWith('/index') && docSlug.slice(0, -6) === searchSlug)
+        })
+        
+        if (matchingDoc) {
+          return matchingDoc
+        }
+        
         return null
       }
     }

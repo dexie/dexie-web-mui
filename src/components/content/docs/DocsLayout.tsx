@@ -1,11 +1,9 @@
-"use client"
-
-import React, { Suspense, useState } from "react"
+import React, { Suspense } from "react"
 import Link from "next/link"
 import Sidebar from "./Sidebar"
 import EditOnGitHubButton from "./EditOnGitHubButton"
 import MDXContent from "./MDXContent"
-import { useSessionStorage } from "@/utils/useSessionStorage"
+import MobileDrawer from "./MobileDrawer"
 import {
   Box,
   Container,
@@ -13,10 +11,8 @@ import {
   Typography,
   Divider,
   Link as MuiLink,
-  Drawer,
 } from "@mui/material"
-import MenuOpenIcon from "@mui/icons-material/MenuOpen"
-import { useSearchParams } from "next/navigation"
+
 interface NavItem {
   title: string
   slug: string
@@ -32,7 +28,7 @@ interface DocsLayoutProps {
   currentSlug?: string
   pageTitle?: string
   navigation?: NavStructure
-  mdxSource?: string // Add MDX source
+  mdxSource?: string
 }
 
 const DocsLayout: React.FC<DocsLayoutProps> = ({
@@ -42,74 +38,28 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
   navigation = {},
   mdxSource,
 }) => {
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const searchParams = useSearchParams();
-  const searchText = searchParams.get("search") || "";
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen)
-  }
-
   const drawerWidth = 300
 
   return (
     <Container maxWidth={false} sx={{ padding: 0, pt: "100px" }}>
-      {/* Mobile AppBar with hamburger menu */}
-      <Box
-        sx={{
-          display: { xs: "block", md: "none" },
-          position: "fixed",
-          width: "auto",
-          right: 40,
-          top: "14px", // Below main navigation
-          zIndex: 1200,
-        }}
-      >
-        <MenuOpenIcon onClick={handleDrawerToggle} sx={{ mr: 2 }} />
-      </Box>
-
+      <MobileDrawer 
+        navigation={navigation} 
+        currentSlug={currentSlug} 
+        drawerWidth={drawerWidth}
+      />
+      
       <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
-        {/* Mobile Drawer */}
-        <Drawer
-          anchor="right"
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: "block", md: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-              top: "0px", // Below both navbars
-              backgroundColor: "black",
-              backdropFilter: "blur(10px)",
-            },
-          }}
-        >
-          <Box sx={{ p: 2 }}>
-            <Suspense fallback={<div />}>
-              <Sidebar
-                navigation={navigation}
-                currentSlug={currentSlug}
-                basePath="/docs"
-                onNavigate={() => setMobileOpen(false)}
-              />
-            </Suspense>
-          </Box>
-        </Drawer>
+        {/* Desktop Sidebar */}
         <Box
           sx={{
             display: { xs: "none", md: "block" },
             width: drawerWidth,
             flexShrink: 0,
             position: "fixed",
-            top: "100px", // Below the main navigation
+            top: "100px",
             left: 0,
             height: "calc(100vh - 100px)",
-            overflowY: "hidden", // Remove scrolling from container
+            overflowY: "hidden",
             p: 2,
             backgroundColor: "background.paper",
             borderRight: "1px solid rgba(255, 255, 255, 0.12)",
@@ -125,20 +75,18 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
           </Suspense>
         </Box>
 
+        {/* Main Content */}
         <Box
           component="main"
           sx={{
-            paddingTop: {
-              sx: 8,
-              md: 3, // Extra space for mobile toolbar
-            },
+            paddingTop: { xs: 8, md: 3 },
             paddingBottom: 2,
             marginBottom: 3,
             flex: 1,
             paddingLeft: { xs: 2, md: 4 },
             paddingRight: { xs: 2, md: 4 },
             width: { xs: "100%", md: `calc(100% - ${drawerWidth}px)` },
-            marginLeft: { xs: 0, md: `${drawerWidth}px` }, // Account for fixed sidebar
+            marginLeft: { xs: 0, md: `${drawerWidth}px` },
           }}
         >
           <Box
@@ -160,10 +108,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
                 <Typography
                   color="text.primary"
                   aria-current="page"
-                  sx={{
-                    padding: 0,
-                    margin: 0,
-                  }}
+                  sx={{ padding: 0, margin: 0 }}
                 >
                   {pageTitle || currentSlug.split("/").pop()}
                 </Typography>
@@ -180,9 +125,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
                 textDecoration: "none",
                 "&:hover": { color: "white !important" },
               },
-              "& li:hover": {
-                background: "transparent",
-              },
+              "& li:hover": { background: "transparent" },
             }}
           >
             <Box component="header" sx={{ mb: 5 }}>
@@ -197,10 +140,11 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
                 {/* Description under title could go here if needed */}
               </Typography>
             </Box>
+            
             {mdxSource ? (
               <>
-                <MDXContent source={mdxSource} searchText={searchText} />
-                <div style={{ height: '20vh' }}></div> {/* Spacer at bottom */}
+                <MDXContent source={mdxSource} />
+                <div style={{ height: '20vh' }}></div>
               </>
             ) : (
               children
@@ -214,7 +158,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
             sx={{
               display: { xs: "none", md: "block" },
               position: "fixed",
-              top: "65px", // Below the main navigation
+              top: "65px",
               right: "24px",
               zIndex: 1000,
             }}

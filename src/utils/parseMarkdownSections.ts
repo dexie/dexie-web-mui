@@ -21,6 +21,21 @@ export function collectDocsRoutes(docsDir: string): { routes: string[]; docRoute
         const route = '/docs/' + slug;
         routes.add(route);
         
+        // If this is an index file, also add directory routes for offline caching
+        if (slug.endsWith('/index')) {
+          const dirPath = slug.substring(0, slug.lastIndexOf('/index'));
+          if (dirPath) {
+            const dirRoute = '/docs/' + dirPath;
+            routes.add(dirRoute); // Add exact case route (e.g., /docs/Tutorial)
+            
+            // Also add lowercase version for case-insensitive access
+            const lowerDirRoute = '/docs/' + dirPath.toLowerCase();
+            if (lowerDirRoute !== dirRoute) {
+              routes.add(lowerDirRoute); // Add lowercase route (e.g., /docs/tutorial)
+            }
+          }
+        }
+        
         // Parse frontmatter and content using gray-matter
         const fileContent = fs.readFileSync(full, 'utf8');
         const { data: frontmatter, content } = matter(fileContent);
