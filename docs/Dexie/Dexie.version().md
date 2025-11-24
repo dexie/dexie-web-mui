@@ -33,9 +33,13 @@ db.version(1).stores({
 db.open(); 
 
 // Do some application logic on the database:
-db.transaction("rw", db.friends, db.pets, function () {
-    db.friends.add({name: "David", age: 40, sex: "male"});
-    db.friends.add({name: "Ylva", age: 39, sex: "female"});
+db.transaction("rw", db.friends, db.pets, () => {
+    db.friends.bulkAdd([{
+        {name: "David", age: 52, sex: "male"},
+        {name: "Ylva", age: 50, sex: "female"},
+        {name: "Bennie", age: 40, sex: "male"},
+        {name: "Jesper", age: 35, sex: "male"}
+    }]);
     db.pets.add({name: "Josephina", kind: "dog"});
 
     db.friends.where("name").equalsIgnoreCase("david").each(function(friend) {
