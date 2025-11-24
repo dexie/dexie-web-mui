@@ -529,8 +529,8 @@ async function rscCheck(event: FetchEvent) {
 
   // Remove hash and search params to match how we cache in manifest
   const url = new URL(request.url);
-  const searchText = url.searchParams.get("search") || "";
-  const hash = url.hash;
+  //const searchText = url.searchParams.get("search") || "";
+  //const hash = url.hash;
   url.hash = "";
   url.searchParams.delete("search");
   url.searchParams.delete("_rsc");
