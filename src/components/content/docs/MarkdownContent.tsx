@@ -304,7 +304,7 @@ export const components = {
           component="code"
           sx={{
             fontFamily: "monospace",
-            fontSize: "0.875rem",
+            fontSize: "0.85em", // Changed to relative size to inherit from parent
             backgroundColor: "rgba(255, 255, 255, 0.1)",
             px: 1,
             py: 0.5,

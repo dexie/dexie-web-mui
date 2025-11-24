@@ -202,6 +202,15 @@ const theme = createTheme({
           fontWeight: 500,
           lineHeight: 1.2,
           color: "#dee2e6",
+          "& code": {
+            fontSize: "0.95em !important", // Slightly smaller than heading text for better balance
+            fontWeight: "500 !important", // Ensure consistent weight
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            padding: "0.1em 0.25em",
+            borderRadius: "0.25rem",
+            fontFamily: "monospace",
+            display: "inline", // Ensure proper inline display
+          },
         },
         p: {
           marginTop: 0,
