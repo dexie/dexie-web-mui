@@ -139,7 +139,9 @@ The token is valid in one hour from the time it was requested.
 
 ### /token/validate
 
-| Method | GET |
+|               |              |
+| ------------- | ------------ |
+| Method        |  GET         |
 | Authorization | Bearer token |
 
 Validates a JWT token.
