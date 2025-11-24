@@ -7,19 +7,23 @@ This page documents the REST API that every database in Dexie Cloud has.
 
 ## Endpoints
 
-| [/token](#token) | Token endpoint |
+|                                   |                           |
+| --------------------------------- | ------------------------- |
+| [/token](#token)                  | Token endpoint            |
 | [/token/validate](#tokenvalidate) | Token validation endpoint |
-| [/all/...](#all-endpoint) | All data endpoint |
-| [/my/...](#my-endpoint) | My data endpoint |
-| [/public/...](#public-endpoint) | Public data endpoint |
-| [/users/...](#users-endpoint) | Users data endpoint |
+| [/all/...](#all-endpoint)         | All data endpoint         |
+| [/my/...](#my-endpoint)           | My data endpoint          |
+| [/public/...](#public-endpoint)   | Public data endpoint      |
+| [/users/...](#users-endpoint)     | Users data endpoint       |
 
 ### /token
 
-| Method | POST |
-| Content-Type | application/json |
-| Parameters | `{grant_type, client_id?, client_secret?, code?, name?, email?}`|
-| Authentication | Either Basic or none (see explanation below) |
+|                |                                                                  |
+| -------------- | ---------------------------------------------------------------- |
+| Method         |  POST                                                            |
+| Content-Type   | application/json                                                 |
+| Parameters     | `{grant_type, client_id?, client_secret?, code?, name?, email?}` |
+| Authentication | Either Basic or none (see explanation below)                     |
 
 Request a token for the calling endpoint. This method can be called directly from web clients or from a server. When called from a web client, grant_type must be "authorization_code" and a valid "code" parameter retrieved from the authorize endpoint must be given. This is all handled by `dexie-cloud-addon`. But when called from one of your own servers, you can make the token endpoint produce a token for a user that your server has already authenticated:
 
