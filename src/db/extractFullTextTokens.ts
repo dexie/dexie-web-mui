@@ -1,7 +1,8 @@
 // English stop words (common words to filter out)
 const stopWords = new Set([
-  'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from', 'has', 'he', 'in', 'is', 'it',
-  'its', 'of', 'on', 'that', 'the', 'to', 'was', 'will', 'with', 'but', 'or', 'not', 'this', 'can'
+  'a', 'an', 'are', 'as', 'at', 'be', 'by', 'for', 'has', 'he', 'is', 'it',
+  'its', 'of', 'that', 'the', 'to', 'was', 'will', 'with', 'but', 'this',
+  'i'
 ])
 
 // Simple English stemmer (basic suffix removal)
