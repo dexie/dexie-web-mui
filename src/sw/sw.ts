@@ -176,6 +176,7 @@ async function _updateInBackground() {
   } catch (error) {
     console.warn("❌ Background update failed:", error)
     isUpdating = false
+    setTimeout(()=>updateInBackground(), 10000);
   }
 }
 
@@ -281,6 +282,17 @@ async function _updateCacheFromManifest(manifest: OfflineManifest) {
         }
       }
     }
+    // Delete full-text entries for removed docs
+    await offlineDB.transaction('rw', offlineDB.fullTextIndex, offlineDB.fullTextContent, async () => {
+      const allFtsEntries = await offlineDB.fullTextContent.toArray();
+      const allFtsIds = await offlineDB.fullTextContent.toCollection().primaryKeys();
+      const removedFtsIds = allFtsEntries
+        .map((ftsContent, index) => ({ftsContent, ftsId: allFtsIds[index]}))
+        .filter(({ftsContent}) => !allRoutes.includes(ftsContent.url.split('#')[0]))
+        .map(({ftsId}) => ftsId);
+      offlineDB.fullTextContent.bulkDelete(removedFtsIds);
+      offlineDB.fullTextIndex.where('contentId').anyOf(removedFtsIds).delete();
+    });
   }
 
   const abortController = new AbortController()
@@ -469,6 +481,9 @@ self.addEventListener("activate", (event: ExtendableEvent) => {
           isUpdating = true
           await checkForUpdates(false)
           isUpdating = false
+        } else {
+          console.log("Activation detected, checking for updates...")
+          await checkForUpdates(false)
         }
       } catch (e) {
         if (e instanceof DOMException && e.name === 'AbortError') {
