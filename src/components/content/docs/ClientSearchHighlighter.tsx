@@ -74,7 +74,6 @@ export default function ClientSearchHighlighter({ containerId }: ClientSearchHig
     textNodes.forEach(textNode => {
       const text = textNode.textContent || ''
       let hasMatches = false
-      let highlightedText = text
       
       // Check if any token matches and collect all matching words
       const wordsToHighlight = new Set<string>()
