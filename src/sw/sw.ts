@@ -532,25 +532,22 @@ async function rscCheck(event: FetchEvent) {
   const searchText = url.searchParams.get("search") || "";
   const hash = url.hash;
   url.hash = "";
-  url.search = "";
+  url.searchParams.delete("search");
+  url.searchParams.delete("_rsc");
   const cleanUrl = url.toString();
   const cached = await cache.match(cleanUrl);
-  const res = cached
-    ? await fetchWithTimeout(request, 600) // Have no patience for RSC requests
-    : await fetch(request);
-
-  if (cached && (!res || !res.ok)) {
-    // Check if we have the full document cached
-    console.log("RSC cache hit for:", cleanUrl);
-    //return cached;
-    if (searchText) url.searchParams.set("search", searchText);
-    if (hash) url.hash = hash;
+  if (cached) {
+    const res = await fetchWithTimeout(request, 600);
+    if (res && res.ok) {
+      return res;
+    }
+    console.log("Network failed or too slow, returning 204 to force loading doc:", request.url);
     return new Response(null, {
       status: 204,
       //headers: { Location: url.toString() }
     });
   }
-  return res!;
+  return fetch(request);
 }
 
 async function cacheFirst(event: FetchEvent, {ignoreQuery = true} = {}) : Promise<Response> {
@@ -700,10 +697,13 @@ self.addEventListener("fetch", (event: FetchEvent) => {
     url.pathname.startsWith("/pricing") ||
     url.pathname.startsWith("/contact") ||
     url.pathname.startsWith("/privacy") ||
-    url.pathname.startsWith("/terms") ||
-    url.pathname.startsWith("/blog/")
+    url.pathname.startsWith("/terms")
   ) {
     event.respondWith(cacheFirst(event))
+    return
+  }
+  if (url.pathname.startsWith("/blog/")) {
+    event.respondWith(cacheFirst(event, { ignoreQuery: false }))
     return
   }
 
