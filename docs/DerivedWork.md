@@ -32,8 +32,8 @@ Did you write something based on Dexie? Feel free to list it here.
 - [dexie-encrypted](https://github.com/mark43/dexie-encrypted) _Easily add encryption to all non-indexed properties_
 - [dexie-easy-encrypt](https://github.com/jaetask/dexie-easy-encrypt) _Unopinionated encryption middleware with less complexity that let you provide your own encrypt() / decrypt() functions._
 - [dexie-relationships](https://github.com/ignasbernotas/dexie-relationships) _Declare and query data with foreign keys_
-- [Dexie.Observable](/docs/Observable/Dexie.Observable)
-- [Dexie.Syncable](/docs/Syncable/Dexie.Syncable.js)
+- [Dexie.Observable](https://old.dexie.org/docs/Observable/Dexie.Observable)
+- [Dexie.Syncable](https://old.dexie.org/docs/Syncable/Dexie.Syncable.js)
 - [Dexie-mongoify](https://github.com/YuriSolovyov/Dexie-mongoify) _MongoDB style API for Dexie_
 - [dexie-batch](https://github.com/raphinesse/dexie-batch) _Fetch DB entries in batches to improve performance_
 

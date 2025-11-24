@@ -7,6 +7,7 @@ on:
 
 jobs:
   sync-md-files:
+    if: false  # Workflow disabled temporarily when removing old docs
     runs-on: ubuntu-latest
 
     steps:

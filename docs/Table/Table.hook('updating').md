@@ -65,7 +65,7 @@ Dexie CRUD events can be used to implement several addons to Dexie such as:
 * Full-text search or other custom ways of indexing properties
 * Manipulation of returned objects
 
-The add-ons [Dexie.Observable.js](/docs/Observable/Dexie.Observable.js) and [Dexie.Syncable.js](/docs/Syncable/Dexie.Syncable.js) uses  `hook('creating')`, `hook('updating')` and `hook('deleting')` to make the database locally observable as well as syncable with a remote server.
+The add-ons [Dexie.Observable.js](https://old.dexie.org/docs/Observable/Dexie.Observable.js) and [Dexie.Syncable.js](https://old.dexie.org/docs/Syncable/Dexie.Syncable.js) uses  `hook('creating')`, `hook('updating')` and `hook('deleting')` to make the database locally observable as well as syncable with a remote server.
 
 The `hook('reading')` is used internally by Dexie.js by the methods [Table.defineClass()](/docs/Table/Table.defineClass()) and [Table.mapToClass()](/docs/Table/Table.mapToClass()) in order to make all objects retrieved from database inherit a given class using prototypal inheritance.
 
@@ -151,4 +151,3 @@ However, it is also possible to implement it using custom views, which is implem
 
 [Table.hook('deleting')](/docs/Table/Table.hook('deleting'))
 
-[Dexie.Observable.js](/docs/Observable/Dexie.Observable.js)
