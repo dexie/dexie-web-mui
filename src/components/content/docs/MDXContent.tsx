@@ -15,6 +15,7 @@ import ClientSearchHighlighter from "./ClientSearchHighlighter"
 
 interface MDXContentProps {
   source: string
+  title?: string
 }
 
 // Convert HTML attributes to MUI props
@@ -522,7 +523,7 @@ function parseHTMLToComponents(html: string): React.ReactNode {
   return parse(html, options)
 }
 
-export default function MDXContent({ source }: MDXContentProps) {
+export default function MDXContent({ source, title }: MDXContentProps) {
   const contentId = "mdx-content-container"
   const content = (
     <Box className="mdx-content" sx={{ maxWidth: "none" }}>
@@ -535,6 +536,13 @@ export default function MDXContent({ source }: MDXContentProps) {
       <Suspense fallback={null}>
         <ClientSearchHighlighter containerId={contentId} />
       </Suspense>
+
+      <Box component="header" sx={{ mb: 5 }}>
+        <Typography variant="h1" component="h1" sx={{ mb: 3 }}>
+          {title}
+        </Typography>
+      </Box>
+
       {content}
     </div>
   )
