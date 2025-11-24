@@ -515,7 +515,7 @@ function isLikelyOnline(): boolean {
 
 async function fetchWithTimeout(request: Request, timeout: number): Promise<Response | null> {
   const abortController = new AbortController();
-  const timer = setTimeout(()=>abortController.abort(), 600);
+  const timer = setTimeout(()=>abortController.abort(), timeout);
   const res = await fetch(request, { signal: abortController.signal }).catch(()=>null);
   clearTimeout(timer);
   return res;
@@ -537,7 +537,7 @@ async function rscCheck(event: FetchEvent) {
   const cleanUrl = url.toString();
   const cached = await cache.match(cleanUrl);
   if (cached) {
-    const res = await fetchWithTimeout(request, 600);
+    const res = await fetchWithTimeout(request, 1000);
     if (res && res.ok) {
       return res;
     }
@@ -553,18 +553,6 @@ async function rscCheck(event: FetchEvent) {
 async function cacheFirst(event: FetchEvent, {ignoreQuery = true} = {}) : Promise<Response> {
   const cache = await caches.open(RUNTIME_NAME)
   const request = event.request
-
-  // Log request details for debugging prefetch behavior
-  if (request.url.includes("/docs/")) {
-    /*console.log("SW Request:", {
-      url: request.url.split("/").pop(),
-      mode: request.mode,
-      destination: request.destination,
-      cache: request.cache,
-      hasRSC: request.url.includes("_rsc="),
-      referrer: request.referrer ? "has-referrer" : "no-referrer",
-    })*/
-  }
 
   // Only do network-first for actual user navigation (NOT prefetch/RSC)
   const isUserNavigation =
