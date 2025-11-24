@@ -123,6 +123,11 @@ export class OfflineDB extends Dexie {
     if (searchText.length === 0) {
       return [];
     }
+    const quote = searchText.startsWith('"');
+    if (quote) {
+      // Exact phrase search
+      searchText = searchText.slice(1, searchText.endsWith('"') ? -1 : undefined).trim();
+    }
     // * lunr-index the query to get tokens
     const queryTokens = extractFullTextTokens(searchText, 0).keys();
     // * For every token, query fullTextIndex for matching tokens to get contentIds and scores (toArray())
@@ -130,7 +135,7 @@ export class OfflineDB extends Dexie {
       Array.from(queryTokens).map(token => 
         this.fullTextIndex
           .where(':id')
-          .between([token, Dexie.minKey], [token + '\uffff', Dexie.maxKey])
+          .between([token, Dexie.minKey], [quote ? token : token + '\uffff', Dexie.maxKey])
           .toArray()
       )
     );
@@ -180,22 +185,39 @@ export class OfflineDB extends Dexie {
       .slice(0, 100); // Limit to top 100 results
 
     // * Fetch URLs from fullTextContent
-    const resultContents = (await this.fullTextContent.bulkGet(
+    let resultContents = (await this.fullTextContent.bulkGet(
       topResults.map(([contentId]) => contentId)
-    )).map((c, i) => ({...c, id: topResults[i][0], score: topResults[i][1]}));
+    )).map((c, i) => ({...c, id: topResults[i][0], score: topResults[i][1] }));
 
-    // Give further score if searchText appears as a whole in title or body
+    const contentsToRemove = new Set<number>();
+    
     for (const content of resultContents) {
-      if (content.title?.includes(searchText)) {
-        // Boost score for title match
-        content.score *= 100;
-        content.score += 5000;
+      if (quote) {
+        // Remove from results if exact phrase not found
+        if (!content.lowerTitle?.includes(searchText) && !content.body?.includes(searchText)) {
+          contentsToRemove.add(content.id);
+        }
+      } else {
+        // Give further score if searchText appears as a whole in title or body
+        if (content.lowerTitle === searchText) {
+          // Exact title match
+          content.score *= 200;
+          content.score += 10000;
+        } else if (content.lowerTitle?.includes(searchText)) {
+          // Boost score for title match
+          content.score *= 100;
+          content.score += 5000;
+        }
+        if (content.body?.includes(searchText)) {
+          // Boost score for body match
+          content.score *= 50;
+          content.score += 2000;
+        }
       }
-      if (content.body?.includes(searchText)) {
-        // Boost score for body match
-        content.score *= 50;
-        content.score += 2000;
-      }
+    }
+    if (quote) {
+      //if (searchText === "hello world") debugger;
+      resultContents = resultContents.filter(c => !contentsToRemove.has(c.id));
     }
 
     // Sort again by score descending
