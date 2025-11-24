@@ -66,9 +66,15 @@ export default function ClientSearchHighlighter({ containerId }: ClientSearchHig
     textNodes.forEach(textNode => {
       const text = textNode.textContent || ''
       if (regex.test(text)) {
-        const parent = textNode.parentNode
+        const parent = textNode.parentNode as HTMLElement
         if (parent) {
-          const highlightedHTML = text.replace(regex, '<mark data-search-highlight style="background-color: yellow; color: black;">$1</mark>')
+          // Determine if we're inside a code block
+          const isInCodeBlock = parent.closest('pre, code, .hljs') !== null
+          const backgroundColor = isInCodeBlock 
+            ? 'rgba(255, 140, 0, 0.6)' // Orange for code
+            : 'rgba(255, 215, 0, 0.4)' // Yellow for text
+          
+          const highlightedHTML = text.replace(regex, `<mark data-search-highlight style="background-color: ${backgroundColor}; color: white; font-weight: bold; padding: 1px 2px; border-radius: 2px;">$1</mark>`)
           const wrapper = document.createElement('span')
           wrapper.innerHTML = highlightedHTML
           
