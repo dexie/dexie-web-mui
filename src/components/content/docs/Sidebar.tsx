@@ -42,14 +42,14 @@ const isNavItem = (item: NavItem | NavStructure): item is NavItem => {
 const searchDocs = async (
   navigation: NavStructure,
   searchTerm: string
-): Promise<NavStructure> => {
+): Promise<{searchResults: NavStructure, resultCount: number, totalResultCount: number}> => {
   if (searchTerm.trim() === "") {
-    return navigation;
+    return {searchResults: navigation, resultCount: 0, totalResultCount: 0};
   }
 
-  const foundSections = await offlineDB.findDocuments(searchTerm);
+  const {searchResults: foundSections, totalResultCount } = await offlineDB.findDocuments(searchTerm);
   const grouped = Object.groupBy(foundSections, doc => doc.parentTitle ?? doc.title ?? "Untitled");
-  return Object.fromEntries(Object.entries(grouped).filter(([, docs]) => !!docs).map(([key, docs]) => {
+  const searchResults = Object.fromEntries(Object.entries(grouped).filter(([, docs]) => !!docs).map(([key, docs]) => {
     if (docs && (docs.length > 1 || (docs[0] && key !== (docs[0].title ?? docs[0].parentTitle)))) {
       return [key, Object.fromEntries(docs.map(doc => [doc.title ?? "Untitled", {
         title: doc.title ?? doc.parentTitle ?? "Untitled",
@@ -65,6 +65,7 @@ const searchDocs = async (
       return [key, {}];
     }
   }));
+  return {searchResults, resultCount: foundSections.length, totalResultCount};
   /*return Object.fromEntries(foundSections.map(doc => [doc.title ?? doc.parentTitle ??  "Untitled", {
     title: doc.parentTitle ?? doc.title ?? "Untitled",
     slug: doc.url.replace(/^\/docs\//, ''),
@@ -82,14 +83,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Filtered navigation based on search text
-  const searchResults = useLiveQuery(
+  const {searchResults, totalResultCount, resultCount} = useLiveQuery(
     () => searchDocs(navigation, searchText),
     [searchText],
-    {loading: {title: "Loading...", slug: ""}} // hack to show nothing while loading (below...)
+    {searchResults: {} as NavStructure, resultCount: 0, totalResultCount: -1} // hack to show nothing while loading (below...)
   )
-  const filteredNavigation = searchResults.loading?.slug === ""
-    ? {}
-    : searchResults;
+  const filteredNavigation = searchResults;
 
   // Handle keyboard navigation in search field
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -287,6 +286,20 @@ const Sidebar: React.FC<SidebarProps> = ({
             },
           }}
         />
+        {/* totalResultCount > 0 && (
+          <Typography 
+            variant="caption" 
+            color="text.secondary"
+            sx={{ ml: 1, mt: -2, display: 'block', opacity: 0.7, fontStyle: 'italic' }}
+          >
+            Found {totalResultCount} section{totalResultCount !== 1 ? "s" : ""}
+             {resultCount >= 50 ? `. Showing top ${resultCount}.`
+              : resultCount > 2 ? '. Showing all of them.'
+              : resultCount === 2
+              ? `. Showing both.`
+              : '' }
+          </Typography>
+        )*/}
       </Box>
       
       {/* Scrollable navigation content */}
@@ -317,7 +330,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             renderNavItem(key, item)
           )}
         </List>
-        {searchText.trim() && Object.keys(filteredNavigation).length === 0 && !('loading' in searchResults) && (
+        {totalResultCount === 0 && (
           <Box sx={{ textAlign: "center", mt: 3, color: "text.secondary" }}>
             <Typography variant="body2">
               No results found for &ldquo;{searchText}&rdquo;
