@@ -118,12 +118,12 @@ Update operations avoid conflicts as long as the different clients updates diffe
 
 ## Consistently add or remove unique entries to sets of strings or numbers
 
-Update- and modify operations take an object containing the properties to update. The value to be set can either be a plain value (such as `{name: "Foo"}` which will update the "name" property to "Foo") but can also be a consistent operation on the property such as mathematical add(2) or set manipulation remove(["foo"]). This can be utilized to modify the property relative to its current value. When working with array properties that represent a set of strings or numbers (such as `tags` or `hobbies`), the consistent operations `add()` and `remove()` can be used to manipulate the array consistently across sync rather than replacing the whole array. See [/docs/add()] and [/docs/remove()]. This has a meaning when multiple clients eventually syncs with a server.
+Update- and modify operations take an object containing the properties to update. The value to be set can either be a plain value (such as `{name: "Foo"}` which will update the "name" property to "Foo") but can also be a consistent operation on the property such as mathematical add(2) or set manipulation remove(["foo"]). This can be utilized to modify the property relative to its current value. When working with array properties that represent a set of strings or numbers (such as `tags` or `hobbies`), the consistent operations `add()` and `remove()` can be used to manipulate the array consistently across sync rather than replacing the whole array. See [add()](/docs/PropModification/add()) and [remove()](/docs/PropModification/remove(). This has a meaning when multiple clients eventually syncs with a server.
 
 ## Consistent addition / subtraction
 
 Number or BigInt properties can be manipulated using addition or subtraction that is consistent across sync.
-See [/docs/add()] and [/docs/remove()].
+See [add()](/docs/PropModification/add()) and [remove()](/docs/PropModification/remove()).
 
 ## Consistent Tree Structures
 
