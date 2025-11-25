@@ -225,13 +225,13 @@ const cloudPlans = [
       { text: "Unlimited production users" },
       { text: "Unlimited evaluation users" },
       { text: "Unlimited databases" },
-      { text: "50+ connections" },
       { text: "Email support" },
       {
-        text: "Increased rate limits",
-        subtext: "1000 requests per second.",
+        text: "Increased rate limits per user"
       },
-      { text: "20+ GB storage" },
+      {
+        text: "Increased storage limits", subtext: "See Storage Limits for details."
+      },
     ],
   },
   {
