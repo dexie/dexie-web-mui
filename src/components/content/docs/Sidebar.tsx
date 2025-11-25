@@ -125,7 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             href={`${basePath}/${item.slug}`}
             onClick={onNavigate}
             data-search-result-link
-            tabIndex={0}
+            tabIndex={100}
             style={{
               fontWeight: 700,
               maxWidth: "100%",
