@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: 'Consistent remove() operator'
+title: 'remove() operator'
 ---
 
 ### Syntax

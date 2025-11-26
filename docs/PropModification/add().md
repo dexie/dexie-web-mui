@@ -1,6 +1,6 @@
 ---
 layout: docs
-title: 'Consistent add() operator'
+title: 'add() operator'
 ---
 
 ### Syntax
