@@ -35,7 +35,7 @@ interface Thing {
 Performs a sync-consistent addition onto a property of an object in the database
 
 - If the argument is a number or a bigint, a mathematical addition will be performed
-- If the argument is an array, each item in the provided array will be added to the property and the target array will be sorted in ascending order. Target array is regarded as a set and will never contain duplicates.
+- If the argument is an array, each item in the provided array will be added to the property and the target array will be sorted in ascending order. 
 
 ### Mathematical addition
 
@@ -47,7 +47,7 @@ If the target value is not of same type as the argument, the target value will b
 
 ### Array addition
 
-If the argument is an array, `add()` will add the given items in the argument array to the target array, duplicate items removed, and then sort the target array in ascending order.
+If the argument is an array of primitives, `add()` will add the given items in the argument array to the target array and then sort the target array in ascending order using Array.prototype.sort().
 
 If the target property does not exist, is null, undefined or other type than an array, the target array will be created.
 
