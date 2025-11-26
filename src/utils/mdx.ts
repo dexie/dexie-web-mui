@@ -98,30 +98,33 @@ export function getDocumentBySlug(
   source: DocumentSource
 ): Doc | null {
   try {
+    // URL-decode the slug to handle encoded brackets like %5B and %5D
+    const decodedSlug = decodeURIComponent(slug)
+    
     const sourceDirectory = getSourceDirectory(source)
     let filePath: string
 
     // For cloud source, check if the slug starts with 'docs/'
-    if (source === "cloud" && slug.startsWith("docs/")) {
+    if (source === "cloud" && decodedSlug.startsWith("docs/")) {
       // Remove 'docs/' prefix and look in cloud/docs/
-      const docSlug = slug.replace("docs/", "")
+      const docSlug = decodedSlug.replace("docs/", "")
       filePath = path.join(sourceDirectory, "docs", `${docSlug}.md`)
     } else {
-      filePath = path.join(sourceDirectory, `${slug}.md`)
+      filePath = path.join(sourceDirectory, `${decodedSlug}.md`)
     }
 
     // If the exact file doesn't exist, try looking for index.md in the directory
     if (!fs.existsSync(filePath)) {
       // Try directory/index.md pattern
       const indexPath =
-        source === "cloud" && slug.startsWith("docs/")
+        source === "cloud" && decodedSlug.startsWith("docs/")
           ? path.join(
               sourceDirectory,
               "docs",
-              slug.replace("docs/", ""),
+              decodedSlug.replace("docs/", ""),
               "index.md"
             )
-          : path.join(sourceDirectory, slug, "index.md")
+          : path.join(sourceDirectory, decodedSlug, "index.md")
 
       if (fs.existsSync(indexPath)) {
         filePath = indexPath
@@ -130,7 +133,7 @@ export function getDocumentBySlug(
         const allDocs = getAllDocuments(source)
         const matchingDoc = allDocs.find(doc => {
           const docSlug = doc.metadata.slug.toLowerCase()
-          const searchSlug = slug.toLowerCase()
+          const searchSlug = decodedSlug.toLowerCase()
           // Check for exact match or index match
           return docSlug === searchSlug || 
                  docSlug === `${searchSlug}/index` ||
@@ -149,11 +152,11 @@ export function getDocumentBySlug(
     const { data, content } = matter(fileContents)
 
     return {
-      slug, // Add the missing slug property
+      slug: decodedSlug, // Use decoded slug
       metadata: {
         ...data,
-        slug,
-        title: data.title || slug.split("/").pop() || slug,
+        slug: decodedSlug, // Use decoded slug
+        title: data.title || decodedSlug.split("/").pop() || decodedSlug,
       },
       content,
     }

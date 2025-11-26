@@ -58,8 +58,11 @@ interface DocPageProps {
 export default async function DocPage({ params }: DocPageProps) {
   const { slug } = await params
   const slugString = slug.join("/")
+  
+  // URL-decode the slug to handle encoded brackets like %5B and %5D
+  const decodedSlugString = decodeURIComponent(slugString)
 
-  const doc = getDocBySlug(slugString)
+  const doc = getDocBySlug(slugString) // Use original slug for lookup
 
   if (!doc) {
     notFound()
@@ -71,7 +74,7 @@ export default async function DocPage({ params }: DocPageProps) {
   return (
     <DocsLayout
       navigation={navigation}
-      currentSlug={slugString}
+      currentSlug={decodedSlugString} // Use decoded slug for display
       pageTitle={doc.metadata.title}
       mdxSource={mdxContent}
     >
@@ -96,7 +99,7 @@ export default async function DocPage({ params }: DocPageProps) {
           }}
         >
           <Typography variant="caption" color="text.secondary">
-            {slugString}
+            {decodedSlugString}
           </Typography>
           <Typography variant="caption" color="text.secondary">
             Last updated: {new Date().toLocaleDateString("en-US")}
@@ -111,6 +114,7 @@ export default async function DocPage({ params }: DocPageProps) {
 export async function generateMetadata({ params }: DocPageProps) {
   const { slug } = await params
   const slugString = slug.join("/")
+  const decodedSlugString = decodeURIComponent(slugString)
   const doc = getDocBySlug(slugString)
 
   if (!doc) {
@@ -149,11 +153,11 @@ export async function generateMetadata({ params }: DocPageProps) {
     }
 
     // Fallback description based on categories
-    if (slugString.includes("cloud")) {
+    if (decodedSlugString.includes("cloud")) {
       return `${title} documentation for Dexie Cloud. Learn offline-first sync, authentication, and real-time collaboration features.`
-    } else if (slugString.includes("tutorial")) {
+    } else if (decodedSlugString.includes("tutorial")) {
       return `${title} tutorial for Dexie.js. Step-by-step guide to building offline-first applications with IndexedDB.`
-    } else if (slugString.includes("api")) {
+    } else if (decodedSlugString.includes("api")) {
       return `${title} API reference for Dexie.js. Complete documentation with examples for offline-first development.`
     }
 
@@ -222,7 +226,7 @@ export async function generateMetadata({ params }: DocPageProps) {
   }
 
   const description = createDescription(doc.metadata.title)
-  const keywords = createKeywords(doc.metadata.title, slugString)
+  const keywords = createKeywords(doc.metadata.title, decodedSlugString)
 
   return {
     title: `${doc.metadata.title} | Dexie.js Documentation - Offline-First Database`,
@@ -231,7 +235,7 @@ export async function generateMetadata({ params }: DocPageProps) {
     openGraph: {
       title: `${doc.metadata.title} - Dexie.js Documentation`,
       description,
-      url: `https://dexie.org/docs/${slugString}`,
+      url: `https://dexie.org/docs/${decodedSlugString}`,
       type: "article",
       images: [
         {
@@ -249,7 +253,7 @@ export async function generateMetadata({ params }: DocPageProps) {
       images: ["/assets/images/og-images/og-base.png"],
     },
     alternates: {
-      canonical: `https://dexie.org/docs/${slugString}`,
+      canonical: `https://dexie.org/docs/${decodedSlugString}`,
     },
     other: {
       "article:section": "Documentation",
