@@ -40,7 +40,7 @@ interface Thing {
 Performs a sync-consistent subtraction from a property of an object in the database
 
 - If the argument is a number or a bigint, a mathematical subtraction will be performed
-- If the argument is an array, each item in the provided array will be removed from the target array property if it extists.
+- If the argument is an array, each item in the provided array will be removed from the target array property if it exists.
 
 ### Mathematical subtraction
 
