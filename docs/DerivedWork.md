@@ -29,6 +29,8 @@ Did you write something based on Dexie? Feel free to list it here.
 
 ## Known Addons
 
+- [dexie-logger](https://10play.github.io/dexie-logger/) _A logger middleware that logs and measures all core operations in dexie_
+- [dexie-worker](/docs/dexie-worker/dexie-worker) _Delegate queries to web worker with no effort_
 - [dexie-encrypted](https://github.com/mark43/dexie-encrypted) _Easily add encryption to all non-indexed properties_
 - [dexie-easy-encrypt](https://github.com/jaetask/dexie-easy-encrypt) _Unopinionated encryption middleware with less complexity that let you provide your own encrypt() / decrypt() functions._
 - [dexie-relationships](https://github.com/ignasbernotas/dexie-relationships) _Declare and query data with foreign keys_
