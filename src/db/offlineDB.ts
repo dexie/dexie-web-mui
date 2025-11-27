@@ -1,5 +1,6 @@
 import Dexie, { Table } from "dexie";
 import { extractFullTextTokens } from "./extractFullTextTokens";
+import { OfflineManifest } from "@/types/OfflineManifest";
 
 export interface OfflineStatus {
   id: string;
@@ -17,14 +18,19 @@ export interface OfflineStatus {
 }
 
 export interface CacheMetadata {
-  id: string; // 'manifest' or URL
-  hash: string | null;
+  id: string; // URL
+  ftsHash?: string | null;
+  hash?: string | null;
   lastUpdated: string;
 }
 
+type CachingState = 'idle' | 'check' | 'updating-fts' | 'updating-cache';
+
 // Dedicated database for offline status (shared between SW and GUI)
 export class OfflineDB extends Dexie {
-  status!: Table<OfflineStatus>;
+  status!: Table<OfflineStatus>; // DEPRECATED. TODO: Remove in future versions
+  manifest!: Table<OfflineManifest, 'manifest'>; // Single entry outbound key "manifest"
+  state!: Table<CachingState, 'state'>; // Single entry outbound key "state"
   cacheMetadata!: Table<CacheMetadata>;
   fullTextIndex!: Table<
     { contentId: number; score: number }, // Value (contentId, score)
@@ -43,8 +49,10 @@ export class OfflineDB extends Dexie {
 
   constructor() {
     super("OfflineDB");
-    this.version(3).stores({
+    this.version(4).stores({
       status: "id",
+      manifest: '', // Single entry outbound key "manifest"
+      state: '',    // Single entry outbound key "state"
       cacheMetadata: "id",
       fullTextIndex: ",contentId", // outbound [token+contentId] -> {contentId, score}
       fullTextContent: "++,url,lowerTitle",

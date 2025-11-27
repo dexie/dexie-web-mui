@@ -11,7 +11,6 @@ import { MDFullTextMeta } from "@/types/MDFullTextMeta";
 import {
   offlineDB,
   type OfflineStatus,
-  type CacheMetadata,
 } from "../db/offlineDB";
 import type { OfflineManifest } from "@/types/OfflineManifest";
 
@@ -21,307 +20,74 @@ const RUNTIME_NAME = `dexie-web-runtime-${VERSION}`;
 const MANIFEST_URL = "/offline-manifest.json";
 const ORIGIN = self.location.origin;
 
-// Utility: Check if we need to update cache based on manifest changes
-async function checkForUpdates(notifyClients = false) {
-  console.log("🔍 Checking for updates...", { notifyClients });
-
-  const res = await fetch(MANIFEST_URL, { cache: "no-cache" });
-  if (!res.ok) {
-    console.log("❌ Failed to fetch manifest:", res.status);
-    return false;
-  }
-
-  const manifest: OfflineManifest = await res.json();
-  console.log("📄 Fetched manifest:", { generatedAt: manifest.generatedAt });
-
-  // Check if manifest is newer than what we have cached
-  const manifestMeta = await offlineDB.cacheMetadata.get("manifest");
-  console.log("💾 Cached manifest meta:", manifestMeta);
-
-  const isManifestNewer =
-    !manifestMeta || manifestMeta.lastUpdated !== manifest.generatedAt;
-  console.log("🆕 Is manifest newer?", isManifestNewer, {
-    cached: manifestMeta?.lastUpdated,
-    new: manifest.generatedAt,
-  });
-
-  if (isManifestNewer) {
-    console.log("🔄 New manifest detected, updating all routes and assets...");
-    isUpdating = true;
-    try {
-      await updateCacheFromManifest(manifest);
-
-      // Update manifest metadata
-      await offlineDB.cacheMetadata.put({
-        id: "manifest",
-        hash: null, // Not applicable for manifest
-        lastUpdated: manifest.generatedAt,
-      });
-    } finally {
-      isUpdating = false;
-    }
-
-    // Notify clients about content updates if requested
-    if (notifyClients) {
-      console.log("📢 Notifying clients of new version...");
-      const clients = await self.clients.matchAll({
-        includeUncontrolled: true,
-        type: "window",
-      });
-      console.log(`👥 Found ${clients.length} clients`);
-
-      for (const client of clients) {
-        client.postMessage({
-          type: "VERSION_AVAILABLE",
-          message: "New version available",
-        });
-      }
-    }
-
-    return true;
-  }
-
-  console.log("✅ No updates needed");
-  return false;
-}
-
 // Track last update check to avoid excessive checking
 let lastUpdateCheck = 0;
-let isUpdating = false;
 const UPDATE_CHECK_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
-// Check for updates and cache the current request first, then continue in background
-async function checkForUpdatesAndCacheInBackground(request: Request) {
-  // Only check on navigation requests and avoid excessive checking
-  if (request.mode !== "navigate" || isUpdating) {
-    return;
+async function updateManifest(): Promise<boolean> {
+  // Fetch manifest
+  const manifest: OfflineManifest = await fetch(MANIFEST_URL, {
+    cache: "no-cache",
+    signal: abortController.signal
+  }).then(res => res.json());
+
+  // Check if manifest is newer than what we have cached
+  const storedManifest = await offlineDB.manifest.get("manifest");
+  const isManifestNewer =
+    !storedManifest || storedManifest.generatedAt !== manifest.generatedAt;
+  if (!isManifestNewer) {
+    console.log("No manifest changes detected, skipping update.");
+    return false;
   }
-
-  // Check if this is likely a hard page load vs SPA navigation
-  const referrer = request.referrer;
-  const isHardLoad =
-    !referrer ||
-    new URL(referrer).origin !== ORIGIN ||
-    request.cache === "reload";
-
-  if (!isHardLoad) {
-    return;
-  }
-
-  const now = Date.now();
-  const timeSinceLastCheck = now - lastUpdateCheck;
-
-  if (timeSinceLastCheck < UPDATE_CHECK_INTERVAL) {
-    return;
-  }
-
-  lastUpdateCheck = now;
-
-  // Don't await this - let it run in background
-  updateInBackground().catch((error) => {
-    console.warn("❌ Background update failed:", error);
-  });
+  console.log("Manifest changes detected, updating cache...");
+  await offlineDB.manifest.put(manifest, "manifest");
+  return true;
 }
-
-let updateInBackgroundPromise: Promise<void> | null = null;
-function updateInBackground() {
-  if (!updateInBackgroundPromise) {
-    updateInBackgroundPromise = _updateInBackground().finally(() => {
-      updateInBackgroundPromise = null;
-    });
-  }
-  return updateInBackgroundPromise;
-}
-// Background update process
-async function _updateInBackground() {
-  // Don't try to update if we're offline
-  console.log("updateInBackground: Checking online status...");
-  if (!isLikelyOnline()) {
-    console.log("Offline: skipping background update check");
-    return;
-  }
-
-  try {
-    // Check if manifest has changed
-    const res = await fetch(MANIFEST_URL, { cache: "no-cache" });
-    if (!res.ok) return;
-
-    const manifest: OfflineManifest = await res.json();
-    const manifestMeta = await offlineDB.cacheMetadata.get("manifest");
-
-    const isManifestNewer =
-      !manifestMeta || manifestMeta.lastUpdated !== manifest.generatedAt;
-
-    if (isManifestNewer) {
-      console.log("🔄 New version detected, updating cache in background...");
-      isUpdating = true;
-
-      try {
-        await updateCacheFromManifest(manifest);
-
-        // Update manifest metadata
-        await offlineDB.cacheMetadata.put({
-          id: "manifest",
-          hash: null,
-          lastUpdated: manifest.generatedAt,
-        });
-
-        console.log("✅ Background cache update completed");
-      } finally {
-        isUpdating = false;
-      }
-    } else {
-      console.log("✅ No background updates needed");
-    }
-  } catch (error) {
-    console.warn("❌ Background update failed:", error);
-    isUpdating = false;
-    setTimeout(() => updateInBackground(), 10000);
-  }
-}
-
-// Utility: Clean up cache entries that are no longer in the manifest
-async function cleanupRemovedEntries(manifest: OfflineManifest) {
-  const cache = await caches.open(RUNTIME_NAME);
-  const allManifestUrls = new Set([
-    ...manifest.routes,
-    ...Object.keys(manifest.assets),
-  ]);
-
-  // Get all cached metadata entries
-  const allCachedEntries = await offlineDB.cacheMetadata.toArray();
-  const entriesToRemove = allCachedEntries.filter((entry) => {
-    // Don't remove the manifest entry itself
-    if (entry.id === "manifest") return false;
-
-    // Only remove if not in current manifest
-    return !allManifestUrls.has(entry.id);
-  });
-
-  if (entriesToRemove.length > 0) {
-    console.log(
-      `Cleaning up ${entriesToRemove.length} removed entries from cache`
-    );
-
-    // Add a small delay to ensure any ongoing requests have completed
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    for (const entry of entriesToRemove) {
-      try {
-        // Remove from cache
-        const req = new Request(new URL(entry.id, ORIGIN).toString());
-        await cache.delete(req);
-
-        // Remove from metadata
-        await offlineDB.cacheMetadata.delete(entry.id);
-
-        // Remove from full-text search if it's a docs route
-        if (entry.id.startsWith("/docs/")) {
-          await offlineDB.deleteFullTextDoc(entry.id);
-        }
-
-        console.log(`Removed cached entry: ${entry.id}`);
-      } catch (error) {
-        console.warn(`Failed to remove cached entry ${entry.id}:`, error);
-      }
-    }
-  }
-}
-
-let updateCacheFromManifestPromise: Promise<void> | null = null;
-function updateCacheFromManifest(manifest: OfflineManifest) {
-  if (!updateCacheFromManifestPromise) {
-    updateCacheFromManifestPromise = _updateCacheFromManifest(manifest).finally(
-      () => {
-        updateCacheFromManifestPromise = null;
-      }
-    );
-  }
-  return updateCacheFromManifestPromise;
-}
-
-let ftsUpdated: number = 0;
 
 // Utility: Update all routes and assets from manifest (simplified approach)
-async function _updateCacheFromManifest(manifest: OfflineManifest) {
+async function updateCacheFromManifest(manifest: OfflineManifest) {
   console.log("Starting cache update from manifest...");
   const cache = await caches.open(RUNTIME_NAME);
 
   // Get all routes and assets to process
   const allRoutes = manifest.routes;
   const allAssets = Object.keys(manifest.assets);
-  const allEntries = [...allRoutes, ...allAssets];
+  const allDocs = Object.keys(manifest.docRoutes);
+  const allEntries = [...allRoutes, ...allDocs, ...allAssets];
   const total = allEntries.length;
-  let processed = 0;
   let updated = 0;
   let index = 0;
-  let ftsIndex = 0;
   const concurrency = 4;
 
-  // Set initial status
-  await saveOfflineStatus({
-    isWarming: true,
-    isReady: false,
-    cached: 0,
-    failed: 0,
-    total,
-    progress: 0,
-    startedAt: new Date().toISOString(),
-  });
-
-  async function ftsWorker() {
-    while (ftsIndex < allEntries.length) {
-      const entry = allEntries[ftsIndex++];
-      const isAsset = allAssets.includes(entry);
-
-      if (!isAsset && entry.startsWith("/docs/")) {
-        try {
-          await putFullTextIndex(entry);
-        } catch (error) {
-          console.warn(`Failed to update full-text index for ${entry}:`, error);
-        }
-      }
-    }
-  }
-
-  const abortController = new AbortController();
-  fetchRequested.addEventListener(
-    "fetchRequested",
-    () => {
-      abortController.abort();
-    },
-    { once: true }
-  );
-
   async function worker() {
-    const signal = abortController.signal;
-    await new Promise<void>((resolve) => setTimeout(resolve, 10));
     while (index < allEntries.length) {
       const entry = allEntries[index++];
       const isAsset = allAssets.includes(entry);
-      const expectedHash = isAsset ? manifest.assets[entry] : null;
+      const isDoc = allDocs.includes(entry);
+      const expectedHash = isAsset
+        ? manifest.assets[entry]
+        : isDoc
+        ? manifest.docRoutes[entry]
+        : null;
 
       try {
         // For assets, check if hash has changed
+        // For woff files, skip updating
         // For routes, always update since we don't track route hashes anymore
         let shouldUpdate = true;
 
-        if (isAsset && expectedHash) {
+        if (expectedHash) {
           const currentMeta = await offlineDB.cacheMetadata.get(entry);
           shouldUpdate = !currentMeta || currentMeta.hash !== expectedHash;
         }
 
         if (shouldUpdate) {
-          /*console.log(
-            `🔄 Updating ${entry}${isAsset ? " (asset)" : " (route)"}...`
-          )*/
-
           const req = new Request(new URL(entry, ORIGIN).toString(), {
             credentials: "same-origin",
-            cache: "no-cache",
+            cache: "no-cache"
           });
 
-          const resp = await fetch(req, { signal });
+          const resp = await fetch(req, { signal: abortController.signal });
 
           if (resp.ok) {
             const respClone = resp.clone();
@@ -331,31 +97,15 @@ async function _updateCacheFromManifest(manifest: OfflineManifest) {
               )}`
             );
             await cache.put(req, respClone);
-            await offlineDB.cacheMetadata.put({
-              id: entry,
+            await offlineDB.cacheMetadata.upsert(entry, {
               hash: expectedHash,
               lastUpdated: new Date().toISOString(),
             });
             updated++;
           }
         }
-
-        processed++;
-
-        // Update progress every 5 processed items
-        if (processed % 5 === 0 || processed === total) {
-          await saveOfflineStatus({
-            isWarming: processed < total,
-            isReady: processed === total,
-            cached: updated,
-            failed: processed - updated,
-            total,
-            progress: Math.round((processed / total) * 100),
-          });
-        }
       } catch (error) {
-        processed++;
-        if (signal.aborted) {
+        if (error instanceof DOMException && error.name === "AbortError") {
           throw new DOMException(
             "Update aborted due to fetch event",
             "AbortError"
@@ -367,78 +117,12 @@ async function _updateCacheFromManifest(manifest: OfflineManifest) {
     }
   }
 
-  try {
-    // Process full-text index updates in parallel
-    if (Date.now() - ftsUpdated > 10 * 60 * 1000) {
-      await Promise.all(Array.from({ length: concurrency }, () => ftsWorker()));
-      // Delete full-text entries for removed docs
-      await offlineDB.transaction(
-        "rw",
-        offlineDB.fullTextIndex,
-        offlineDB.fullTextContent,
-        async () => {
-          const allFtsEntries = await offlineDB.fullTextContent.toArray();
-          const allFtsIds = await offlineDB.fullTextContent
-            .toCollection()
-            .primaryKeys();
-          const removedFtsIds = allFtsEntries
-            .map((ftsContent, index) => ({
-              ftsContent,
-              ftsId: allFtsIds[index],
-            }))
-            .filter(
-              ({ ftsContent }) =>
-                !allRoutes.includes(ftsContent.url.split("#")[0])
-            )
-            .map(({ ftsId }) => ftsId);
-          offlineDB.fullTextContent.bulkDelete(removedFtsIds);
-          offlineDB.fullTextIndex
-            .where("contentId")
-            .anyOf(removedFtsIds)
-            .delete();
-        }
-      );
+  // Process all entries
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
 
-      ftsUpdated = Date.now();
-    } else {
-      console.log("Skipping full-text index update; last update was recent.");
-    }
-    // Process all entries
-    await Promise.all(Array.from({ length: concurrency }, () => worker()));
-
-    // Clean up old entries
-    await cleanupRemovedEntries(manifest);
-
-    // Final success status
-    await saveOfflineStatus({
-      isWarming: false,
-      isReady: true,
-      cached: updated,
-      failed: processed - updated,
-      total,
-      progress: 100,
-      completedAt: new Date().toISOString(),
-    });
-
-    console.log(
-      `Cache update complete: ${updated} updated, ${
-        processed - updated
-      } unchanged`
-    );
-  } catch (error) {
-    // Error status
-    await saveOfflineStatus({
-      isWarming: false,
-      isReady: false,
-      error: (error as Error).message,
-      failedAt: new Date().toISOString(),
-    });
-    if (error instanceof DOMException && error.name === "AbortError") {
-      console.log("Update aborted due to fetch event, will resume later.");
-      setTimeout(() => updateInBackground(), 5000);
-    }
-    throw error;
-  }
+  console.log(
+    `Cache update complete: ${updated} updated entries.`
+  );
 }
 
 // Utility: Save offline cache status to Dexie for GUI consumption
@@ -462,6 +146,12 @@ async function saveOfflineStatus(status: Partial<OfflineStatus>) {
       });
   }
 }
+
+self.addEventListener("message", (event: ExtendableMessageEvent) => {
+  if (event.data && event.data.type === "RESUME_CACHING") {
+    event.waitUntil(stateMachine());
+  }
+});
 
 self.addEventListener("install", (event: ExtendableEvent) => {
   // Activate immediately
@@ -491,52 +181,204 @@ self.addEventListener("install", (event: ExtendableEvent) => {
   );
 });
 
-self.addEventListener("activate", (event: ExtendableEvent) => {
-  // Take control immediately
-  event.waitUntil(self.clients.claim());
+async function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    if (signal?.aborted) {
+      return reject(new DOMException("Aborted", "AbortError"));
+    }
+    const timer = setTimeout(() => {
+      signal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, ms);
 
-  // Initial setup only - check if we need to populate cache
-  event.waitUntil(
-    (async () => {
-      try {
-        // For regular activations, just check if we have any cached content
-        const manifestMeta = await offlineDB.cacheMetadata.get("manifest");
-        if (!manifestMeta) {
-          console.log("First install detected, populating cache...");
-          isUpdating = true;
-          await checkForUpdates(false);
-          isUpdating = false;
-        } else {
-          console.log("Activation detected, checking for updates...");
-          await checkForUpdates(false);
-        }
-      } catch (e) {
-        if (e instanceof DOMException && e.name === "AbortError") {
-          console.log(
-            "Activate setup aborted due to fetch event, will resume later."
-          );
-          setTimeout(() => updateInBackground(), 5000);
-        } else {
-          console.warn("Activate setup failed:", e);
-        }
-        await saveOfflineStatus({
-          isWarming: false,
-          isReady: false,
-          error: (e as Error).message,
-          failedAt: new Date().toISOString(),
-        });
+    function onAbort() {
+      clearTimeout(timer);
+      reject(new DOMException("Aborted", "AbortError"));
+    }
+
+    signal?.addEventListener("abort", onAbort, { once: true });
+  });
+}
+
+function oneAtATime<T extends () => Promise<R>, R>(
+  fn: T
+) {
+  let running: Promise<R> | null = null;
+
+  return (): Promise<R> => {
+    if (!running) {
+      running = fn().finally(()=> {
+        running = null;
+      });
+    }
+    
+    return running as Promise<R>;
+  };
+}
+
+let abortController = new AbortController();
+
+function pauseStateMachine(event: ExtendableEvent) {
+  abortController.abort();
+  abortController = new AbortController();
+  event.waitUntil(sleepAndRestartStateMachine());
+  
+  async function sleepAndRestartStateMachine() {
+    await sleep(5000, abortController.signal).catch((error) => {
+      if (error?.name !== "AbortError") {
+        throw error;
       }
-    })()
+    });
+    await stateMachine().catch((error) => {
+      if (error?.name === "AbortError") {
+        console.log("Caching aborted");
+      } else {
+        console.warn("State machine error:", error);
+      }
+    });
+  }
+}
+
+const stateMachine = oneAtATime(async () => {
+  let state = await offlineDB.state.get("state");
+  if (lastUpdateCheck < Date.now() - UPDATE_CHECK_INTERVAL) {
+    state = 'check';
+    await offlineDB.state.put(state, "state");
+  }
+  while (state && state !== "idle") {
+    checkAbort();
+    switch (state) {
+      case "check": {
+        console.log("State machine: Checking for updates...");
+        const updated = await updateManifest();
+        if (updated) {
+          // If updated, set state to updating-fts
+          state = 'updating-fts';
+          await offlineDB.state.put(state, "state");
+        } else {
+          // No updates, go idle
+          state = 'idle';
+          await offlineDB.state.put(state, "state");
+        }
+        lastUpdateCheck = Date.now();
+        break;
+      }
+
+      case "updating-fts": {
+        console.log("State machine: Updating full-text search index...");
+        await updateFTS();
+        state = "updating-cache";
+        await offlineDB.state.put(state, "state");
+        await sleep(5000, abortController.signal); // Small delay before next step
+        break;
+      }
+
+      case "updating-cache": {
+        console.log("State machine: Updating cache from manifest...");
+        const manifest = await offlineDB.manifest.get("manifest");
+        if (manifest) {
+          await updateCacheFromManifest(manifest);
+        }
+        state = "idle";
+        await offlineDB.state.put(state, "state");
+        break;
+      }
+    }
+  }
+});
+
+function checkAbort() {
+  if (abortController.signal.aborted) {
+    throw new DOMException("Aborted", "AbortError");
+  } 
+}
+
+async function updateFTS() {
+  let manifest = await offlineDB.manifest.get("manifest");
+  if (!manifest) {
+    await updateManifest();
+    manifest = await offlineDB.manifest.get("manifest");
+  }
+  if (!manifest) throw new Error("No manifest available for FTS update");
+
+  const cachedDocRoutes = await offlineDB.cacheMetadata
+    .where("id")
+    .startsWith("/docs/")
+    .toArray();
+  const cachedDocByUrl = new Map<string, { id: string; hash: string | null }>();
+  for (const doc of cachedDocRoutes) {
+    cachedDocByUrl.set(doc.id, { id: doc.id, hash: doc.ftsHash || null });
+  }
+  const manifestDocRoutes = Object.keys(manifest.docRoutes);
+  const docsToUpsert = manifestDocRoutes.filter(
+    (doc) => {
+      const cached = cachedDocByUrl.get(doc);
+      return !cached || cached.hash !== manifest.docRoutes[doc];
+    }
   );
-});
 
-// Listen for online/offline events to optimize behavior
-self.addEventListener("online", () => {
-  console.log("📶 Back online - enabling background updates");
-});
+  async function worker() {
+    while (docsToUpsert.length > 0) {
+      checkAbort();
+      const docUrl = docsToUpsert.pop();
+      if (docUrl) {
+        try {
+          await putFullTextIndex(docUrl);
+          // Update cache metadata
+          await offlineDB.cacheMetadata.upsert(docUrl, {
+            ftsHash: manifest!.docRoutes[docUrl],
+            lastUpdated: new Date().toISOString(),
+          });
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") {
+            throw new DOMException("Aborted", "AbortError");
+          } else {
+            console.warn(`Failed to update full-text index for ${docUrl}:`, error);
+          }
+        }
+      }
+    }
+  }
+  const concurrency = 8;
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
+  
+  // Delete docs that are no longer in manifest
+  const docsToDelete = cachedDocRoutes.filter(
+    (doc) => !manifestDocRoutes.includes(doc.id)
+  );
+  for (const doc of docsToDelete) {
+    await offlineDB.deleteFullTextDoc(doc.id);
+    await offlineDB.cacheMetadata.delete(doc.id);
+  }
+}
 
-self.addEventListener("offline", () => {
-  console.log("📵 Gone offline - disabling background updates");
+
+
+
+self.addEventListener("activate", (event: ExtendableEvent) => {
+  event.waitUntil((async ()=>{
+    // Take control immediately
+    await self.clients.claim();
+    // Set initial state to "check"
+    await offlineDB.state.put("check", "state");
+    // Try starting the state machine
+    await stateMachine().catch((error) => {
+      if (error?.name === "AbortError") {
+        console.log("State machine aborted");
+      } else {
+        console.warn("State machine error:", error);
+      }
+    });
+  })());
+
+  // Listen for online/offline events to optimize behavior
+  self.addEventListener("online", () => {
+    console.log("📶 Back online - enabling background updates");
+  });
+
+  self.addEventListener("offline", () => {
+    console.log("📵 Gone offline - disabling background updates");
+  });
 });
 
 // Cache strategies
@@ -557,11 +399,12 @@ function isLikelyOnline(): boolean {
 
 async function fetchWithTimeout(
   request: Request,
-  timeout: number
+  timeout: number,
+  requestInit: RequestInit = {}
 ): Promise<Response | null> {
   const abortController = new AbortController();
   const timer = setTimeout(() => abortController.abort(), timeout);
-  const res = await fetch(request, { signal: abortController.signal }).catch(
+  const res = await fetch(request, { signal: abortController.signal, ...requestInit }).catch(
     () => null
   );
   clearTimeout(timer);
@@ -569,7 +412,6 @@ async function fetchWithTimeout(
 }
 
 async function rscCheck(event: FetchEvent) {
-  fetchRequested.dispatchEvent(new CustomEvent("fetchRequested"));
   const cache = await caches.open(RUNTIME_NAME);
   const request = event.request;
   console.log("RSC check for:", request.url);
@@ -615,35 +457,50 @@ async function cacheFirst(
     !request.url.includes("_rsc=") && // Next.js React Server Components (prefetch)
     ["no-store", "no-cache", "reload"].includes(request.cache);
 
-  if (isUserNavigation && !isUpdating && isLikelyOnline()) {
-    const request = event.request.clone();
-    setTimeout(() => checkForUpdatesAndCacheInBackground(request), 100);
-  }
-
   // For USER navigation requests only, try network-first
   if (isUserNavigation && isLikelyOnline()) {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3000);
-
-      const resp = await fetch(request, {
-        signal: controller.signal,
+      pauseStateMachine(event);
+      const resp = await fetchWithTimeout(request, 3000, {
         cache: "no-cache",
       });
-
-      clearTimeout(timeoutId);
-
       if (resp && resp.ok) {
         await cache.put(request, resp.clone());
         console.log("Network-first served:", request.clone());
+
+        const triggerStateMachine = async () => {
+          // Set state machine to check for updates on next opportunity
+          const shouldUpdate = await offlineDB.transaction('rw', offlineDB.state, async () => { 
+            const currentState = await offlineDB.state.get("state");
+            if (currentState === 'idle') {
+              await offlineDB.state.put('check', "state");
+              return true;
+            }
+            return false
+          });
+          if (shouldUpdate) {
+            // Fire off state machine without blocking response
+            await stateMachine().catch((error) => {
+              if (error?.name === "AbortError") {
+                console.log("State machine aborted");
+              } else {
+                console.warn("State machine error:", error);
+              }
+            });
+          }
+        };
+
+        event.waitUntil(triggerStateMachine());
+
         return resp;
       }
+
     } catch (err) {
       console.log(
         "Network failed, falling back to cache for:",
-        request.url.split("?")[0].split("/").pop()
+        request.url
       );
-    }
+    }    
   }
 
   const canonicalUrl = ignoreQuery ? request.url.split("?")[0] : request.url;
@@ -690,8 +547,7 @@ async function cacheFirst(
     return cached;
   }
 
-  // For RSC requests, use shorter timeout to avoid blocking scrolling
-  const isRSCRequest = request.url.includes("_rsc=");
+  pauseStateMachine(event);
 
   if (isLikelyOnline()) {
     try {
@@ -717,21 +573,17 @@ async function cacheFirst(
           () => {}
         );
         console.log(
-          isRSCRequest ? "RSC served:" : "Network fallback served:",
+          "Network fallback served:",
           request.url.split("?")[0].split("/").pop()
         );
       }
       return resp;
     } catch (err) {
       console.log(
-        isRSCRequest ? "RSC timeout/failed:" : "Network failed for:",
+        "Network failed for:",
         request.url,
         err
       );
-      if (isRSCRequest) {
-        // For RSC requests, return a minimal response to avoid breaking navigation
-        return new Response("", { status: 204 }); // No Content
-      }
     }
   }
 
@@ -746,24 +598,22 @@ async function cacheFirst(
   throw new Error("Unable to serve request offline");
 }
 
-const fetchRequested = new EventTarget();
-
 self.addEventListener("fetch", (event: FetchEvent) => {
   const { request } = event;
   const url = new URL(request.url);
 
   // Only handle same-origin GET requests
   if (request.method !== "GET" || !isSameOrigin(request)) {
-    fetchRequested.dispatchEvent(new CustomEvent("fetchRequested"));
+    pauseStateMachine(event);
     return; // allow default network
   }
   if (url.searchParams.get("_rsc")) {
     // Handling of _rsc requests: They are unnescessary in case
     // we have the full document cached already.
+    pauseStateMachine(event);
     event.respondWith(rscCheck(event));
     return;
   }
-  fetchRequested.dispatchEvent(new CustomEvent("fetchRequested"));
 
   // All same-origin requests use cache-first strategy
   // Our smart cache update system handles keeping content fresh
@@ -790,6 +640,7 @@ self.addEventListener("fetch", (event: FetchEvent) => {
 
   // API routes and other dynamic content - network first
   if (url.pathname.startsWith("/api/")) {
+    pauseStateMachine(event);
     event.respondWith(
       fetch(event.request).catch(
         () =>
@@ -880,7 +731,7 @@ async function putFullTextIndex(route: string) {
     const req = new Request(`/full-text-search${route}.json`, {
       credentials: "same-origin",
     });
-    const resp = await fetch(req);
+    const resp = await fetch(req, { cache: "no-cache" }); // So small file, don't abortSignal it
     if (resp.ok) {
       const ftMeta = (await resp.json()) as MDFullTextMeta;
       // Store in IndexedDB via Dexie

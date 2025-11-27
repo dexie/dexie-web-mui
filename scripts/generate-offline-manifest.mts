@@ -136,7 +136,7 @@ async function main(): Promise<void> {
   const nextStatic = collectNextStatic();
 
   // Create simplified routes array with no hashes  
-  const routes = Array.from(new Set([...appRoutes, ...docsData.routes])).sort();
+  const routes = Array.from(new Set([...appRoutes])).sort();
 
   // Merge assets with file-based hashes for cache validity
   const assets: Record<string, string | null> = {
@@ -147,6 +147,10 @@ async function main(): Promise<void> {
   writeManifest({
     generatedAt: new Date().toISOString(),
     routes,
+    docRoutes: docsData.docRoutes.reduce((acc, doc) => {
+      acc[doc.route] = doc.mdFileHash;
+      return acc;
+    }, {} as Record<string, string | null>),
     assets,
     fullTextMetas: docsData.docRoutes,
   });

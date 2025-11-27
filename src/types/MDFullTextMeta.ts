@@ -9,4 +9,5 @@ export interface MDFullTextMeta {
   route: string;
   title?: string;
   sections: MarkdownSection[];
+  mdFileHash: string;
 }

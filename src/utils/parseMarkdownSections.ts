@@ -5,6 +5,13 @@ import { remark } from 'remark';
 import type { Root, Heading, Text, PhrasingContent } from 'mdast';
 import { MarkdownSection, MDFullTextMeta } from "@/types/MDFullTextMeta";
 import { generateHeadingIdFromString } from './headingId';
+import crypto from 'crypto';
+
+function generateHash(content: string | Buffer): string {
+  // Generate SHA-256 hash for assets (stable file-based hashing)
+  const hash = crypto.createHash('sha256').update(content).digest('hex');
+  return hash.substring(0, 16); // Use first 16 chars for compact storage
+}
 
 export function collectDocsRoutes(docsDir: string): { routes: string[]; docRoutes: MDFullTextMeta[] } {
   const routes = new Set<string>(['/docs']);
@@ -47,7 +54,8 @@ export function collectDocsRoutes(docsDir: string): { routes: string[]; docRoute
         docRoutes.push({
           route,
           title,
-          sections
+          sections,
+          mdFileHash: generateHash(fileContent)
         });
       }
     }

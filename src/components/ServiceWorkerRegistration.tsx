@@ -20,6 +20,14 @@ export default function ServiceWorkerRegistration() {
         .register('/sw.js', { type: 'module' })
         .then((registration) => {
           console.log('Service Worker (ESM) registered:', registration.scope)
+          // In safari, we need to wake up the SW to check for updates:
+          setTimeout(async () => {
+            const cachedManifest = await offlineDB.manifest.get('manifest');
+            if (!cachedManifest || new Date(cachedManifest?.generatedAt).getTime() || 0 < Date.now() - 5 * 60 * 1000) {
+              console.log('Manifest is old or missing, resuming caching...');
+              registration.active?.postMessage({ type: "RESUME_CACHING" });
+            }
+          }, 10_000);
           
           // Listen for updates
           registration.addEventListener('updatefound', () => {
