@@ -5,14 +5,14 @@ title: 'Collection.offset()'
 
 ### Syntax
 
-```javascript
+```ts
 collection.offset(count)
 ```
 
 ### Parameters
 
 <table>
-<tr><td>count: Number</td><td>Number of entries to skip. Must be &gt;= 0.</td></tr>
+<tr><td>count: number</td><td>Number of entries to skip. Must be &gt;= 0.</td></tr>
 </table>
 
 ### Return Value
