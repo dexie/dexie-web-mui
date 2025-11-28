@@ -6,7 +6,7 @@ title: 'Consuming Dexie as a module'
 ## Short Version
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 const db = new Dexie('myDb');
 db.version(1).stores({
@@ -47,7 +47,7 @@ Write your javascript file (index.js or whatever) that uses dexie:
 index.js
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 var db = new Dexie('hellodb');
 db.version(1).stores({
     tasks: '++id,date,description,done'
@@ -127,7 +127,7 @@ Done.
 main.js:
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 var db = new Dexie('mydb');
 db.version(1).stores({foo: 'id'});
@@ -211,7 +211,7 @@ In your code, import dexie and subclass it:
 
 ```typescript
 // Import Dexie
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 // Subclass it
 class MyDatabase extends Dexie {

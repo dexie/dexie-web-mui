@@ -12,7 +12,7 @@ npm install dexie-cloud-addon
 ```
 
 ```ts
-import Dexie from "dexie";
+import { Dexie } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
 const db = new Dexie("mydb", {addons: [dexieCloud]});
@@ -29,7 +29,7 @@ See interface [DexieCloudOptions](DexieCloudOptions)
 ## Example
 
 ```ts
-import Dexie from 'dexie'
+import { Dexie } from 'dexie'
 import dexieCloud from 'dexie-cloud-addon'
 
 const db = new Dexie('mydb', { addons: [dexieCloud] })

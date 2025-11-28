@@ -68,7 +68,7 @@ Let's say you write a ToDo app where you don't care at all about collaboration. 
 The sample below is almost identical to how it would be declared in a plain Dexie.js app. The differences are simply that the dexieCloud addon has been enabled, it has connected to a Dexie Cloud database, and it uses the '@' sign to generate universal IDs.
 
 ```js
-import Dexie from 'dexie'
+import { Dexie } from 'dexie'
 import dexieCloud from 'dexie-cloud-addon'
 
 const db = new Dexie('mySyncedDB', { addons: [dexieCloud] })
@@ -90,7 +90,7 @@ _In this sample, we are only declaring application tables 'todoLists' and 'todoI
 Access control is defined using the Dexie tables [realms](#table-realms), [members](#table-members) and [roles](#table-roles). To take advantage of these, just add them to your schema declaration. The server end-point will know how to handle these special tables if they are present.
 
 ```js
-import Dexie from 'dexie'
+import { Dexie } from 'dexie'
 import dexieCloud from 'dexie-cloud-addon'
 
 const db = new Dexie('myDB', { addons: [dexieCloud] })
@@ -160,7 +160,7 @@ This example shows how to create shareable entities, how to share them and how t
 4. **deleteTodoList()** deletes the todo-list along with all its related objects
 
 ```js
-import Dexie from 'dexie'
+import { Dexie } from 'dexie'
 import dexieCloud from 'dexie-cloud-addon'
 
 //
@@ -374,7 +374,7 @@ _See [Permissions](#permissions)_
 In this example, we declare a very simplistic project database and use roles to distinguish permissions. We create our own roles "manager", "doer" and "commenter". The function `addProject()` will return a promise of adding a new project, `addMember()` adds a member to it, `addTask()` adds tasks to the project, `markAsDone()` marks a task as done and `addComment()` to add comments on tasks.
 
 ```js
-import Dexie from 'dexie'
+import { Dexie } from 'dexie'
 import dexieCloud from 'dexie-cloud-addon'
 
 const db = new Dexie('myProjectDB', { addons: [dexieCloud] })

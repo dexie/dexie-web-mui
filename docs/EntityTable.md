@@ -24,7 +24,7 @@ Dexie also exports a generic `Table<T, TKey, TInsertType=T>` that could be used 
 ### Example with Table
 
 ```ts
-import Dexie, { type Table } from 'dexie';
+import { Dexie, type Table } from 'dexie';
 
 const db = new Dexie('FriendsDatabase') as Dexie & {
   friends: Table<Friend, number>;
@@ -48,7 +48,7 @@ db.version(1).stores({
 ### Example with EntityTable
 
 ```ts
-import Dexie, { type EntityTable } from 'dexie';
+import { Dexie, type EntityTable } from 'dexie';
 
 const db = new Dexie('FriendsDatabase') as Dexie & {
   friends: EntityTable<Friend, 'id'>;

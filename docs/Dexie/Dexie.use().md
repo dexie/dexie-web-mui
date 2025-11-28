@@ -32,7 +32,7 @@ Your provided `create` function takes a [DBCore](/docs/DBCore/DBCore) and should
 # Example
 
 ```typescript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 const db = new Dexie('dbname');
 

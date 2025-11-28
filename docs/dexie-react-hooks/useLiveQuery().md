@@ -48,7 +48,7 @@ export function useLiveQuery<T, TDefault=undefined> (
 
 ```tsx
 import React from "react";
-import Dexie from "dexie";
+import { Dexie } from "dexie";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "./db";
 

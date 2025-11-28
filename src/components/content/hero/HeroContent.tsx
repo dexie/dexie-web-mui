@@ -125,7 +125,7 @@ export default function HeroContent() {
           language="js"
           showLineNumbers={true}
           highlightLines={[3, 6, 7, 8]}
-          code={`import Dexie from "dexie";
+          code={`import { Dexie } from "dexie";
 
 const db = new Dexie('MyDatabase');
 
@@ -207,7 +207,7 @@ npm install dexie-cloud-addon`}
           <CodeBlock
             language="js"
             showLineNumbers={true}
-            code={`import Dexie from "dexie";
+            code={`import { Dexie } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
 const db = new Dexie('SyncedFriends', {addons: [dexieCloud]});

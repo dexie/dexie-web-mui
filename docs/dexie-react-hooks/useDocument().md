@@ -25,7 +25,7 @@ export function useDocument(
 # Sample
 
 ```ts
-import Dexie, { type Table } from 'dexie';
+import { Dexie, type Table } from 'dexie';
 import yDexie from 'y-dexie';
 import { useLiveQuery, useDocument } from 'dexie-react-hooks';
 import type * as Y from 'yjs';

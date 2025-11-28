@@ -6,7 +6,7 @@ title: 'Dexie.addons'
 This array contains functions that add functionality to Dexie. An addon may register itself in Dexie.addons by using `Dexie.addons.push(fn)`. Example:
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 export function ForEachAddon (db) {
     // Makes it possible to use forEach() instead of each() on collections.
@@ -38,7 +38,7 @@ ES5:
 Addons that register themselves to Dexie.addons (For example Dexie.Observable and Dexie.Syncable)
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 import 'dexie-syncable';
 
 // db1 will have Dexie.Syncable

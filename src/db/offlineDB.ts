@@ -1,4 +1,4 @@
-import Dexie, { Table } from "dexie";
+import { Dexie, Table } from "dexie";
 import { extractFullTextTokens } from "./extractFullTextTokens";
 import { OfflineManifest } from "@/types/OfflineManifest";
 

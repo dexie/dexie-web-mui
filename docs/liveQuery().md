@@ -216,7 +216,7 @@ _This is a simplified explanation of how the algorithm works. The raw details ca
 
 ```js
 import { db } from './db';
-import Dexie, { liveQuery } from 'dexie';
+import { Dexie, liveQuery } from 'dexie';
 
 const friendHashObservable = liveQuery(async () => {
   const friends = await db.friends.toArray();

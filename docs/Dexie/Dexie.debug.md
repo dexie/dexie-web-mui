@@ -28,14 +28,14 @@ If served from localhost: true, else false.
 Explicitly turn off debug mode:
 
 ```javascript
-import Dexie from "dexie";
+import { Dexie } from "dexie";
 Dexie.debug = false;
 ```
 
 Explicitly turn on debug mode:
 
 ```javascript
-import Dexie from "dexie";
+import { Dexie } from "dexie";
 Dexie.debug = true;
 ```
 

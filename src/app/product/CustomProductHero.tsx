@@ -150,7 +150,7 @@ const subscription = liveQuery(
 npx dexie-cloud whitelist http://localhost:3000
 npm install dexie
 npm install dexie-cloud-addon`,
-    code: `import Dexie from "dexie";
+    code: `import { Dexie } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
 const db = new Dexie('SyncedTasks', {addons: [dexieCloud]});

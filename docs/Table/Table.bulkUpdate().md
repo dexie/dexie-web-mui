@@ -49,7 +49,7 @@ Array properties follow the same keyPath pattern as object properties - using nu
 
 ### Sample (TypeScript)
 ```ts
-import Dexie, { type EntityTable } from 'dexie';
+import { Dexie, type EntityTable } from 'dexie';
 
 interface Contact {
   id: number;
@@ -123,7 +123,7 @@ await db.friends.bulkUpdate([
 ### Sample (Plain JS)
 
 ```js
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 const db = new Dexie('contactDB');
 

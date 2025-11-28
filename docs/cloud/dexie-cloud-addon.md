@@ -25,7 +25,7 @@ npx dexie-cloud create
 ## Usage
 
 ```tsx
-import Dexie from 'dexie'
+import { Dexie } from 'dexie'
 import dexieCloud from 'dexie-cloud-addon' // Import the addon
 
 const db = new Dexie('mydb', {

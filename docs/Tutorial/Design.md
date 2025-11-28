@@ -8,7 +8,7 @@ title: 'Design'
 Dexie is both a class and a namespace. An instance of Dexie will represent a database connection. As namespace, it is used as an export area for functions, utilities, and classes. In a simple HTML browser environment this means that including "Dexie.js" will only add one property to window: window.Dexie. If you are utilizing a module environment like commonjs or ES modules, Dexie will be the default export that you get when requiring it. Here's an example how to use Dexie once you've included it:
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 // Create your instance
 var db = new Dexie("MyDatabase"); 

@@ -22,7 +22,7 @@ If you are storing plain data and just want the a minimal get-started code in a 
 ### db.ts
 
 ```ts
-import Dexie, { type EntityTable } from "dexie"
+import { Dexie, type EntityTable } from "dexie"
 
 interface Friend {
   id: number // This prop will be used as primary key (see below)
@@ -66,7 +66,7 @@ export const db = new AppDB()
 
 ```ts
 // AppDB.ts
-import Dexie, { type EntityTable } from "dexie"
+import { Dexie, type EntityTable } from "dexie"
 import Friend from "./Friend"
 
 export default class AppDB extends Dexie {
@@ -150,7 +150,7 @@ Synced tables have a few more properties that, similar to auto-generated primary
 ### AppDB.ts - Dexie Cloud version
 
 ```ts
-import Dexie from "dexie"
+import { Dexie } from "dexie"
 import dexieCloud, { type DexieCloudTable } from "dexie-cloud-addon"
 import Friend from "./Friend"
 

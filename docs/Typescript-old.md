@@ -18,7 +18,7 @@ npm install dexie
 ## Import dexie
 
 ```ts
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 ```
 
 Assuming you have moduleResolution: "node" in your tsconfig, this will work out-of-the-box. **Don't use tsd (DefinitelyTyped)** because we bundle dexie.d.ts with our npm package and tsc compiler will understand how to find it (it reads "typings" from package.json).

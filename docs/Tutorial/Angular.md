@@ -30,7 +30,7 @@ To make the best Typescript experience with Dexie.js, table properties (such as 
 
 ```ts
 // db.ts
-import Dexie, { Table } from 'dexie';
+import { Dexie, Table } from 'dexie';
 
 export interface TodoList {
   id?: number;

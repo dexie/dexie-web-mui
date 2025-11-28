@@ -43,7 +43,7 @@ function MyComponent() {
 ### Example './db.js' module (imported by the previous samples)
 
 ```js
-import Dexie from "dexie";
+import { Dexie } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 
 export const db = new Dexie("mydb", { addons: [dexieCloud] });

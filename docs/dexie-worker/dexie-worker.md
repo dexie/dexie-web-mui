@@ -6,7 +6,7 @@ title: 'dexie-worker'
 The npm library [dexie-worker](https://www.npmjs.com/package/dexie-worker) by [Parsa Gholipour](https://github.com/parsagholipour) acts as a proxy between the GUI thread and a worker. Instead of talking to the Dexie API, the proxy is used and it will communicate with the Dexie instance that operates in the Worker thread.
 
 ```ts
-import Dexie, { Table } from "dexie";
+import { Dexie, Table } from "dexie";
 import { getWebWorkerDB } from "dexie-worker";
 
 const mainDb = new Dexie("MyDatabase") as Dexie & {

@@ -56,7 +56,7 @@ Applications typically have one single Dexie instance declared as its own module
 
 ```ts
 // db.js
-import Dexie from "dexie"
+import { Dexie } from "dexie"
 
 export const db = new Dexie("myDatabase")
 db.version(1).stores({
@@ -70,7 +70,7 @@ If you use Typescript, table properties (such as `db.friends`) needs to be expli
 
 ```ts
 // db.ts
-import Dexie, { type EntityTable } from "dexie"
+import { Dexie, type EntityTable } from "dexie"
 
 interface Friend {
   id: number

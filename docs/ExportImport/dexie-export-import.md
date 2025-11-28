@@ -18,7 +18,7 @@ npm install dexie-export-import
 Here's the basic usage. There's a lot you can do by supplying optional `[options]` arguments. The available options are described later on in this README (See Typescript interfaces below).
 
 ```js
-import Dexie from "dexie";
+import { Dexie } from "dexie";
 import {importDB, exportDB, importInto, peakImportFile} from "dexie-export-import";
 
 //
@@ -67,7 +67,7 @@ Note that you can also import the package as follows:
 *NOTE:* Typescript users using dexie@2.x will get compilation errors if using the static import method `Dexie.import()`. 
 
 ```ts
-import Dexie from "dexie";
+import { Dexie } from "dexie";
 import "dexie-export-import";
 
 //
@@ -353,7 +353,7 @@ As Dexie can dynamically open non-Dexie IndexedDB databases, this is not an issu
 Sample provided here:
 
 ```js
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 import {importDB, exportDB} from "dexie-export-import";
 
 

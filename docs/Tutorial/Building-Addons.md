@@ -11,7 +11,7 @@ The [Dexie.addons](/docs/Dexie/Dexie.addons) array contains functions that exten
 Example:
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 export function ForEachAddon (db) {
     // Makes it possible to use forEach() instead of each() on collections.
@@ -74,7 +74,7 @@ Another way to extend Dexie is to derive from it or make your extension create n
 Instead of registering into Dexie.addons, you could instead create a derived class and call it something else. Example:
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 class MyDerivedDexie extends Dexie {
 	anotherProperty;

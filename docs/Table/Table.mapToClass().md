@@ -37,7 +37,7 @@ Notably does not apply to any of the hook functions ([Table.hook('creating')](/d
 ### Sample (ES6)
 
 ```javascript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 var db = new Dexie("FriendsDB");
 db.version(1).stores({
@@ -63,7 +63,7 @@ db.friends.where("name").startsWithIgnoreCase("d").each(function(friend) {
 ### Sample (Typescript)
 
 ```typescript
-import Dexie from 'dexie';
+import { Dexie } from 'dexie';
 
 export class FriendsDB extends Dexie {
     friends!: Dexie.Table<Friend, number>;
