@@ -30,9 +30,9 @@ If object exists, upsert() behaves like [Table.update()](</docs/Table/Table.upda
 
 If object doesn't exist, upsert() behaves like [Table.add()](</docs/Table/Table.add()>).
 
-The difference between [_upsert()_](Table.upsert()) and [_put()_](Table.put()) is that _upsert()_ will only apply the given changes to the object (or to a new empty object) while _put()_ will replace the entire object.
+The difference between _upsert()_ and [_put()_](Table.put()) is that _upsert()_ will only apply the given changes to the object (or to a new empty object) while _put()_ will replace the entire object.
 
-The difference between [_upsert()_](Table.upsert()) and [_update()_](Table.update()) is that _upsert()_ will create a new object if the key is not found, while _update()_ will not change anything if object isn't found.
+The difference between _upsert()_ and [_update()_](Table.update()) is that _upsert()_ will create a new object if the key is not found, while _update()_ will not change anything if object isn't found.
 
 When creating a new object:
 
