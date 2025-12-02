@@ -16,6 +16,11 @@ interface GoogleAnalyticsProps {
 
 const GoogleAnalytics = ({ measurementId }: GoogleAnalyticsProps) => {
   useEffect(() => {
+    // Disable in development mode
+    if (process.env.NODE_ENV === 'development') {
+      return
+    }
+    
     // Check if analytics is allowed
     if (!isAnalyticsAllowed()) {
       return

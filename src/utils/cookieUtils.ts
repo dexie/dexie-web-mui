@@ -68,9 +68,18 @@ export const setCookiePreferences = (preferences: Omit<CookiePreferences, 'times
 }
 
 /**
+ * Check if we're in development mode
+ */
+const isDevelopmentMode = (): boolean => {
+  return process.env.NODE_ENV === 'development'
+}
+
+/**
  * Check if analytics cookies are allowed
  */
 export const isAnalyticsAllowed = (): boolean => {
+  // Disable analytics in development mode
+  if (isDevelopmentMode()) return false
   if (!userIsEU) return true
   const preferences = getCookiePreferences()
   if (!preferences) return false

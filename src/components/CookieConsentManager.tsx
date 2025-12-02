@@ -24,6 +24,13 @@ const CookieConsentManager = ({ children, gaId }: CookieConsentManagerProps) => 
   useEffect(() => {
     setIsClient(true)
     
+    // Disable analytics and banner in development mode
+    if (process.env.NODE_ENV === 'development') {
+      setAnalyticsEnabled(false)
+      setShowBanner(false)
+      return
+    }
+    
     // Check if user is from EU
     const userIsFromEU = isEUUser()
     
