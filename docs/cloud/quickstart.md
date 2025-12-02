@@ -24,7 +24,7 @@ This app is an educational PWA with focus on clean, minimalistic and correct cod
 
 ## Steps
 
-1. <a href="https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fdexie%2FDexie.js%2Ftree%2Fmaster%2Fsamples%2Fdexie-cloud-todo-app&filename=dexie-cloud-todo-app" target="_blank">Download our sample app</a> and unzip it
+1. <a href="https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fdexie%2FDexie.js%2Ftree%2Fmaster%2Fsamples%2Fdexie-cloud-todo-app&filename=dexie-cloud-todo-app" target="_blank">Download our sample app</a> and unzip it _(or if you prefer: [github link](https://github.com/dexie/Dexie.js/tree/master/samples/dexie-cloud-todo-app))_
 
 2. Start a Terminal or Git Bash Console and `cd` to the extracted zip (~/Downloads/dexie-cloud-todo-app) and install dependencies
 

@@ -188,7 +188,7 @@ export default function BlogPostsWidget({
                   variant="outlined"
                   color="inherit"
                   href={item.link}
-                  target="_blank"
+                  target={item.link.startsWith("http") ? "_blank" : "_self"}
                   startIcon={
                     <LaunchIcon
                       sx={{
