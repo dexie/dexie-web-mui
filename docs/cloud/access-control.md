@@ -177,7 +177,7 @@ db.version(2).stores({
   //        and will correspond to server-side access control of Dexie
   //        Cloud)
   realms: '@realmId',
-  members: '@id,[realmId+email]',
+  members: '@id,[email+realmId]',
   roles: '[realmId+name]',
 })
 
@@ -236,8 +236,8 @@ function shareTodoList(todoList, ...friends) {
  */
 function unshareTodoList(todoList, ...friends) {
   return db.members
-    .where('[realmId+email]')
-    .anyOf(friends.map((friend) => [todoList.realmId, friend.email]))
+    .where('[email+realmId]')
+    .anyOf(friends.map((friend) => [friend.email, todoList.realmId]))
     .delete()
 }
 
