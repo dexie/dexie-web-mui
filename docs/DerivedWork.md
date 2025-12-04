@@ -53,6 +53,7 @@ Did you write something based on Dexie? Feel free to list it here.
 
 ## Blogs and Samples
 
+- [Using IndexedDB with React/Next.js (How to Use Dexie.js)](https://blog.stackademic.com/using-indexeddb-with-react-next-js-how-to-use-dexie-js-a256934ffef7)
 - [Logrocket blog: Using Dexie.js in React apps for offline storage](https://blog.logrocket.com/dexie-js-indexeddb-react-apps-offline-data-storage/)
 - [Using Dexie.js to write slick IndexedDB code](https://dev.to/andyhaskell/using-dexie-js-to-write-slick-indexeddb-code-304o)
 - [Using IndexedDB API with React (and Hooks)](https://levelup.gitconnected.com/using-the-indexeddb-api-with-react-and-hooks-4e63d83a5d1b)
