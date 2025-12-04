@@ -237,7 +237,7 @@ const cloudPlans = [
   {
     id: "business",
     title: "Business",
-    subtitle: "When you need control over your data.",
+    subtitle: "When you need control over your data and infrastructure.",
     price: "$3,495",
     priceNote: "forever",
     buttonText: "Buy now",
@@ -262,7 +262,7 @@ const cloudPlans = [
   {
     id: "enterprise",
     title: "Enterprise",
-    subtitle: "When you need full control, source code and freedom.",
+    subtitle: "When you need full control, source code and vendor independence.",
     price: "$7,995",
     priceNote: "forever",
     buttonText: "Buy now",
@@ -285,12 +285,16 @@ const cloudPlans = [
         subtext: "Ten years of problem-solving—delivered to you on day one.",
       },
       {
-        text: "Customize",
+        text: "Vendor independence",
         subtext:
-          "Customize the platform to your need and integrate with any system.",
+          "Modify, integrate, and maintain without external dependencies.",
       },
       { text: "1 year of full support" },
       { text: "Priority support" },
+      {
+        text: "Future-proof investment",
+        subtext: "Own your technology stack—no licensing fees, no vendor lock-in, ever.",
+      },
     ],
   },
 ]
