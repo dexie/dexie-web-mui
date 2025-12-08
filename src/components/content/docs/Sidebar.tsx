@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef } from "react"
+import React, { useRef } from "react"
 import {
   Box,
   List,
@@ -83,7 +83,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Filtered navigation based on search text
-  const {searchResults, totalResultCount, resultCount} = useLiveQuery(
+  const {searchResults, totalResultCount } = useLiveQuery(
     () => searchDocs(navigation, searchText),
     [searchText],
     {searchResults: {} as NavStructure, resultCount: 0, totalResultCount: -1} // hack to show nothing while loading (below...)

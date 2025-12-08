@@ -54,7 +54,6 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
   const allAssets = Object.keys(manifest.assets);
   const allDocs = Object.keys(manifest.docRoutes);
   const allEntries = [...allRoutes, ...allDocs, ...allAssets];
-  const total = allEntries.length;
   let updated = 0;
   let index = 0;
   const concurrency = 4;
@@ -495,7 +494,7 @@ async function cacheFirst(
         return resp;
       }
 
-    } catch (err) {
+    } catch {
       console.log(
         "Network failed, falling back to cache for:",
         request.url

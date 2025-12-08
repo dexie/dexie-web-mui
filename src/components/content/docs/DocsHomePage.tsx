@@ -38,7 +38,6 @@ interface DocsHomePageProps {
 const DocsHomePage: React.FC<DocsHomePageProps> = ({
   source,
   title,
-  description,
   basePath,
   Layout,
   currentSlug = "",

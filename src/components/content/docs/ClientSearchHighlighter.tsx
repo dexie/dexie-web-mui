@@ -10,7 +10,7 @@ interface ClientSearchHighlighterProps {
 
 export default function ClientSearchHighlighter({ containerId }: ClientSearchHighlighterProps) {
   const [sessionStorageSearch] = useSessionStorage("search", "___initial_value___");
-  const [searchText, setSearchText] = useState("")
+  const [, setSearchText] = useState("")
 
   useEffect(() => {
     const currentSearchText = sessionStorageSearch || ""

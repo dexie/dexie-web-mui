@@ -2,9 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import {
-  Dialog,
-  DialogContent,
-  DialogActions,
   Button,
   Typography,
   Box,
