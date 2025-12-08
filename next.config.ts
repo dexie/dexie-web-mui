@@ -9,11 +9,6 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
-        source: "/cloud",
-        destination: "/product",
-        permanent: false,
-      },
-      {
         source: "/docs/cloud/pricing",
         destination: "/pricing",
         permanent: false,
