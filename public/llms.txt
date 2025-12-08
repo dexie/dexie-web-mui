@@ -196,6 +196,16 @@ interface Friend {
 const db = new Dexie("mydb") as Dexie & {
   friends: EntityTable<Friend, 'id'>; // 'id' represents the primary key name
 };
+
+async function addFriend(name: string, age: number) {
+  const id = await db.friends.add({name, age}); // OK to omit id here
+  return id;
+}
+
+function getFriends(): Promise<Friend[]> {
+  return db.friends.toArray(); // id required in the result
+}
+
 ```
 
 DexieCloudTable works similar to EntityTable, but adds some more optional properties to TInsertType: 'owner' and 'realmId' -
