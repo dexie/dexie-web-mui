@@ -1,0 +1,119 @@
+# Dexie.js and Dexie Cloud Documentation for LLMs
+
+## Overview
+
+**Dexie.js** is a wrapper library for IndexedDB that makes it easier to use.
+**Dexie Cloud** is an add-on for Dexie.js that provides sync, authentication, and access control, enabling offline-first applications.
+
+## Dexie Cloud Quickstart
+
+To get up and running quickly with an offline-first app with storage and sync:
+
+1.  **Download Sample App**:
+    - Download the sample app: `https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fdexie%2FDexie.js%2Ftree%2Fmaster%2Fsamples%2Fdexie-cloud-todo-app&filename=dexie-cloud-todo-app`
+    - Install dependencies: `npm install`
+
+2.  **Create Database**:
+    - Run: `npx dexie-cloud create`
+    - Follow the prompts and enter the OTP sent to your email.
+
+3.  **Configure App**:
+    - Run the configuration script (if available in the sample) or manually configure the database URL in your app.
+    - Example script: `chmod +x configure-app.sh && ./configure-app.sh`
+
+4.  **Run**:
+    - Start the app: `npm run dev`
+
+5.  **Deploy**:
+    - Build the app: `npm run build`
+    - Deploy to any static host (e.g., GitHub Pages).
+    - Whitelist the origin: `npx dexie-cloud whitelist https://<your-app-url>`
+
+**Full Quickstart Guide**: https://dexie.org/docs/cloud/quickstart
+
+## Dexie Cloud Tutorial
+
+### 1. Bootstrapping
+Create a new app (e.g., using Vite and React):
+```bash
+npm create vite@latest my-app -- --template react-ts
+npm install dexie dexie-cloud-addon dexie-react-hooks
+```
+
+### 2. Declare Database
+Create a `db.ts` file to configure Dexie with the Cloud addon.
+
+```typescript
+import { Dexie } from 'dexie';
+import dexieCloud from 'dexie-cloud-addon';
+
+export const db = new Dexie('mydb', { addons: [dexieCloud] });
+
+db.version(1).stores({
+  // Primary keys must be strings (e.g., @id for auto-generated)
+  items: '@id, name, status', 
+});
+
+db.cloud.configure({
+  databaseUrl: "https://<your-db-id>.dexie.cloud",
+  requireAuth: true // Optional
+});
+```
+
+### 3. Authentication
+Dexie Cloud supports passwordless email OTP authentication.
+
+```typescript
+// Login
+await db.cloud.login(); // Opens a login dialog (only needed if requireAuth: false)
+
+// Check current user
+const currentUser = db.cloud.currentUser.value;
+```
+
+### 4. Using Data (React Example)
+Use `useLiveQuery` to reactively fetch data.
+
+```typescript
+import { useLiveQuery } from "dexie-react-hooks";
+import { db } from "./db";
+
+export function TodoList() {
+  const todos = useLiveQuery(() => db.items.toArray());
+
+  if (!todos) return null;
+
+  return (
+    <ul>
+      {todos.map(todo => (
+        <li key={todo.id}>{todo.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+**Full Tutorial**: https://dexie.org/docs/Tutorial/Dexie-Cloud
+
+## Key Concepts
+
+- **Offline-First**: Data is stored locally in IndexedDB and synced to the cloud when online.
+- **Dual Consistency Models**: 
+  - **Server-Authoritative Consistency**: Server acts as the source of truth for operations requiring strong consistency, such as bookings, transactions, and other scenarios where CRDT conflict resolution is insufficient.
+  - **CRDT Support**: Full support for Y.js-based Conflict-Free Replicated Data Types (CRDTs) for real-time collaborative editing with components like TipTap, Monaco Editor, tldraw, React Flow, etc.
+- **Access Control**: Fine-grained access control using Realms and Roles.
+- **Observability**: `useLiveQuery` makes UI updates automatic when data changes (locally or remotely).
+
+## Documentation Links
+
+- **Main Documentation**: https://dexie.org/docs
+- **API Reference**: https://dexie.org/docs/API-Reference
+- **Dexie Cloud Home**: https://dexie.org/cloud
+- **Dexie Cloud Docs**: https://dexie.org/docs/cloud
+- **Quickstart Guide**: https://dexie.org/docs/cloud/quickstart
+- **Full Tutorial**: https://dexie.org/docs/Tutorial/Dexie-Cloud
+- **Authentication**: https://dexie.org/docs/cloud/authentication
+- **Access Control**: https://dexie.org/docs/cloud/access-control
+- **Consistency**: https://dexie.org/docs/cloud/consistency
+- **Y.js & CRDT**: https://dexie.org/docs/Y.js
+- **Best Practices**: https://dexie.org/docs/cloud/best-practices
