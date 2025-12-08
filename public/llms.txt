@@ -59,7 +59,7 @@ Primary key options:
 
 - ++id – auto-increment primary key
 - @id – string primary key (this syntax is only available when dexie-cloud-addon is used)
-- Primary keys can be compound (composite). The syntax for compound primary keys are `[${prop1}+${props2}]`. It is important to have the square brackets in the string and the plus sign as a separator between property names.
+- Primary keys can be compound (composite). The syntax for compound primary keys are `[prop1+prop2]`. It is important to have the square brackets in the string and the plus sign as a separator between property names.
 - Primary keys are either inbound (normally) or outbound (not included in the value)
 - Primary keys cannot be Multientry (*)
 - Primary keys are always unique and does not need to be explicitely declared for uniqueness, but it is not an error to do so.
