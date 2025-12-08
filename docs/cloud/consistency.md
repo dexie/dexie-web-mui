@@ -20,6 +20,51 @@ It can be a challenge to keep consistency in synced offline-first applications. 
 
 Dexie Cloud uses a combination of concepts that the application programmer can utilize in order to keep the data totally consistent at all times.
 
+# Dual Consistency Models
+
+Dexie Cloud supports two distinct consistency models, each optimized for different use cases:
+
+## Server-Authoritative Consistency (Default)
+
+The primary consistency model in Dexie Cloud is **server-authoritative**, where the server acts as the source of truth. This model is ideal for most use cases including:
+
+- **Transactional data** (bookings, purchases, inventory)
+- **Access control and permissions** (who can see what)
+- **Business logic enforcement** (validation, workflows)
+- **Traditional CRUD operations** (create, read, update, delete)
+
+In this model, operations are performed locally on the client and then synced to the server. The server re-executes operations with their where-clauses to ensure consistency across all clients, even when multiple users modify related data while offline. This guarantees that business rules and data integrity are maintained.
+
+## CRDT-Based Consistency (via Y.js)
+
+Dexie Cloud also supports **Conflict-Free Replicated Data Types (CRDTs)** through the Y.js library. This model is perfect for:
+
+- **Collaborative text editing** (TipTap, Monaco Editor)
+- **Collaborative diagramming** (tldraw, Excalidraw)
+- **Real-time flowcharts** (React Flow)
+- **Shared whiteboards and drawings**
+- **Any scenario requiring character-by-character or element-by-element merge**
+
+CRDTs enable multiple users to edit the same document simultaneously without conflicts. Changes merge automatically based on mathematical properties of the data structure, eliminating the need for server-side conflict resolution.
+
+With Y.js integration, you get:
+- **Awareness** (see other users' cursors and selections)
+- **Automatic synchronization** through Dexie Cloud's sync infrastructure
+- **Offline support** with automatic merge when reconnecting
+- **Rich ecosystem** of ready-to-use collaborative components
+
+**Note:** Y.js documents are still subject to the same server-authoritative access control as all other data in Dexie Cloud. Users must have the appropriate permissions to read or write Y.js documents, determined by realm membership and roles just like any other database objects.
+
+See [Y.js integration documentation](/docs/Y.js/Y.js) for implementation details.
+
+## Choosing the Right Model
+
+- Use **server-authoritative consistency** for structured data with business rules, access control, and transactional integrity
+- Use **CRDT-based consistency** (Y.js) for unstructured collaborative content like documents, diagrams, and drawings
+- Both models can coexist in the same application - use each where it fits best.
+
+The rest of this document goes through the server-authoritative consistenct model.
+
 # Designing a Consistency-friendly model
 
 If you work with Dexie Cloud, it is important to avoid storing objects in array properties if the array needs to be manipulated frequently by multiple clients. It is much better to use a relational model and let every type map to a table, and let collections belonging to an entity be represented in as its own database object, with its own ID and with a reference-property acting as a foreign key to the owning object (a traditional one-to-many relationship in relational databases). Many-to-many relations are best represented using an [associative entity](https://en.wikipedia.org/wiki/Associative_entity) for the same reason. By using a relational approach, these collections may be managed in a consistent manner also by offline clients and conflicts can be avoided using consistent modify- and delete operations as described later on this page.
