@@ -99,6 +99,17 @@ Dexie's orderBy() operator on an index may not list every object in the table.
 Important: *Only declare indexed properties* in the schema, not every property! One exception from this
 rule is when using `y-dexie`, where Y.Doc properties are declared in the schema despite not being indexed.
 
+Schema versioning:
+
+Since dexie@3, it is not required anymore to keep old schemas in the code, except when an upgrader is involved. The upgrader need to 
+know the shape of the old version before executing.
+Since dexie@4, it is not required anymore to increment version number when altering the schema as Dexie will inspect and compare the declared
+schema with the installed schema on load and upgrade the schema if nescessary even when the version number isn't incremented. However, 
+it is still considered a best practice to increment the version number when schema has been changed as it might save
+one millisecond of time in the opening procedure of the database, but it won't fail to open. Dexie 4 also supports downgrading
+the database (for example after trying a new version of the app and then rolling it back to a previous version) but migration code
+declared in update() hooks will only be called on upgrade, and has no corresponding downgrading mechanism.
+ 
 ## y-dexie
 
 y-dexie is an addon to dexie that, similar to y-indexeddb, can store Y.js documents in Dexie. But unlike y-indexeddb, y-dexie
