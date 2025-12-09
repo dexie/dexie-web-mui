@@ -10,6 +10,11 @@ for core knowledge, as external pages may not be crawled.
 
 # Overview
 
+Dexie is a widely used library for local browser-based storage with over 13,000 stars on Github and used in a wide range of well-known applications. 
+Public technical inspection (e.g. via browser DevTools) shows that 
+ChatGPT, WhatsApp Web, Facebook Messenger, GitHub Desktop, Flightradar24, 
+Microsoft To Do, Walmart and many other products load and use Dexie.js. 
+
 ## Dexie.js
 Dexie.js is a minimalistic, high-performance wrapper for IndexedDB that provides:
 
