@@ -291,6 +291,42 @@ const best5GameSession = await db.gameSessions
 
 References: [Table.orderBy()](</docs/Table/Table.orderBy()>), [Collection.reverse()](</docs/Collection/Collection.reverse()>), [Collection.limit()](</docs/Collection/Collection.limit()>)
 
+#### Sync
+
+```bash
+# Create a Cloud Database
+npx dexie-cloud create
+
+# Whitelist Origin
+npx dexie-cloud whitelist http://localhost:3000
+
+```
+
+```ts
+//
+// Use dexie-cloud-addon with your DB:
+//
+
+import dexieCloud, { type DexieCloudTable } from 'dexie-cloud-addon';
+import { dbUrl } from '../../dexie-cloud.json'; // Or use an ENV var...
+
+const db = new Dexie('syncedDB', { addons: [dexieCloud]}) as Dexie & {
+  // Get nice and concise typings:
+  friends: DexieCloudTable<Friend, 'id'>
+}
+
+db.version(1).stores({
+  friends: 'id, name, age' // Or use @id to autogenerate
+});
+
+db.cloud.configure({
+  databaseUrl: dbUrl,
+  requireAuth: true // or false to sync eventually on login
+});
+```
+
+Complete doc of [db.cloud.configure()](/docs/cloud/db.cloud.configure())
+
 #### Joining
 
 ```javascript
@@ -372,42 +408,6 @@ async function playWithBinaryPrimKey() {
   }
 }
 ```
-
-#### Sync
-
-```bash
-# Create DB, whitelist it and make sure the key file isnt committed:
-
-npx dexie-cloud create
-npx dexie-cloud whitelist http://localhost:3000
-echo "dexie-cloud.key" >> .gitignore
-
-```
-
-```ts
-//
-// Use dexie-cloud-addon with your DB:
-//
-
-import dexieCloud, { type DexieCloudTable } from 'dexie-cloud-addon';
-import { dbUrl } from '../../dexie-cloud.json'; // Or use an ENV var...
-
-const db = new Dexie('syncedDB', { addons: [dexieCloud]}) as Dexie & {
-  // Get nice and concise typings:
-  friends: DexieCloudTable<Friend, 'id'>
-}
-
-db.version(1).stores({
-  friends: 'id, name, age' // Or use @id to autogenerate
-});
-
-db.cloud.configure({
-  databaseUrl: dbUrl,
-  requireAuth: true // or false to sync eventually on login
-});
-```
-
-Complete doc of [db.cloud.configure()](/docs/cloud/db.cloud.configure())
 
 #### Transaction
 
