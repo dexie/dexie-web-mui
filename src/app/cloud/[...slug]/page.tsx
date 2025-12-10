@@ -1,5 +1,5 @@
 import { getDocumentBySlug } from "@/utils/mdx"
-import { MdPage } from "../MdPage"
+import { PlainMdPage } from "../PlainMdPage"
 import { notFound } from "next/navigation"
 
 
@@ -14,5 +14,5 @@ export default async function CloudSubPage({ params }: { params: Promise<{ slug:
   if (!doc) {
     notFound()
   }
-  return await MdPage(doc, decodedSlugString)
+  return await PlainMdPage(doc, decodedSlugString)
 }

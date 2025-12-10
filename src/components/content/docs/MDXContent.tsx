@@ -537,11 +537,11 @@ export default function MDXContent({ source, title }: MDXContentProps) {
         <ClientSearchHighlighter containerId={contentId} />
       </Suspense>
 
-      <Box component="header" sx={{ mb: 5 }}>
+      {title && <Box component="header" sx={{ mb: 5 }}>
         <Typography variant="h1" component="h1" sx={{ mb: 3 }}>
           {title}
         </Typography>
-      </Box>
+      </Box>}
 
       {content}
     </div>
