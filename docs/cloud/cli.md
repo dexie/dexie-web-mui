@@ -17,8 +17,10 @@ npx dexie-cloud create [--service &lt;URL&gt;]
 
 This command creates a new database in the cloud. You will be prompted for your email address and receive an email with the one-time password (OTP) to enter into the next prompt. Once the database has been created, your will also get two files stored in the same directory as you stand in.
 
-| dexie-cloud.json | Contains the URL to your new database |
-| dexie-cloud.key | Contains the client ID and secret for further CLI commands |
+|                  |                                                            |
+| ---------------- | ---------------------------------------------------------- |
+| dexie-cloud.json | Contains the URL to your new database                      |
+| dexie-cloud.key  | Contains the client ID and secret for further CLI commands |
 
 Neither of these files should be added to git as they represent environment rather than source. It is especially important to not add the .key file as it contains the secret.
 The files are not needed for the web app to work - they are only useful if you want to run other CLI commands, like white-listing new apps etc. They can also be used to access the Dexie Cloud REST API from a server.
@@ -227,8 +229,8 @@ Electron apps are whitelisted as "app:&lt;Application Name&gt;", where "Applicat
 
 Capacitor / Quasar can be used to bundle web apps into native iOS / Android apps and need special white-listing for different client types:
 
-* For Capacitor Android builds, whitelist "https://localhost"
-* For Capacitor iOS builds, whitelist "capacitor://localhost"
+- For Capacitor Android builds, whitelist "https://localhost"
+- For Capacitor iOS builds, whitelist "capacitor://localhost"
 
 (See [discussion](https://github.com/dexie/Dexie.js/discussions/1947))
 
@@ -263,27 +265,27 @@ npx dexie-cloud whitelist http://localhost:8080 --delete
 ```ts
 interface ImportFileFormat {
   schema?: {
-    [tableName: string]: string; // Dexie.js schema
-  };
-  sealed?: boolean; // Whether schema is locked from being extended in sync
+    [tableName: string]: string // Dexie.js schema
+  }
+  sealed?: boolean // Whether schema is locked from being extended in sync
   demoUsers?: {
-    [userName: `${anyname}@demo.local`]: {};
-  };
+    [userName: `${anyname}@demo.local`]: {}
+  }
   roles?: {
     [roleName: string]: {
-      displayName: string;
-      description: string;
-      sortOrder?: number;
-      permissions: DBPermissionSet;
-    };
-  };
+      displayName: string
+      description: string
+      sortOrder?: number
+      permissions: DBPermissionSet
+    }
+  }
   data?: {
     [realmId: string]: {
       [tableName: string]: {
-        [primaryKey: string]: object;
-      };
-    };
-  };
+        [primaryKey: string]: object
+      }
+    }
+  }
 }
 ```
 
@@ -417,8 +419,8 @@ db.version(1).stores({
   todoItems: '@itemId, [todoListId+realmId]',
   newTableWithCustomPrimKey: 'customId',
   newTableWithGeneratedPrimKey: '@myGeneratedPrimKeyProp',
-  oldTableToDelete: null // delete the table
-});
+  oldTableToDelete: null, // delete the table
+})
 ```
 
 However, Dexie Cloud don't care about secondary indexes (so far) - the only information that Dexie Cloud server needs is the name of the primary key, and whether it is marked with an '@' sign or not.
