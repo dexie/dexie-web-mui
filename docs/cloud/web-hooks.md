@@ -88,7 +88,7 @@ against the configured secret.
   Example:
 
   ```
-  POST /webhooks/dexie-cloud HTTP/1.1
+  POST /api/mywebhook HTTP/1.1
   Host: yourapp.yourdomain.com
   Content-Type: application/json
   X-DexieCloud-Token: 3IFLLLQAHGIN32PCETPWVG2E5A
@@ -111,7 +111,7 @@ against the configured secret.
     ]
   }
 
-  POST /webhooks/dexie-cloud HTTP/1.1
+  POST /api/mywebhook HTTP/1.1
   Host: yourapp.yourdomain.com
   Content-Type: application/json
   X-DexieCloud-Token: 3IFLLLQAHGIN32PCETPWVG2E5A
@@ -130,7 +130,7 @@ against the configured secret.
     ]
   }
 
-  POST /webhooks/dexie-cloud HTTP/1.1
+  POST /api/mywebhook HTTP/1.1
   Host: yourapp.yourdomain.com
   Content-Type: application/json
   X-DexieCloud-Token: 3IFLLLQAHGIN32PCETPWVG2E5A
@@ -185,7 +185,7 @@ When a user has been authenticated the very first time in this database, this ho
   Example:
 
   ```
-  POST /webhooks/dexie-cloud HTTP/1.1
+  POST /api/mywebhook2 HTTP/1.1
   Host: yourapp.yourdomain.com
   Content-Type: application/json
   Content-Length: 54
