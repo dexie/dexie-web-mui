@@ -68,7 +68,7 @@ const DocsHomePage: React.FC<DocsHomePageProps> = ({
           {useSimpleList && indexContent ? (
             // Render content från index.md
             <Box>
-              <MDXContent source={indexContent} />
+              <MDXContent source={indexContent} highlightSearchTerms={true} />
             </Box>
           ) : useSimpleList ? (
             // Fallback till tom lista om indexContent saknas

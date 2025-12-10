@@ -130,7 +130,7 @@ const DocsLayout: React.FC<DocsLayoutProps> = ({
           >            
             {mdxSource ? (
               <>
-                <MDXContent title={pageTitle} source={mdxSource} />
+                <MDXContent title={pageTitle} source={mdxSource} highlightSearchTerms={true} />
                 <div style={{ height: '20vh' }}></div>
               </>
             ) : (

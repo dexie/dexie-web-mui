@@ -33,8 +33,8 @@ export async function PlainMdPage(doc: Doc, currentSlug: string) {
             <MuiLink component={Link} href="/" color="inherit">
               Home
             </MuiLink>
-            <MuiLink component={Link} href="/docs" color="inherit">
-              Cloud
+            <MuiLink component={Link} href="/cloud" color="inherit">
+              Dexie Cloud
             </MuiLink>
             {currentSlug && (
               <Typography
@@ -60,7 +60,7 @@ export async function PlainMdPage(doc: Doc, currentSlug: string) {
             "& li:hover": { background: "transparent" },
           }}
         >
-          <MDXContent source={mdxContent} />
+          <MDXContent source={mdxContent} highlightSearchTerms={false} />
           <div style={{ height: '20vh' }}></div>
         </Box>
       </Box>
