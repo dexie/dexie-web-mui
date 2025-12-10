@@ -96,6 +96,10 @@ When an object is stored into a table but a secondary indexed property does not 
 this will not throw but be silently ignored when iterating or searching the index. One effect of this is that using
 Dexie's orderBy() operator on an index may not list every object in the table.
 
+Schema declaration:
+
+Schema is declared using db.version(x).stores({...}). The schema declares tables, their primary keys and indexed properties each table.
+
 Important: *Only declare indexed properties* in the schema, not every property! One exception from this
 rule is when using `y-dexie`, where Y.Doc properties are declared in the schema despite not being indexed.
 
