@@ -3,6 +3,8 @@ layout: docs
 title: 'API Reference'
 ---
 
+**TLDR**? Take me to [Cheat Sheet](#quick-reference)!
+
 ### Classes
 
 - [Dexie](/docs/Dexie/Dexie)
@@ -16,8 +18,12 @@ title: 'API Reference'
 - [Version](/docs/Version/Version)
 - [WhereClause](/docs/WhereClause/WhereClause)
 
-### [Cheat Sheet](#quick-reference)
+### Sync
 
+ - [dexie-cloud CLI](cloud/cli)
+ - [dexie-cloud-addon](cloud/dexie-cloud-addon)
+ - [REST](cloud/rest-api)
+ 
 ### Operators & filters
 
 - [WhereClause](/docs/WhereClause/WhereClause)
@@ -366,6 +372,42 @@ async function playWithBinaryPrimKey() {
   }
 }
 ```
+
+#### Sync
+
+```bash
+# Create DB, whitelist it and make sure the key file isnt committed:
+
+npx dexie-cloud create
+npx dexie-cloud whitelist http://localhost:3000
+echo "dexie-cloud.key" >> .gitignore
+
+```
+
+```ts
+//
+// Use dexie-cloud-addon with your DB:
+//
+
+import dexieCloud, { type DexieCloudTable } from 'dexie-cloud-addon';
+import { dbUrl } from '../../dexie-cloud.json'; // Or use an ENV var...
+
+const db = new Dexie('syncedDB', { addons: [dexieCloud]}) as Dexie & {
+  // Get nice and concise typings:
+  friends: DexieCloudTable<Friend, 'id'>
+}
+
+db.version(1).stores({
+  friends: 'id, name, age' // Or use @id to autogenerate
+});
+
+db.cloud.configure({
+  databaseUrl: dbUrl,
+  requireAuth: true // or false to sync eventually on login
+});
+```
+
+Complete doc of [db.cloud.configure()](/docs/cloud/db.cloud.configure())
 
 #### Transaction
 
