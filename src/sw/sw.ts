@@ -53,7 +53,11 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
   const allRoutes = manifest.routes;
   const allAssets = Object.keys(manifest.assets);
   const allDocs = Object.keys(manifest.docRoutes);
-  const allEntries = [...allRoutes, ...allDocs, ...allAssets];
+  
+  // Prioritize order: Routes first, then docs, then critical assets, then other assets
+  const criticalAssets = allAssets.filter(a => a.endsWith('.css') || a.endsWith('.js'));
+  const otherAssets = allAssets.filter(a => !a.endsWith('.css') && !a.endsWith('.js'));
+  const allEntries = [...allRoutes, ...allDocs, ...criticalAssets, ...otherAssets];
   let updated = 0;
   let index = 0;
   const concurrency = 4;
@@ -154,8 +158,7 @@ self.addEventListener("message", (event: ExtendableMessageEvent) => {
 
 self.addEventListener("install", (event: ExtendableEvent) => {
   // Activate immediately
-  self.skipWaiting();
-
+  event.waitUntil(self.skipWaiting());
   event.waitUntil(
     (async () => {
       // Clean old precaches
@@ -360,8 +363,8 @@ self.addEventListener("activate", (event: ExtendableEvent) => {
     await self.clients.claim();
     // Set initial state to "check"
     await offlineDB.state.put("check", "state");
-    // Try starting the state machine
-    await stateMachine().catch((error) => {
+    // Try starting the state machine (but don't wait for it!)
+    stateMachine().catch((error) => {
       if (error?.name === "AbortError") {
         console.log("State machine aborted");
       } else {
