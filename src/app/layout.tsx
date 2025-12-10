@@ -103,6 +103,9 @@ export const metadata: Metadata = {
     canonical: "https://dexie.org",
   },
   category: "technology",
+  icons: {
+    icon: "/favicon.ico",
+  },
 }
 
 // Generate structured data as a JSON string to prevent RSC serialization
