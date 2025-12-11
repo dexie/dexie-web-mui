@@ -290,14 +290,12 @@ export class OfflineDB extends Dexie {
       }
     }
     if (quote) {
-      //if (searchText === "hello world") debugger;
       resultContents = resultContents.filter(
         (c) => !contentsToRemove.has(c.id)
       );
     }
 
-    // Sort again by score descending
-    resultContents.sort((a, b) => b.score - a.score);
+    // Filter and sort again (as scores may have changed)
     const searchResults = resultContents
         .filter((c) => c.url && c.title)
         .sort((a, b) => b.score - a.score)
