@@ -49,7 +49,7 @@ db.version(1).stores({
     age`
 });
 
-function MyComponent(friendId: string) {
+function MyComponent({ friendId }: {friendId: string}) {
   // Query friend object:
   const friend = useLiveQuery(
     () => db.friends.get(friendId),
@@ -76,7 +76,7 @@ If dexie-cloud-addon is used and a [Dexie Cloud](https://dexie.org/cloud/) datab
 ```ts
 import { useLiveQuery, useDocument } from 'dexie-react-hooks';
 
-function MyComponent(friendId: string) {
+function MyComponent({ friendId }: {friendId: string}) {
   // Query friend object:
   const friend = useLiveQuery(
     () => db.friends.get(friendId),
