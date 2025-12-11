@@ -23,35 +23,6 @@ export async function PlainMdPage(doc: Doc, currentSlug: string) {
       >
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            alignItems: "center",
-          }}
-        >
-          <Breadcrumbs aria-label="breadcrumb">
-            <MuiLink component={Link} href="/" color="inherit">
-              Home
-            </MuiLink>
-            <MuiLink component={Link} href="/cloud" color="inherit">
-              Dexie Cloud
-            </MuiLink>
-            {currentSlug && (
-              <Typography
-                color="text.primary"
-                aria-current="page"
-                sx={{ padding: 0, margin: 0 }}
-              >
-                {doc.metadata.title || currentSlug.split("/").pop()}
-              </Typography>
-            )}
-          </Breadcrumbs>
-        </Box>
-
-        <Divider sx={{ mb: 3 }} />
-
-        <Box
-          sx={{
             "& a": {
               color: "#c77dff !important",
               textDecoration: "none",
