@@ -51,7 +51,10 @@ db.version(1).stores({
 
 function MyComponent(friendId: string) {
   // Query friend object:
-  const friend = useLiveQuery(() => db.friends.get(friendId));
+  const friend = useLiveQuery(
+    () => db.friends.get(friendId),
+    [friendId]
+  );
 
   // Load the document from friend.notes (also if friend is undefined due to "rule of hooks")
   useDocument(friend?.notes);
@@ -75,7 +78,10 @@ import { useLiveQuery, useDocument } from 'dexie-react-hooks';
 
 function MyComponent(friendId: string) {
   // Query friend object:
-  const friend = useLiveQuery(() => db.friends.get(friendId));
+  const friend = useLiveQuery(
+    () => db.friends.get(friendId),
+    [friendId]
+  );
 
   // Use it's notes property (friend is undefined on intial render)
   const provider = useDocument(friend?.notes);
