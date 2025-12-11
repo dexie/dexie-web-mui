@@ -82,6 +82,9 @@ export class OfflineDB extends Dexie {
           .where({ url: routeAndSlug })
           .primaryKeys();
         if (contentIds.length > 1) {
+          console.warn(
+            `Multiple fullTextContent entries found for URL ${routeAndSlug}. Cleaning up duplicates.`
+          );
           // Should not happen, but if it does, delete all and start fresh
           await this.fullTextContent.where({ url: routeAndSlug }).delete();
           contentIds = [];

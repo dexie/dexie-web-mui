@@ -8,10 +8,7 @@
 /// <reference lib="webworker" />
 
 import { MDFullTextMeta } from "@/types/MDFullTextMeta";
-import {
-  offlineDB,
-  type OfflineStatus,
-} from "../db/offlineDB";
+import { offlineDB, type OfflineStatus } from "../db/offlineDB";
 import type { OfflineManifest } from "@/types/OfflineManifest";
 
 const VERSION = "v3"; // Bumped for simplified approach
@@ -28,8 +25,8 @@ async function updateManifest(): Promise<boolean> {
   // Fetch manifest
   const manifest: OfflineManifest = await fetch(MANIFEST_URL, {
     cache: "no-cache",
-    signal: abortController.signal
-  }).then(res => res.json());
+    signal: abortController.signal,
+  }).then((res) => res.json());
 
   // Check if manifest is newer than what we have cached
   const storedManifest = await offlineDB.manifest.get("manifest");
@@ -53,11 +50,20 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
   const allRoutes = manifest.routes;
   const allAssets = Object.keys(manifest.assets);
   const allDocs = Object.keys(manifest.docRoutes);
-  
+
   // Prioritize order: Routes first, then docs, then critical assets, then other assets
-  const criticalAssets = allAssets.filter(a => a.endsWith('.css') || a.endsWith('.js'));
-  const otherAssets = allAssets.filter(a => !a.endsWith('.css') && !a.endsWith('.js'));
-  const allEntries = [...allRoutes, ...allDocs, ...criticalAssets, ...otherAssets];
+  const criticalAssets = allAssets.filter(
+    (a) => a.endsWith(".css") || a.endsWith(".js")
+  );
+  const otherAssets = allAssets.filter(
+    (a) => !a.endsWith(".css") && !a.endsWith(".js")
+  );
+  const allEntries = [
+    ...allRoutes,
+    ...allDocs,
+    ...criticalAssets,
+    ...otherAssets,
+  ];
   let updated = 0;
   let index = 0;
   const concurrency = 4;
@@ -87,7 +93,7 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
         if (shouldUpdate) {
           const req = new Request(new URL(entry, ORIGIN).toString(), {
             credentials: "same-origin",
-            cache: "no-cache"
+            cache: "no-cache",
           });
 
           const resp = await fetch(req, { signal: abortController.signal });
@@ -123,9 +129,7 @@ async function updateCacheFromManifest(manifest: OfflineManifest) {
   // Process all entries
   await Promise.all(Array.from({ length: concurrency }, () => worker()));
 
-  console.log(
-    `Cache update complete: ${updated} updated entries.`
-  );
+  console.log(`Cache update complete: ${updated} updated entries.`);
 }
 
 // Utility: Save offline cache status to Dexie for GUI consumption
@@ -202,18 +206,16 @@ async function sleep(ms: number, signal?: AbortSignal): Promise<void> {
   });
 }
 
-function oneAtATime<T extends () => Promise<R>, R>(
-  fn: T
-) {
+function oneAtATime<T extends () => Promise<R>, R>(fn: T) {
   let running: Promise<R> | null = null;
 
   return (): Promise<R> => {
     if (!running) {
-      running = fn().finally(()=> {
+      running = fn().finally(() => {
         running = null;
       });
     }
-    
+
     return running as Promise<R>;
   };
 }
@@ -223,28 +225,30 @@ let abortController = new AbortController();
 function pauseStateMachine(event: ExtendableEvent) {
   abortController.abort();
   abortController = new AbortController();
-  event.waitUntil(sleepAndRestartStateMachine());
-  
+  event.waitUntil(
+    sleepAndRestartStateMachine().catch(()=>{}) // errors are logged in sleepAndRestartStateMachine
+  );
+
   async function sleepAndRestartStateMachine() {
-    await sleep(5000, abortController.signal).catch((error) => {
-      if (error?.name !== "AbortError") {
-        throw error;
-      }
-    });
+    await sleep(5000, abortController.signal); // Don't log if sleep is aborted (too much noise)
     await stateMachine().catch((error) => {
       if (error?.name === "AbortError") {
-        console.log("Caching aborted");
+        console.log("State machine aborted");
       } else {
         console.warn("State machine error:", error);
       }
+      return Promise.reject(error);
     });
   }
 }
 
 const stateMachine = oneAtATime(async () => {
   let state = await offlineDB.state.get("state");
-  if (lastUpdateCheck < Date.now() - UPDATE_CHECK_INTERVAL) {
-    state = 'check';
+  if (
+    state === "idle" &&
+    lastUpdateCheck < Date.now() - UPDATE_CHECK_INTERVAL
+  ) {
+    state = "check";
     await offlineDB.state.put(state, "state");
   }
   while (state && state !== "idle") {
@@ -255,11 +259,11 @@ const stateMachine = oneAtATime(async () => {
         const updated = await updateManifest();
         if (updated) {
           // If updated, set state to updating-fts
-          state = 'updating-fts';
+          state = "updating-fts";
           await offlineDB.state.put(state, "state");
         } else {
           // No updates, go idle
-          state = 'idle';
+          state = "idle";
           await offlineDB.state.put(state, "state");
         }
         lastUpdateCheck = Date.now();
@@ -292,7 +296,7 @@ const stateMachine = oneAtATime(async () => {
 function checkAbort() {
   if (abortController.signal.aborted) {
     throw new DOMException("Aborted", "AbortError");
-  } 
+  }
 }
 
 async function updateFTS() {
@@ -312,12 +316,10 @@ async function updateFTS() {
     cachedDocByUrl.set(doc.id, { id: doc.id, hash: doc.ftsHash || null });
   }
   const manifestDocRoutes = Object.keys(manifest.docRoutes);
-  const docsToUpsert = manifestDocRoutes.filter(
-    (doc) => {
-      const cached = cachedDocByUrl.get(doc);
-      return !cached || cached.hash !== manifest.docRoutes[doc];
-    }
-  );
+  const docsToUpsert = manifestDocRoutes.filter((docRoute) => {
+    const cached = cachedDocByUrl.get(docRoute);
+    return !cached || cached.hash !== manifest.docRoutes[docRoute];
+  });
 
   async function worker() {
     while (docsToUpsert.length > 0) {
@@ -335,43 +337,50 @@ async function updateFTS() {
           if (error instanceof DOMException && error.name === "AbortError") {
             throw new DOMException("Aborted", "AbortError");
           } else {
-            console.warn(`Failed to update full-text index for ${docUrl}:`, error);
+            console.warn(
+              `Failed to update full-text index for ${docUrl}:`,
+              error
+            );
+            throw error;
           }
         }
       }
     }
   }
   const concurrency = 8;
+  console.log("Starting FTS update workers...", docsToUpsert.length, "docs to process.");
   await Promise.all(Array.from({ length: concurrency }, () => worker()));
-  
+  console.log("FTS update workers complete.");
+
   // Delete docs that are no longer in manifest
   const docsToDelete = cachedDocRoutes.filter(
     (doc) => !manifestDocRoutes.includes(doc.id)
   );
   for (const doc of docsToDelete) {
+    console.log("Deleting obsolete FTS doc:", doc.id);
     await offlineDB.deleteFullTextDoc(doc.id);
     await offlineDB.cacheMetadata.delete(doc.id);
   }
+  console.log("FTS indexing complete.");
 }
 
-
-
-
 self.addEventListener("activate", (event: ExtendableEvent) => {
-  event.waitUntil((async ()=>{
-    // Take control immediately
-    await self.clients.claim();
-    // Set initial state to "check"
-    await offlineDB.state.put("check", "state");
-    // Try starting the state machine (but don't wait for it!)
-    stateMachine().catch((error) => {
-      if (error?.name === "AbortError") {
-        console.log("State machine aborted");
-      } else {
-        console.warn("State machine error:", error);
-      }
-    });
-  })());
+  event.waitUntil(
+    (async () => {
+      // Take control immediately
+      await self.clients.claim();
+      // Set initial state to "check"
+      await offlineDB.state.put("check", "state");
+      // Try starting the state machine (but don't wait for it!)
+      stateMachine().catch((error) => {
+        if (error?.name === "AbortError") {
+          console.log("State machine aborted");
+        } else {
+          console.warn("State machine error:", error);
+        }
+      });
+    })()
+  );
 
   // Listen for online/offline events to optimize behavior
   self.addEventListener("online", () => {
@@ -406,9 +415,10 @@ async function fetchWithTimeout(
 ): Promise<Response | null> {
   const abortController = new AbortController();
   const timer = setTimeout(() => abortController.abort(), timeout);
-  const res = await fetch(request, { signal: abortController.signal, ...requestInit }).catch(
-    () => null
-  );
+  const res = await fetch(request, {
+    signal: abortController.signal,
+    ...requestInit,
+  }).catch(() => null);
   clearTimeout(timer);
   return res;
 }
@@ -472,14 +482,18 @@ async function cacheFirst(
 
         const triggerStateMachine = async () => {
           // Set state machine to check for updates on next opportunity
-          const shouldUpdate = await offlineDB.transaction('rw', offlineDB.state, async () => { 
-            const currentState = await offlineDB.state.get("state");
-            if (currentState === 'idle') {
-              await offlineDB.state.put('check', "state");
-              return true;
+          const shouldUpdate = await offlineDB.transaction(
+            "rw",
+            offlineDB.state,
+            async () => {
+              const currentState = await offlineDB.state.get("state");
+              if (currentState === "idle") {
+                await offlineDB.state.put("check", "state");
+                return true;
+              }
+              return false;
             }
-            return false
-          });
+          );
           if (shouldUpdate) {
             // Fire off state machine without blocking response
             await stateMachine().catch((error) => {
@@ -496,13 +510,9 @@ async function cacheFirst(
 
         return resp;
       }
-
     } catch {
-      console.log(
-        "Network failed, falling back to cache for:",
-        request.url
-      );
-    }    
+      console.log("Network failed, falling back to cache for:", request.url);
+    }
   }
 
   const canonicalUrl = ignoreQuery ? request.url.split("?")[0] : request.url;
@@ -571,9 +581,6 @@ async function cacheFirst(
 
       if (resp && resp.ok && request.method === "GET") {
         await cache.put(canonicalRequest, resp.clone());
-        await putFullTextIndex(new URL(canonicalRequest.url).pathname).catch(
-          () => {}
-        );
         console.log(
           "Network fallback served:",
           request.url.split("?")[0].split("/").pop()
@@ -581,11 +588,7 @@ async function cacheFirst(
       }
       return resp;
     } catch (err) {
-      console.log(
-        "Network failed for:",
-        request.url,
-        err
-      );
+      console.log("Network failed for:", request.url, err);
     }
   }
 
@@ -729,30 +732,33 @@ self.addEventListener("message", (event: ExtendableMessageEvent) => {
 });
 
 async function putFullTextIndex(route: string) {
-  try {
-    const req = new Request(`/full-text-search${route}.json`, {
-      credentials: "same-origin",
-    });
-    const resp = await fetch(req, { cache: "no-cache" }); // So small file, don't abortSignal it
-    if (resp.ok) {
-      const ftMeta = (await resp.json()) as MDFullTextMeta;
-      // Store in IndexedDB via Dexie
-      for (const section of ftMeta.sections) {
-        const url = section.slug ? `${route}#${section.slug}` : route;
-        const title = section.slug ? section.title : ftMeta.title || route;
-        const parentTitle = ftMeta.title || undefined;
-        await offlineDB.putFullTextDoc(
-          url,
-          title,
-          section.content,
-          parentTitle
-        );
-      }
-    } else if (resp.status === 404) {
-      // No full text index available for this route
-      await offlineDB.deleteFullTextDoc(route);
+  const req = new Request(`/full-text-search${route}.json`, {
+    credentials: "same-origin",
+  });
+  const resp = await fetch(req, { cache: "no-cache" }); // So small file, don't abortSignal it
+  if (resp.ok) {
+    const ftMeta = (await resp.json()) as MDFullTextMeta;
+    // Store in IndexedDB via Dexie
+    for (const section of ftMeta.sections) {
+      const url = section.slug ? `${route}#${section.slug}` : route;
+      const title = section.slug ? section.title : ftMeta.title || route;
+      const parentTitle = ftMeta.title || undefined;
+      await offlineDB.putFullTextDoc(
+        url,
+        title,
+        section.content,
+        parentTitle
+      );
     }
-  } catch {}
+  } else if (resp.status === 404) {
+    console.log("State machine: 404 on FTS data for route:", route);
+    // No full text index available for this route
+    await offlineDB.deleteFullTextDoc(route);
+  } else {
+    throw new Error(
+      `Failed to fetch full-text index for ${route}: ${resp.statusText}`
+    );
+  }
 }
 
 // TypeScript globals for service worker
