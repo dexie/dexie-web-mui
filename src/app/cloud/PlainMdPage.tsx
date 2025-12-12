@@ -1,10 +1,9 @@
 import MDXContent from "@/components/content/docs/MDXContent";
 import { Doc, serializeMarkdown } from "@/utils/mdx";
-import { Box, Breadcrumbs, Container, Typography, Link as MuiLink, Divider } from "@mui/material";
-import Link from "next/link";
+import { Box, Container } from "@mui/material";
 
 
-export async function PlainMdPage(doc: Doc, currentSlug: string) {
+export async function PlainMdPage(doc: Doc) {
   const mdxContent = await serializeMarkdown(doc.content);
   return <Container maxWidth={false} sx={{ padding: 0, pt: "100px" }}>
     <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" } }}>
